@@ -40,7 +40,9 @@ private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == bu
     ?: error("Unsupported IDEA version: $buildVersion")
 private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "115"
 
-version = "${Versions.emmyluaAnalyzer}-${runnerNumber}-IDEA${buildVersion}-patched"
+val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
+val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
+version = "${Versions.emmyluaAnalyzer}-${runnerNumber}-IDEA${buildVersion}-${patchedSuffix}"
 
 // 下载URL配置
 object DownloadUrls {
@@ -145,7 +147,13 @@ val installDependencies by tasks.registering(Copy::class) {
 
     // 复制语言服务器
     from("temp/extracted/server") {
+        if (localAnalyzerPath != null) exclude("darwin-arm64/emmylua_ls")
         into("server")
+    }
+    if (localAnalyzerPath != null) {
+        require(file(localAnalyzerPath).isFile) { "Build the local analyzer before packaging" }
+        from(localAnalyzerPath) { into("server/darwin-arm64"); rename { "emmylua_ls" } }
+        from("analyzer.lock") { into("server/darwin-arm64") }
     }
 
     // 复制调试器核心文件
