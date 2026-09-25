@@ -38,9 +38,9 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "Dev"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "115"
 
-version = "${Versions.emmyluaAnalyzer}.${runnerNumber}-IDEA${buildVersion}"
+version = "${Versions.emmyluaAnalyzer}-${runnerNumber}-IDEA${buildVersion}-patched"
 
 // 下载URL配置
 object DownloadUrls {
@@ -197,9 +197,20 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     intellijPlatform {
         testFramework(TestFrameworkType.Platform)
-        intellijIdeaUltimate(Versions.ideaSDK)
+        val localPlatformPath = providers.gradleProperty("localPlatformPath").orNull
+        if (localPlatformPath != null) {
+            local(localPlatformPath)
+        } else {
+            intellijIdeaUltimate(Versions.ideaSDK)
+        }
+
         bundledPlugins("com.intellij.java", "org.jetbrains.kotlin")
-        plugins("com.redhat.devtools.lsp4ij:0.19.0")
+        val localLsp4ijPath = providers.gradleProperty("localLsp4ijPath").orNull
+        if (localLsp4ijPath != null) {
+            localPlugin(localLsp4ijPath)
+        } else {
+            plugins("com.redhat.devtools.lsp4ij:0.19.0")
+        }
     }
 }
 
