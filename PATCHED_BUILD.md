@@ -34,3 +34,28 @@ under IntelliJ's JBR 25.0.4 selected ARM for `aarch64` and `arm64`, and Intel
 for `x86_64` and `amd64`. Gradle's test task reports `NO-SOURCE`; the repository
 contains no automated test sources. This source-built ZIP has not yet been
 installed and tested in the IDE.
+
+## Multi-module development build
+
+`bash scripts/build-module-patch.sh` builds the pinned Rust analyzer and packages
+`0.24.0-115-IDEA262-patched-modules`. The additional server fix applies to the
+**macOS arm64 binary only**; other platform binaries remain upstream 0.24.0.
+The script requires the sibling workspace's `spike/emmy-analyzer-source` checkout
+at `analyzer.lock`, branch `work/intellij-modules`. Cargo/Gradle caches and outputs
+remain under the workspace. `-PlocalAnalyzerPath=...` is a development build input;
+the archive includes `server/darwin-arm64/analyzer.lock` for provenance.
+
+The upstream PR branch is `fix/workspace-relative-module-resolution` in that
+Rust repository, based on upstream main. It contains the generic resolver fix,
+regression tests and configuration documentation, without local build changes.
+The 0.24.0 work branch contains its backport. The architecture fix remains in
+this IntelliJ plugin's `work/patched-build` branch.
+
+Validation on September 25: the 0.24.0 backport passes 1,082 analysis tests and
+213 server tests (one existing ignored test); the current-main PR branch passes
+1,096 analysis tests and 213 server tests. Clippy passes with warnings outside
+the changed files. Multi-module and existing single-mod protocol checks pass.
+In the isolated IDEA 262 profile, local completion/navigation selected each
+mod's helper, and named cross-mod completion/navigation selected the other mod.
+Completion UI was exercised with typed member prefixes; empty-prefix requests
+returned correct server results but did not consistently appear in the client.
