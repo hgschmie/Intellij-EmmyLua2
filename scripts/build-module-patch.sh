@@ -15,19 +15,22 @@ if ! git -C "$ANALYZER" diff --quiet HEAD --; then
   echo 'Analyzer has tracked changes; commit and review its pin before building.' >&2
   exit 1
 fi
-export CARGO_HOME="${CARGO_HOME:-$WORKSPACE/spike/cache/cargo}"
+mkdir -p "$PLUGIN_ROOT/build/logs"
+exec > >(tee "$PLUGIN_ROOT/build/logs/build-module-patch-$(date +%Y%m%d-%H%M%S)-$$.log") 2>&1
+export CARGO_HOME="${CARGO_HOME:-$WORKSPACE/dev/cache/cargo}"
 export CARGO_TARGET_DIR="$ANALYZER/target"
-export TMPDIR="$WORKSPACE/spike/tmp"
-mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/spike/build-home"
+export TMPDIR="$WORKSPACE/dev/tmp"
+mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/dev/build-home"
 cargo build --locked --release --manifest-path "$ANALYZER/Cargo.toml" -p emmylua_ls
 export RUNNER_NUMBER=115
-export GRADLE_USER_HOME="$WORKSPACE/spike/cache/gradle"
+export GRADLE_USER_HOME="$WORKSPACE/dev/cache/gradle"
+export npm_config_cache="$WORKSPACE/dev/cache/npm"
 export JAVA_HOME="${FMTK_JAVA_HOME:-/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home}"
-export JAVA_TOOL_OPTIONS="-Duser.home=$WORKSPACE/spike/build-home -Djava.io.tmpdir=$TMPDIR"
+export JAVA_TOOL_OPTIONS="-Duser.home=$WORKSPACE/dev/build-home -Djava.io.tmpdir=$TMPDIR"
 cd "$PLUGIN_ROOT"
 bash gradlew --no-daemon --no-configuration-cache \
   "-PlocalPlatformPath=${FMTK_IDEA_PATH:-/Users/henning/Applications/IntelliJ IDEA.app}" \
-  "-PlocalLsp4ijPath=$WORKSPACE/spike/ide/plugins/lsp4ij" \
+  "-PlocalLsp4ijPath=$WORKSPACE/dev/plugins/lsp4ij" \
   "-PlocalAnalyzerPath=$CARGO_TARGET_DIR/release/emmylua_ls" buildPlugin
 python3 - "$PLUGIN_ROOT" "$WORKSPACE" "$CARGO_TARGET_DIR/release/emmylua_ls" <<'PY'
 from pathlib import Path
@@ -38,7 +41,7 @@ plugin, workspace, binary = map(Path, sys.argv[1:])
 version = subprocess.check_output([str(binary), '--version'], text=True).strip().split()[-1]
 package_version = f'{version}-115-IDEA262-patched-modules'
 archive = plugin / f'build/distributions/IntelliJ-EmmyLua2-{package_version}.zip'
-target = workspace / 'spike/emmylua2-module-build/verified'
+target = plugin / 'build/prepared'
 target.mkdir(parents=True, exist_ok=True)
 with tempfile.TemporaryDirectory(dir=target.parent) as temporary:
     extracted = Path(temporary) / 'IntelliJ-EmmyLua2'
