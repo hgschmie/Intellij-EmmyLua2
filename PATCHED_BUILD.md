@@ -59,3 +59,37 @@ In the isolated IDEA 262 profile, local completion/navigation selected each
 mod's helper, and named cross-mod completion/navigation selected the other mod.
 Completion UI was exercised with typed member prefixes; empty-prefix requests
 returned correct server results but did not consistently appear in the client.
+
+## File-aware server routing hook (September 27, 2026)
+
+The independent contribution branch is `fix/file-language-server-routing`, based
+on the local upstream/main checkpoint `b3d5496`. Its signed commit `547e03e` adds
+an optional server-provider extension, excludes claimed files from the default
+mapping, routes custom gutter requests, and scopes gutter caches by project and
+server. It contains no Factorio policy or downstream packaging changes.
+Signed merge `54818f2` incorporates it into `work/patched-build`.
+
+See `docs/server-routing.md` for the extension contract. No analyzer or LSP4IJ
+source changes are required. The Factorio-side instance manager is still to be
+implemented; this package alone does not isolate mods.
+
+Validation on IDEA 2026.2.3 / LSP4IJ 0.21.0 / JDK 25:
+
+- Five platform regression tests passed; compilation and `buildPlugin` passed.
+- ZIP checked for routing classes and extension registration. Its arm64 analyzer
+  matches the existing pinned 0.25.1 binary byte for byte.
+- No everyday IDE installation or multi-instance UI acceptance was performed.
+- Upstream's older SDK/LSP4IJ combination was not tested in this run.
+
+Repeat the tests with `bash scripts/test-routing.sh`. This uses a local build
+init script selecting IntelliJ Platform Gradle plugin 2.18.1: the repository's
+2.6.0 cannot parse the installed SDK module descriptors for platform tests.
+It also limits loaded test plugins to EmmyLua and LSP4IJ; otherwise this SDK's
+unrelated Ultimate startup extension fails before test bodies run. These local
+validation accommodations are deliberately kept off the contribution branch.
+
+The built artifact is
+`build/distributions/IntelliJ-EmmyLua2-0.25.1-115-IDEA262-patched-modules.zip`.
+Detailed build output is `$WORKSPACE/spike/emmy-routing-build.log` and test
+results are `build/test-results/test/`. Normal pinned packaging remains
+`scripts/build-module-patch.sh`.
