@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WORKSPACE="$(dirname "$PLUGIN_ROOT")"
-ANALYZER="$WORKSPACE/spike/emmy-analyzer-source"
+WORKSPACE="$(cd "$PLUGIN_ROOT/../.." && pwd)"
+ANALYZER="$(dirname "$PLUGIN_ROOT")/emmylua-analyzer-rust"
 if [ "$(uname -m)" != arm64 ]; then
   echo 'This development package builds the patched server for macOS arm64 only.' >&2
   exit 1
@@ -11,9 +11,14 @@ if [ "$(git -C "$ANALYZER" rev-parse HEAD)" != "$(cat "$PLUGIN_ROOT/analyzer.loc
   echo 'Analyzer revision differs from analyzer.lock; review the pin before building.' >&2
   exit 1
 fi
-export CARGO_HOME="$WORKSPACE/spike/cache/cargo"
-export CARGO_TARGET_DIR="$WORKSPACE/spike/emmy-target"
+if ! git -C "$ANALYZER" diff --quiet HEAD --; then
+  echo 'Analyzer has tracked changes; commit and review its pin before building.' >&2
+  exit 1
+fi
+export CARGO_HOME="${CARGO_HOME:-$WORKSPACE/spike/cache/cargo}"
+export CARGO_TARGET_DIR="$ANALYZER/target"
 export TMPDIR="$WORKSPACE/spike/tmp"
+mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/spike/build-home"
 cargo build --locked --release --manifest-path "$ANALYZER/Cargo.toml" -p emmylua_ls
 export RUNNER_NUMBER=115
 export GRADLE_USER_HOME="$WORKSPACE/spike/cache/gradle"
@@ -24,17 +29,38 @@ bash gradlew --no-daemon --no-configuration-cache \
   "-PlocalPlatformPath=${FMTK_IDEA_PATH:-/Users/henning/Applications/IntelliJ IDEA.app}" \
   "-PlocalLsp4ijPath=$WORKSPACE/spike/ide/plugins/lsp4ij" \
   "-PlocalAnalyzerPath=$CARGO_TARGET_DIR/release/emmylua_ls" buildPlugin
-python3 - "$PLUGIN_ROOT" "$WORKSPACE" <<'PY'
+python3 - "$PLUGIN_ROOT" "$WORKSPACE" "$CARGO_TARGET_DIR/release/emmylua_ls" <<'PY'
 from pathlib import Path
-import hashlib, sys, zipfile
-plugin, workspace = map(Path, sys.argv[1:])
-archive = plugin / 'build/distributions/IntelliJ-EmmyLua2-0.24.0-115-IDEA262-patched-modules.zip'
+import hashlib, io, shutil, subprocess, sys, tempfile, zipfile
+import xml.etree.ElementTree as ET
+
+plugin, workspace, binary = map(Path, sys.argv[1:])
+version = subprocess.check_output([str(binary), '--version'], text=True).strip().split()[-1]
+package_version = f'{version}-115-IDEA262-patched-modules'
+archive = plugin / f'build/distributions/IntelliJ-EmmyLua2-{package_version}.zip'
 target = workspace / 'spike/emmylua2-module-build/verified'
-with zipfile.ZipFile(archive) as z:
-    z.extractall(target)
-server = target / 'IntelliJ-EmmyLua2/server/darwin-arm64/emmylua_ls'
-server.chmod(0o755)
-assert hashlib.sha256(server.read_bytes()).digest() == hashlib.sha256((workspace / 'spike/emmy-target/release/emmylua_ls').read_bytes()).digest()
-assert (server.parent / 'analyzer.lock').read_text() == (plugin / 'analyzer.lock').read_text()
-print('Verified development plugin:', target / 'IntelliJ-EmmyLua2')
+target.mkdir(parents=True, exist_ok=True)
+with tempfile.TemporaryDirectory(dir=target.parent) as temporary:
+    extracted = Path(temporary) / 'IntelliJ-EmmyLua2'
+    with zipfile.ZipFile(archive) as z:
+        descriptors = []
+        for name in z.namelist():
+            if name.endswith('.jar'):
+                with zipfile.ZipFile(io.BytesIO(z.read(name))) as jar:
+                    if 'META-INF/plugin.xml' in jar.namelist():
+                        descriptors.append(ET.fromstring(jar.read('META-INF/plugin.xml')))
+        assert len(descriptors) == 1, 'Expected exactly one plugin descriptor'
+        assert descriptors[0].findtext('version') == package_version
+        z.extractall(temporary)
+    server = extracted / 'server/darwin-arm64/emmylua_ls'
+    server.chmod(0o755)
+    assert hashlib.sha256(server.read_bytes()).digest() == hashlib.sha256(binary.read_bytes()).digest()
+    assert (server.parent / 'analyzer.lock').read_text() == (plugin / 'analyzer.lock').read_text()
+    # Replace the generated verification copy so old versioned JARs cannot survive.
+    destination = target / 'IntelliJ-EmmyLua2'
+    if destination.exists():
+        shutil.rmtree(destination)
+    shutil.move(str(extracted), destination)
+print('Verified development package:', archive)
+print('Verified development plugin:', destination)
 PY
