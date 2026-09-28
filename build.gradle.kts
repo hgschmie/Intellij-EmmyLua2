@@ -1,3 +1,4 @@
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import de.undercouch.gradle.tasks.download.Download
 
 plugins {
@@ -203,13 +204,16 @@ repositories {
 
 // ============= 依赖配置 =============
 dependencies {
+    testImplementation("junit:junit:4.13.2")
     intellijPlatform {
+        testFramework(TestFrameworkType.Platform)
         val localPlatformPath = providers.gradleProperty("localPlatformPath").orNull
         if (localPlatformPath != null) {
             local(localPlatformPath)
         } else {
             intellijIdeaUltimate(Versions.ideaSDK)
         }
+
         bundledPlugins("com.intellij.java", "org.jetbrains.kotlin")
         val localLsp4ijPath = providers.gradleProperty("localLsp4ijPath").orNull
         if (localLsp4ijPath != null) {
