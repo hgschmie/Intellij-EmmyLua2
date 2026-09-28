@@ -12,7 +12,7 @@ group = "com.cppcxy"
 
 // 版本配置
 object Versions {
-    const val emmyluaAnalyzer = "0.24.0"
+    const val emmyluaAnalyzer = "0.25.1"
     const val emmyDebugger = "1.9.2"
     const val jvm = "17"
     const val ideaSDK = "2026.2"
@@ -45,7 +45,7 @@ version = "${Versions.emmyluaAnalyzer}-${runnerNumber}-IDEA${buildVersion}-${pat
 
 // 下载URL配置
 object DownloadUrls {
-    private const val emmyluaAnalyzerProjectUrl = "https://github.com/CppCXY/emmylua-analyzer-rust"
+    private const val emmyluaAnalyzerProjectUrl = "https://github.com/EmmyLuaLs/emmylua-analyzer-rust"
     private const val emmyDebuggerProjectUrl = "https://github.com/EmmyLua/EmmyLuaDebugger"
 
     // GitHub 镜像配置
@@ -74,13 +74,15 @@ object DownloadUrls {
 
 // ============= 任务配置 =============
 
+val analyzerDownloadDir = "temp/analyzer/${Versions.emmyluaAnalyzer}"
+
 // 下载Emmy Lua分析器
 val downloadEmmyLuaAnalyzer by tasks.registering(Download::class) {
     group = "build setup"
     description = "Download Emmy Lua Analyzer for all platforms"
 
     src(DownloadUrls.emmyluaAnalyzer)
-    dest("temp/analyzer")
+    dest(analyzerDownloadDir)
     overwrite(false)
 }
 
@@ -103,16 +105,16 @@ val extractDependencies by tasks.registering(Copy::class) {
     duplicatesStrategy = DuplicatesStrategy.WARN
 
     // 解压语言服务器
-    from(zipTree("temp/analyzer/emmylua_ls-win32-x64.zip")) {
+    from(zipTree("$analyzerDownloadDir/emmylua_ls-win32-x64.zip")) {
         into("server/win32-x64")
     }
-    from(tarTree("temp/analyzer/emmylua_ls-linux-x64.tar.gz")) {
+    from(tarTree("$analyzerDownloadDir/emmylua_ls-linux-x64.tar.gz")) {
         into("server/linux-x64")
     }
-    from(tarTree("temp/analyzer/emmylua_ls-darwin-arm64.tar.gz")) {
+    from(tarTree("$analyzerDownloadDir/emmylua_ls-darwin-arm64.tar.gz")) {
         into("server/darwin-arm64")
     }
-    from(tarTree("temp/analyzer/emmylua_ls-darwin-x64.tar.gz")) {
+    from(tarTree("$analyzerDownloadDir/emmylua_ls-darwin-x64.tar.gz")) {
         into("server/darwin-x64")
     }
 
