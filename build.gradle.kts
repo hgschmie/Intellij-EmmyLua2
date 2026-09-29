@@ -38,7 +38,7 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "116"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "117"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
 val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
@@ -284,6 +284,10 @@ tasks {
 
     buildPlugin {
         dependsOn(installDependencies)
+        // Archive tasks default to 0644; the server must remain executable after installation.
+        filesMatching("**/server/**/emmylua_ls") {
+            permissions { unix("0755") }
+        }
     }
 
     // 准备沙盒环境
@@ -295,6 +299,7 @@ tasks {
 
         from("src/main/resources/server") {
             into("$pluginDir/server")
+            filesMatching("**/emmylua_ls") { permissions { unix("0755") } }
         }
 
         from("src/main/resources/debugger") {
