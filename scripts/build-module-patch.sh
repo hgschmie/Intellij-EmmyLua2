@@ -2,7 +2,7 @@
 set -euo pipefail
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 WORKSPACE="$(cd "$PLUGIN_ROOT/../.." && pwd)"
-ANALYZER="$(dirname "$PLUGIN_ROOT")/emmylua-analyzer-rust"
+ANALYZER="${FMTK_ANALYZER_PATH:-$(dirname "$PLUGIN_ROOT")/emmylua-analyzer-rust}"
 if [ "$(uname -m)" != arm64 ]; then
   echo 'This development package builds the patched server for macOS arm64 only.' >&2
   exit 1
@@ -18,11 +18,11 @@ fi
 mkdir -p "$PLUGIN_ROOT/build/logs"
 exec > >(tee "$PLUGIN_ROOT/build/logs/build-module-patch-$(date +%Y%m%d-%H%M%S)-$$.log") 2>&1
 export CARGO_HOME="${CARGO_HOME:-$WORKSPACE/dev/cache/cargo}"
-export CARGO_TARGET_DIR="$ANALYZER/target"
+export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ANALYZER/target}"
 export TMPDIR="$WORKSPACE/dev/tmp"
 mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/dev/build-home"
 cargo build --locked --release --manifest-path "$ANALYZER/Cargo.toml" -p emmylua_ls
-export RUNNER_NUMBER=116
+export RUNNER_NUMBER=117
 export GRADLE_USER_HOME="$WORKSPACE/dev/cache/gradle"
 export npm_config_cache="$WORKSPACE/dev/cache/npm"
 export JAVA_HOME="${FMTK_JAVA_HOME:-/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home}"
@@ -39,7 +39,7 @@ import xml.etree.ElementTree as ET
 
 plugin, workspace, binary = map(Path, sys.argv[1:])
 version = subprocess.check_output([str(binary), '--version'], text=True).strip().split()[-1]
-package_version = f'{version}-116-IDEA262-patched-modules'
+package_version = f'{version}-117-IDEA262-patched-modules'
 archive = plugin / f'build/distributions/IntelliJ-EmmyLua2-{package_version}.zip'
 target = plugin / 'build/prepared'
 target.mkdir(parents=True, exist_ok=True)
@@ -54,9 +54,17 @@ with tempfile.TemporaryDirectory(dir=target.parent) as temporary:
                         descriptors.append(ET.fromstring(jar.read('META-INF/plugin.xml')))
         assert len(descriptors) == 1, 'Expected exactly one plugin descriptor'
         assert descriptors[0].findtext('version') == package_version
-        z.extractall(temporary)
+        unix_servers = [entry for entry in z.infolist() if entry.filename.endswith('/emmylua_ls')]
+        assert {entry.filename.split('/')[-2] for entry in unix_servers} == {'darwin-arm64', 'darwin-x64', 'linux-x64'}
+        for entry in unix_servers:
+            mode = (entry.external_attr >> 16) & 0o777
+            assert mode == 0o755, f'{entry.filename}: expected archive mode 0755, got {mode:04o}'
+    # Python zipfile extraction does not restore Unix modes. Use the system extractor
+    # and verify the result without repairing permissions, as an IDE installation would.
+    subprocess.run(['/usr/bin/unzip', '-q', str(archive), '-d', temporary], check=True)
     server = extracted / 'server/darwin-arm64/emmylua_ls'
-    server.chmod(0o755)
+    assert server.stat().st_mode & 0o777 == 0o755
+    assert subprocess.check_output([str(server), '--version'], text=True).strip().split()[-1] == version
     assert hashlib.sha256(server.read_bytes()).digest() == hashlib.sha256(binary.read_bytes()).digest()
     assert (server.parent / 'analyzer.lock').read_text() == (plugin / 'analyzer.lock').read_text()
     # Replace the generated verification copy so old versioned JARs cannot survive.

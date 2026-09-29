@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-116-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-117-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -14,7 +14,9 @@ this ZIP updates the existing EmmyLua2 plugin.
   default. Set `FMTK_JAVA_HOME` to use another JDK.
 - Analyzer checkout at `$WORKSPACE/upstream/emmylua-analyzer-rust`, on
   `work/intellij-modules`. Its HEAD must match [analyzer.lock](analyzer.lock),
-  with no tracked changes. The current pin is
+  with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
+  of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
+  The current pin is
   `df78c6b02be03b7a0fd3cc6d0b44561c1aef3de3`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-patched`; see the Factorio plugin's
@@ -40,7 +42,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-116-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-117-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -54,7 +56,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `116`; overriding
+version suffix. The script fixes the build number at `117`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -103,3 +105,7 @@ Validation completed September 28, 2026:
 - Build 116 packaged successfully; its descriptor, arm64 binary hash and analyzer
   source pin were verified. Live IDE acceptance of its diagnostic-refresh fix
   remains separate from these automated checks.
+
+Build 117 fixes Unix analyzer executable permissions in the ZIP. Packaging checks
+all Unix analyzer entries for mode `0755`, extracts with the system unzip tool,
+and runs the extracted arm64 server without applying a corrective chmod.
