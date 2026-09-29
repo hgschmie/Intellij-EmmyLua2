@@ -39,6 +39,13 @@ internal fun expect(builder: PsiBuilder, expectedType: IElementType): Boolean {
     return false
 }
 
+// `global` is a keyword in Lua 5.5, but a valid member name in earlier Lua.
+// The IDE parser accepts multiple Lua versions; leave version diagnostics to
+// the language server and retain an ID leaf for member PSI/navigation.
+internal fun remapGlobalMember(builder: PsiBuilder) {
+    if (builder.tokenType === GLOBAL) builder.remapCurrentToken(ID)
+}
+
 internal fun expectExpr(b: PsiBuilder, l: Int): PsiBuilder.Marker? {
     val expr = LuaExpressionParser.parseExpr(b, l)
     if (expr == null)
