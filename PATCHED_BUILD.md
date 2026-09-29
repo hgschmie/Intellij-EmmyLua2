@@ -1,95 +1,105 @@
 # Local patched build
 
-Branch `work/patched-build` includes the macOS architecture fix from
-`fix/macos-aarch64-server`: both JVM architecture names `aarch64` and `arm64`
-select the bundled `darwin-arm64/emmylua_ls` server.
+Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
+`WORKSPACE` is `~/ai/fmtk`. The current development package is
+`0.25.1-116-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+this ZIP updates the existing EmmyLua2 plugin.
 
-The default plugin version is `0.24.0-115-IDEA262-patched`. `RUNNER_NUMBER`
-can override the build number. The plugin ID is unchanged, so installing the
-ZIP updates the existing EmmyLua2 plugin.
+## Prerequisites and layout
 
-To reproduce this build on the spike machine:
+- macOS arm64, Cargo/Rust, Python 3, and JDK 25.
+- IntelliJ IDEA at `/Users/henning/Applications/IntelliJ IDEA.app` by default.
+  Set `FMTK_IDEA_PATH` to use another local installation.
+- JDK at `/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home` by
+  default. Set `FMTK_JAVA_HOME` to use another JDK.
+- Analyzer checkout at `$WORKSPACE/upstream/emmylua-analyzer-rust`, on
+  `work/intellij-modules`. Its HEAD must match [analyzer.lock](analyzer.lock),
+  with no tracked changes. The current pin is
+  `df78c6b02be03b7a0fd3cc6d0b44561c1aef3de3`.
+- Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
+  dependency is `0.21.1-SNAPSHOT-factorio-patched`; see the Factorio plugin's
+  [development layout](../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
+
+Shared Cargo, Gradle and npm caches live in `$WORKSPACE/dev/cache/`.
+The build home is `$WORKSPACE/dev/build-home`, and temporary files use
+`$WORKSPACE/dev/tmp`. Logs and test reports belong in each repository's
+`build/` directory. Rust compilation artifacts remain in the analyzer's
+`target/` directory.
+
+## Build and install
 
 ```sh
-cd /Users/henning/ai/fmtk/Intellij-EmmyLua2
-GRADLE_USER_HOME=/Users/henning/ai/fmtk/spike/cache/gradle \
-JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home \
-JAVA_TOOL_OPTIONS='-Duser.home=/Users/henning/ai/fmtk/spike/build-home -Djava.io.tmpdir=/Users/henning/ai/fmtk/spike/tmp' \
-bash gradlew --no-daemon \
-  -PlocalPlatformPath='/Users/henning/Applications/IntelliJ IDEA.app' \
-  -PlocalLsp4ijPath=/Users/henning/ai/fmtk/spike/ide/plugins/lsp4ij \
-  test buildPlugin
+cd ~/ai/fmtk/upstream/Intellij-EmmyLua2
+bash scripts/build-module-patch.sh
 ```
 
-The optional local dependency properties used here select IntelliJ IDEA
-2026.2.3 and LSP4IJ 0.21.0. Without these properties, Gradle downloads the
-repository's configured IDEA SDK and LSP4IJ versions.
+The script builds the pinned analyzer in release mode, packages the IntelliJ
+plugin, checks the ZIP's version and bundled analyzer hash/source pin, and
+refreshes the prepared plugin used by Factorio development builds.
 
-Install `build/distributions/IntelliJ-EmmyLua2-0.24.0-115-IDEA262-patched.zip`
-using IntelliJ's **Install Plugin from Disk** action.
+Outputs relative to this repository:
 
-Validation: the full source build succeeded; the ZIP's plugin descriptor
-contains the requested version. Running its compiled architecture selector
-under IntelliJ's JBR 25.0.4 selected ARM for `aarch64` and `arm64`, and Intel
-for `x86_64` and `amd64`. Gradle's test task reports `NO-SOURCE`; the repository
-contains no automated test sources. This source-built ZIP has not yet been
-installed and tested in the IDE.
+- Installable ZIP:
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-116-IDEA262-patched-modules.zip`
+- Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
+- Build logs: `build/logs/build-module-patch-*.log`
 
-## Multi-module development build
+Install the ZIP using **Settings → Plugins → Install Plugin from Disk**, then
+restart IntelliJ. The prepared dependency is a generated build output, not a
+second source checkout.
 
-`bash scripts/build-module-patch.sh` builds the pinned Rust analyzer and packages
-`0.24.0-115-IDEA262-patched-modules`. The additional server fix applies to the
-**macOS arm64 binary only**; other platform binaries remain upstream 0.24.0.
-The script requires the sibling workspace's `spike/emmy-analyzer-source` checkout
-at `analyzer.lock`, branch `work/intellij-modules`. Cargo/Gradle caches and outputs
-remain under the workspace. `-PlocalAnalyzerPath=...` is a development build input;
-the archive includes `server/darwin-arm64/analyzer.lock` for provenance.
+The custom analyzer fixes apply to the **macOS arm64 binary only**. Other
+platform binaries remain upstream 0.25.1. The archive includes
+`server/darwin-arm64/analyzer.lock` for provenance.
 
-The upstream PR branch is `fix/workspace-relative-module-resolution` in that
-Rust repository, based on upstream main. It contains the generic resolver fix,
-regression tests and configuration documentation, without local build changes.
-The 0.24.0 work branch contains its backport. The architecture fix remains in
-this IntelliJ plugin's `work/patched-build` branch.
+Use the packaging script for the development build: a direct `buildPlugin`
+without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
+version suffix. The script fixes the build number at `116`; overriding
+`RUNNER_NUMBER` in the calling environment does not change it.
 
-Validation on September 25: the 0.24.0 backport passes 1,082 analysis tests and
-213 server tests (one existing ignored test); the current-main PR branch passes
-1,096 analysis tests and 213 server tests. Clippy passes with warnings outside
-the changed files. Multi-module and existing single-mod protocol checks pass.
-In the isolated IDEA 262 profile, local completion/navigation selected each
-mod's helper, and named cross-mod completion/navigation selected the other mod.
-Completion UI was exercised with typed member prefixes; empty-prefix requests
-returned correct server results but did not consistently appear in the client.
+## Included patches
 
-## File-aware server routing hook (September 27, 2026)
+- macOS architecture selection: JVM names `aarch64` and `arm64` select the
+  bundled `darwin-arm64/emmylua_ls` server.
+- File-aware server routing: independent branch `fix/file-language-server-routing`.
+  The [extension contract](docs/server-routing.md) allows the Factorio plugin's
+  per-module server manager to claim files and route gutter requests.
+- Legacy Lua member names: independent branch `fix/global-member-name`, commit
+  `cf55a94`, permits expressions such as `settings.global[name]` while retaining
+  Lua 5.5 global declarations. Development contains the original commit `6893a12`.
+- Analyzer module imports: independent analyzer branch
+  `fix/workspace-relative-module-resolution`, merged into `work/intellij-modules`.
+- Analyzer diagnostic refresh: independent analyzer branch
+  `fix/cross-file-diagnostic-refresh`, commit `69b1c31a`, also merged into
+  `work/intellij-modules`. See [details and validation](docs/diagnostic-refresh.md).
 
-The independent contribution branch is `fix/file-language-server-routing`, based
-on the local upstream/main checkpoint `b3d5496`. Its signed commit `547e03e` adds
-an optional server-provider extension, excludes claimed files from the default
-mapping, routes custom gutter requests, and scopes gutter caches by project and
-server. It contains no Factorio policy or downstream packaging changes.
-Signed merge `54818f2` incorporates it into `work/patched-build`.
+The analyzer review branches are independent of each other. Keep local package
+versions, source pins and build-layout changes off those contribution branches.
 
-See `docs/server-routing.md` for the extension contract. No analyzer or LSP4IJ
-source changes are required. The Factorio-side instance manager is still to be
-implemented; this package alone does not isolate mods.
+## Tests and validation
 
-Validation on IDEA 2026.2.3 / LSP4IJ 0.21.0 / JDK 25:
+```sh
+cd ~/ai/fmtk/upstream/Intellij-EmmyLua2
+bash scripts/test-routing.sh
+```
 
-- Five platform regression tests passed; compilation and `buildPlugin` passed.
-- ZIP checked for routing classes and extension registration. Its arm64 analyzer
-  matches the existing pinned 0.25.1 binary byte for byte.
-- No everyday IDE installation or multi-instance UI acceptance was performed.
-- Upstream's older SDK/LSP4IJ combination was not tested in this run.
+Despite its name, this script runs all plugin tests, including the parser tests.
+Logs are in `build/logs/test-routing-*.log`; XML results are in
+`build/test-results/test/`, and HTML reports in `build/reports/tests/test/`.
+The local test init script selects IntelliJ Platform Gradle plugin 2.18.1 because
+2.6.0 cannot parse the installed SDK's module descriptors for platform tests.
+It limits loaded test plugins to EmmyLua and LSP4IJ to avoid an unrelated Ultimate
+startup extension failure. These local accommodations are not part of the
+contribution branches. This test command does not produce the pinned installable
+ZIP; run `build-module-patch.sh` for that artifact.
 
-Repeat the tests with `bash scripts/test-routing.sh`. This uses a local build
-init script selecting IntelliJ Platform Gradle plugin 2.18.1: the repository's
-2.6.0 cannot parse the installed SDK module descriptors for platform tests.
-It also limits loaded test plugins to EmmyLua and LSP4IJ; otherwise this SDK's
-unrelated Ultimate startup extension fails before test bodies run. These local
-validation accommodations are deliberately kept off the contribution branch.
+Validation completed September 28, 2026:
 
-The built artifact is
-`build/distributions/IntelliJ-EmmyLua2-0.25.1-115-IDEA262-patched-modules.zip`.
-Detailed build output is `$WORKSPACE/spike/emmy-routing-build.log` and test
-results are `build/test-results/test/`. Normal pinned packaging remains
-`scripts/build-module-patch.sh`.
+- Eleven plugin tests passed: five routing and six member-name parser tests.
+- The merged analyzer passed 217 server tests, with one existing ignored test.
+- Diagnostic-refresh protocol tests passed for required-field removal/restoration,
+  debouncing, external changes/deletion/recreation, and capability gating.
+- All 12 module-import/type and FMTK locale protocol checks passed.
+- Build 116 packaged successfully; its descriptor, arm64 binary hash and analyzer
+  source pin were verified. Live IDE acceptance of its diagnostic-refresh fix
+  remains separate from these automated checks.
