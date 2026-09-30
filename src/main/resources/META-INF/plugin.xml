@@ -37,6 +37,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensionPoints>
         <extensionPoint name="serverProvider" interface="com.cppcxy.ide.lsp.EmmyLuaServerProvider" dynamic="true"/>
+        <extensionPoint name="languageLevelProvider" interface="com.tang.intellij.lua.lang.LuaLanguageLevelProvider" dynamic="true"/>
     </extensionPoints>
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="lua"
