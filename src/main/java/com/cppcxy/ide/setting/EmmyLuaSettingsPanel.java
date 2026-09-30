@@ -18,7 +18,7 @@ public class EmmyLuaSettingsPanel implements SearchableConfigurable, Configurabl
 
     @Override public JComponent createComponent() {
         if (panel == null) {
-            location = new JTextField(35);
+            location = new JTextField();
             luaVersion = new JComboBox<>(LuaRuntimeVersion.values());
             panel = FormBuilder.createFormBuilder()
                 .addLabeledComponent("EmmyLua Custom Location:", location)
