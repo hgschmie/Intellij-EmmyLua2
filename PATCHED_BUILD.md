@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-117-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-118-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `df78c6b02be03b7a0fd3cc6d0b44561c1aef3de3`.
+  `fed58df97deb1895cb30f0e6ed48d2f54770aca2`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-patched`; see the Factorio plugin's
   [development layout](../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
@@ -42,7 +42,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-117-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-118-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -56,7 +56,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `117`; overriding
+version suffix. The script fixes the build number at `118`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -109,3 +109,7 @@ Validation completed September 28, 2026:
 Build 117 fixes Unix analyzer executable permissions in the ZIP. Packaging checks
 all Unix analyzer entries for mode `0755`, extracts with the system unzip tool,
 and runs the extracted arm64 server without applying a corrective chmod.
+
+Build 118 includes the navigation-only analyzer fix for preceding top-level global
+assignments in the same file (`fix/same-file-global-navigation`, `7935e3e0`),
+merged into `work/intellij-modules` at `fed58df9`. Type inference is unchanged.
