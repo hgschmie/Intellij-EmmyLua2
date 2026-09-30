@@ -7,7 +7,7 @@ LSP4IJ dependency beneath `<workspace>/dev` (`cache/` and `plugins/lsp4ij`).
 
 `analyzer.lock` pins the main-based analyzer development source at `fed58df9`.
 The script checks its revision and tracked changes, builds the native server,
-and produces `build/distributions/IntelliJ-EmmyLua2-0.25.1-118-IDEA262-patched-modules.zip`.
+and produces `build/distributions/IntelliJ-EmmyLua2-0.25.1-119-IDEA262-patched-modules.zip`.
 It verifies the plugin version, embedded pin, and native server hash, then
 replaces the generated verification copy at
 `build/prepared/IntelliJ-EmmyLua2` in this repository.
