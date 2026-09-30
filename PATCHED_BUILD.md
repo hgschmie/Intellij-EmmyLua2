@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-119-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-120-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `fed58df97deb1895cb30f0e6ed48d2f54770aca2`.
+  `bdacab57fcdb2f4990a3224465d9d201aab88124`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-119-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-120-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `119`; overriding
+version suffix. The script fixes the build number at `120`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -119,3 +119,10 @@ merged into `work/intellij-modules` at `fed58df9`. Type inference is unchanged.
 Build 119 adds **Editor → Code Style → Lua** for tab size, tabs versus spaces,
 and editor indentation. The independent patch is `fix/lua-code-style-settings`
 (`06881be`), merged into this work branch at `e36f86e`.
+
+Build 120 includes the local-table metatable association fix
+(`fix/local-table-metatable-association`, `f96347be`), merged into
+`work/intellij-modules` at `bdacab57`. Stable local tables and aliases retain
+function-valued `__index` behavior when exported. Reassigned bindings and member
+targets remain excluded; precise inference of dynamic wrappers is unchanged.
+The merged analyzer passed all 1,110 code-analysis tests.
