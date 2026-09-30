@@ -214,6 +214,7 @@ dependencies {
             intellijIdeaUltimate(Versions.ideaSDK)
         }
 
+
         bundledPlugins("com.intellij.java", "org.jetbrains.kotlin")
         val localLsp4ijPath = providers.gradleProperty("localLsp4ijPath").orNull
         if (localLsp4ijPath != null) {
