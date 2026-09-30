@@ -19,7 +19,9 @@ this ZIP updates the existing EmmyLua2 plugin.
   The current pin is
   `fed58df97deb1895cb30f0e6ed48d2f54770aca2`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
-  dependency is `0.21.1-SNAPSHOT-factorio-patched`; see the Factorio plugin's
+  dependency is the official nightly `0.21.1-20260930-013028`, which includes
+  the upstream breakpoint-removal fix. Prepare it with
+  `bash "$WORKSPACE/intellij-factorio/scripts/build-lsp4ij.sh"`; see the Factorio plugin's
   [development layout](../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
 
 Shared Cargo, Gradle and npm caches live in `$WORKSPACE/dev/cache/`.
