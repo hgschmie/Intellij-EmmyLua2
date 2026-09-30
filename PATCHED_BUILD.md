@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-121-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-122-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-121-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-122-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `121`; overriding
+version suffix. The script fixes the build number at `122`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -131,3 +131,10 @@ Build 121 restricts native `global` member compatibility to explicitly supplied
 Lua levels below 5.5. Unknown runtimes remain strict. The Factorio integration
 supplies Lua 5.2 for its mod files via the independent language-level provider.
 See [the extension contract](docs/language-level.md).
+
+Build 122 adds the default Lua runtime selector under Languages & Frameworks →
+EmmyLua Settings. Project runtime configuration overrides the default; Factorio
+retains its managed Lua 5.2. Applying changes reparses Lua files and restarts only
+standard EmmyLua servers. The feature is on `feat/default-lua-version`, based on
+the version-aware parser patch. See `docs/language-level.md` for configuration
+precedence and the native parser limitation for executable `.emmyrc.lua` files.
