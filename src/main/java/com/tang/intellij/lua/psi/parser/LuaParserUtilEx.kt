@@ -17,6 +17,8 @@
 package com.tang.intellij.lua.psi.parser
 
 import com.intellij.lang.PsiBuilder
+import com.tang.intellij.lua.lang.LuaLanguageLevel
+import com.tang.intellij.lua.lang.LuaLanguageLevelProvider
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.TokenSet
 import com.tang.intellij.lua.psi.LuaParserUtil.MY_LEFT_COMMENT_BINDER
@@ -39,11 +41,12 @@ internal fun expect(builder: PsiBuilder, expectedType: IElementType): Boolean {
     return false
 }
 
-// `global` is a keyword in Lua 5.5, but a valid member name in earlier Lua.
-// The IDE parser accepts multiple Lua versions; leave version diagnostics to
-// the language server and retain an ID leaf for member PSI/navigation.
+// Keep the reserved token for Lua 5.5 and unknown runtimes.
 internal fun remapGlobalMember(builder: PsiBuilder) {
-    if (builder.tokenType === GLOBAL) builder.remapCurrentToken(ID)
+    if (builder.tokenType === GLOBAL &&
+        LuaLanguageLevelProvider.resolve(builder).version < LuaLanguageLevel.LUA55.version) {
+        builder.remapCurrentToken(ID)
+    }
 }
 
 internal fun expectExpr(b: PsiBuilder, l: Int): PsiBuilder.Marker? {
