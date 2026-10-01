@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-127-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-128-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `b7b7045af847c2f0294c7f133b14c279a509bf2d`.
+  `772ec76d0cb5086e62a2136a8d2a5ce40e55c77b`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -41,12 +41,13 @@ The script builds the pinned analyzer in release mode, packages the IntelliJ
 plugin, checks the ZIP's version and bundled analyzer hash/source pin, and
 refreshes the prepared plugin used by Factorio development builds.
 
-Outputs relative to this repository:
+The script keeps installable ZIPs together even when building from a worktree:
 
-- Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-127-IDEA262-patched-modules.zip`
-- Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
-- Build logs: `build/logs/build-module-patch-*.log`
+- Installable ZIP beside previous releases:
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-128-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-128-IDEA262-patched-modules.zip`
+- Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
+- Worktree build logs: `build/logs/build-module-patch-*.log`
 
 Install the ZIP using **Settings → Plugins → Install Plugin from Disk**, then
 restart IntelliJ. The prepared dependency is a generated build output, not a
@@ -58,7 +59,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `127`; overriding
+version suffix. The script fixes the build number at `128`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -211,3 +212,26 @@ The build scripts resolve shared `dev/` paths from the repository's common Git
 directory, so they also work from `upstream/Intellij-EmmyLua2-worktrees/patched-build`.
 The verified prepared dependency remains under the main repository's
 `build/prepared/IntelliJ-EmmyLua2`.
+
+## Nullable dictionary indexing (build 128)
+
+The analyzer pin is `772ec76d` on `work/intellij-modules`, including independent
+fix `3548b7f5` from `fix/nullable-table-index` and read/write compatibility tests.
+Set `"strict": {"tableIndex": true}` in a module's `.luarc.json` or `.emmyrc.json`
+to include `nil` in dictionary lookup results. This corrects the false
+`unnecessary-if` warning for `if mods["nullius"] then`. It is disabled by default.
+Required named fields, explicit `__index` function returns, iteration values,
+and the separate read/write attribute behavior are preserved.
+
+The combined analyzer passed 1,139 analysis, 239 LSP and 191 parser tests, with
+one existing ignored LSP test. The fix also passed on upstream main without the
+read/write patch. See the Factorio plugin's current acceptance notes for package
+and protocol validation. Only the macOS arm64 server includes these local fixes.
+
+Build 128 release packaging and all 22 plugin tests passed. The extracted release
+analyzer passed the `mods["nullius"]` protocol check with `strict.tableIndex` both
+disabled and enabled. Factorio `0.5.0-dev` passed 46 unit tests (one opt-in game
+test skipped) and three relevant platform tests using the prepared build 128.
+The main-repository and worktree archives have identical SHA-256 hashes; the
+ZIP and extracted server retain executable mode `0755` and the expected source
+pin. The plugins have not been installed into the regular IDE profile.
