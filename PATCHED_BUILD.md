@@ -1,8 +1,8 @@
 # Local patched build
 
-Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
+Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-126-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-127-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -12,12 +12,12 @@ this ZIP updates the existing EmmyLua2 plugin.
   Set `FMTK_IDEA_PATH` to use another local installation.
 - JDK at `/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home` by
   default. Set `FMTK_JAVA_HOME` to use another JDK.
-- Analyzer checkout at `$WORKSPACE/upstream/emmylua-analyzer-rust`, on
+- Analyzer checkout at `$WORKSPACE/upstream/emmylua-analyzer-rust/build/checkouts/intellij-work`, on
   `work/intellij-modules`. Its HEAD must match [analyzer.lock](analyzer.lock),
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `8647cfb1aaf85e19d521e5f1a19b40c96e2efdd4`.
+  `b7b7045af847c2f0294c7f133b14c279a509bf2d`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -33,7 +33,7 @@ The build home is `$WORKSPACE/dev/build-home`, and temporary files use
 ## Build and install
 
 ```sh
-cd ~/ai/fmtk/upstream/Intellij-EmmyLua2
+cd ~/ai/fmtk/upstream/Intellij-EmmyLua2-worktrees/patched-build
 bash scripts/build-module-patch.sh
 ```
 
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-126-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-127-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `126`; overriding
+version suffix. The script fixes the build number at `127`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -84,7 +84,7 @@ local-table metatable association patch.
 ## Tests and validation
 
 ```sh
-cd ~/ai/fmtk/upstream/Intellij-EmmyLua2
+cd ~/ai/fmtk/upstream/Intellij-EmmyLua2-worktrees/patched-build
 bash scripts/test-routing.sh
 ```
 
@@ -197,3 +197,17 @@ ignored test. A protocol probe using a copy of the mod's `is.lua` checks hover,
 definition targets and requested semantic tokens after unsaved documentation
 edits, member rename/restore, and a watched edit to a closed provider. Live IDE
 rendering and automatic token refresh are not asserted by these protocol checks.
+
+## Asymmetric property types (build 127)
+
+The analyzer includes `fix/asymmetric-field-types`: complementary `@field (read)`
+and `@field (write)` annotations keep getter inference separate from setter
+validation and assignment completion. Writes restore the getter type for later
+reads. Property hover/completion documentation display both types and navigation
+selects the matching declaration. Access restrictions and directional index
+operators are not added.
+
+The build scripts resolve shared `dev/` paths from the repository's common Git
+directory, so they also work from `upstream/Intellij-EmmyLua2-worktrees/patched-build`.
+The verified prepared dependency remains under the main repository's
+`build/prepared/IntelliJ-EmmyLua2`.
