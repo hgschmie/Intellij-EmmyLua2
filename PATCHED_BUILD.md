@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-125-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-126-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `feca6e73acb9eedba1db02f6fb53423ea858c157`.
+  `8647cfb1aaf85e19d521e5f1a19b40c96e2efdd4`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-125-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-126-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `125`; overriding
+version suffix. The script fixes the build number at `126`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -176,3 +176,24 @@ tests, with one existing ignored test. A real LSP protocol test against a copy o
 the mod's `is.lua` verifies exact destinations and diagnostics after unsaved
 rename/restore and watched changes to a closed file. This is protocol validation;
 live IntelliJ acceptance remains to be checked after installing the ZIP.
+
+Build 126 adds hover documentation and semantic coloring for inferred members.
+The analyzer branch `fix/index-metamethod-presentation` contains two signed fixes:
+`f9e2f98c` adds backing-member documentation, and `438c9da9` colors inferred
+function references like ordinary function members. Both are merged into
+`work/intellij-modules` at `8647cfb1`.
+
+Hover retains the actual inferred wrapper signature and labels documentation
+borrowed from `M.Table` or `M.Callable`. Explicit wrapper/member/alias documentation
+takes precedence. Existing LDoc comments remain text; EmmyLua parameter and
+return annotations use the normal structured rendering. Function references such
+as `local check = Is.Table` now receive the same method token as ordinary function
+members; calls already received that token. Unknown and non-function values keep
+their existing property styling.
+
+Validation: eight new hover tests and three semantic-token tests pass. The merged
+analyzer passes 1,120 analysis tests and 237 server tests, with one existing
+ignored test. A protocol probe using a copy of the mod's `is.lua` checks hover,
+definition targets and requested semantic tokens after unsaved documentation
+edits, member rename/restore, and a watched edit to a closed provider. Live IDE
+rendering and automatic token refresh are not asserted by these protocol checks.
