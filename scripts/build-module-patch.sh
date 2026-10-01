@@ -23,7 +23,7 @@ export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ANALYZER/target}"
 export TMPDIR="$WORKSPACE/dev/tmp"
 mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/dev/build-home"
 cargo build --locked --release --manifest-path "$ANALYZER/Cargo.toml" -p emmylua_ls
-export RUNNER_NUMBER=127
+export RUNNER_NUMBER=128
 export GRADLE_USER_HOME="$WORKSPACE/dev/cache/gradle"
 export npm_config_cache="$WORKSPACE/dev/cache/npm"
 export JAVA_HOME="${FMTK_JAVA_HOME:-/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home}"
@@ -40,7 +40,7 @@ import xml.etree.ElementTree as ET
 
 plugin, workspace, binary = map(Path, sys.argv[1:])
 version = subprocess.check_output([str(binary), '--version'], text=True).strip().split()[-1]
-package_version = f'{version}-127-IDEA262-patched-modules'
+package_version = f'{version}-128-IDEA262-patched-modules'
 archive = plugin / f'build/distributions/IntelliJ-EmmyLua2-{package_version}.zip'
 target = workspace / 'upstream/Intellij-EmmyLua2/build/prepared'
 target.mkdir(parents=True, exist_ok=True)
@@ -73,6 +73,12 @@ with tempfile.TemporaryDirectory(dir=target.parent) as temporary:
     if destination.exists():
         shutil.rmtree(destination)
     shutil.move(str(extracted), destination)
-print('Verified development package:', archive)
+# Keep worktree builds beside earlier archives in the main repository.
+shared_archive = workspace / 'upstream/Intellij-EmmyLua2/build/distributions' / archive.name
+shared_archive.parent.mkdir(parents=True, exist_ok=True)
+if archive.resolve() != shared_archive.resolve():
+    shutil.copy2(archive, shared_archive)
+assert hashlib.sha256(shared_archive.read_bytes()).digest() == hashlib.sha256(archive.read_bytes()).digest()
+print('Verified development package:', shared_archive)
 print('Verified development plugin:', destination)
 PY
