@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-124-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-125-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `592a6917afdc7b6576b0f3ad9652c4948a49bdea`.
+  `feca6e73acb9eedba1db02f6fb53423ea858c157`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-124-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-125-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `124`; overriding
+version suffix. The script fixes the build number at `125`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -159,3 +159,20 @@ Validation: all 1,120 merged code-analysis tests passed, including ten new
 regressions. A protocol test using the real `is.lua` and IntelliJ-style pull
 refresh verified unsaved rename/restore and watched changes to a closed file,
 without reopening the consumer or restarting the server.
+
+Build 125 adds definition navigation for these key-aware `__index` lookups.
+The separate analyzer follow-up `fix/index-metamethod-definition` (`eb8af4f2`)
+builds on `fix/key-aware-index-metamethods` and is merged into
+`work/intellij-modules` at `feca6e73`. `Is.Table` navigates to `M.Table`, and
+`Is.Function` follows its alias to `M.Callable`. Direct backing-table lookups,
+literal string/integer keys and simple forwarding wrappers are supported.
+Ordinary definitions take precedence; rename/reference identities are unchanged.
+Missing members, ambiguous branches, reassigned members and unsupported bodies
+do not acquire synthetic navigation targets.
+
+Validation: seven new definition tests pass, including provider edits and normal
+member precedence. The merged analyzer passes 1,120 analysis tests and 226 server
+tests, with one existing ignored test. A real LSP protocol test against a copy of
+the mod's `is.lua` verifies exact destinations and diagnostics after unsaved
+rename/restore and watched changes to a closed file. This is protocol validation;
+live IntelliJ acceptance remains to be checked after installing the ZIP.
