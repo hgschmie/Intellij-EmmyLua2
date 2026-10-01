@@ -234,4 +234,6 @@ disabled and enabled. Factorio `0.5.0-dev` passed 46 unit tests (one opt-in game
 test skipped) and three relevant platform tests using the prepared build 128.
 The main-repository and worktree archives have identical SHA-256 hashes; the
 ZIP and extracted server retain executable mode `0755` and the expected source
-pin. The plugins have not been installed into the regular IDE profile.
+pin. The build did not install the plugins into the regular IDE profile. On
+2026-10-01, the user confirmed that the rebuilt patch works in their running
+IntelliJ instance.
