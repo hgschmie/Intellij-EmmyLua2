@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-123-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-124-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `bdacab57fcdb2f4990a3224465d9d201aab88124`.
+  `592a6917afdc7b6576b0f3ad9652c4948a49bdea`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,7 +44,7 @@ refreshes the prepared plugin used by Factorio development builds.
 Outputs relative to this repository:
 
 - Installable ZIP:
-  `build/distributions/IntelliJ-EmmyLua2-0.25.1-123-IDEA262-patched-modules.zip`
+  `build/distributions/IntelliJ-EmmyLua2-0.25.1-124-IDEA262-patched-modules.zip`
 - Prepared dependency: `build/prepared/IntelliJ-EmmyLua2`
 - Build logs: `build/logs/build-module-patch-*.log`
 
@@ -58,7 +58,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `123`; overriding
+version suffix. The script fixes the build number at `124`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -77,8 +77,9 @@ version suffix. The script fixes the build number at `123`; overriding
   `fix/cross-file-diagnostic-refresh`, commit `69b1c31a`, also merged into
   `work/intellij-modules`. See [details and validation](docs/diagnostic-refresh.md).
 
-The analyzer review branches are independent of each other. Keep local package
-versions, source pins and build-layout changes off those contribution branches.
+Keep local package versions, source pins and build-layout changes off analyzer
+contribution branches. The key-aware index follow-up below builds on the separate
+local-table metatable association patch.
 
 ## Tests and validation
 
@@ -141,3 +142,20 @@ precedence and the native parser limitation for executable `.emmyrc.lua` files.
 
 Build 123 restores the full-width analyzer path field in EmmyLua Settings while
 keeping the Lua version selector compact.
+
+
+Build 124 adds key-aware inference for simple expression-only `__index` functions.
+The analyzer follow-up branch `fix/key-aware-index-metamethods` (`bf06cf50`) is
+based on `fix/local-table-metatable-association`, and is merged into the work
+branch at `592a6917`. For `return M[key] and function(...) ... end or nil`, with
+`M` a closed local table, existing members resolve to functions and missing
+members produce `undefined-field` diagnostics. Editing the provider updates
+existing consumers. The wrapper's argument/return types still use ordinary
+signature inference; this does not execute arbitrary function bodies.
+
+Explicit return annotations, complex bodies, computed keys, reassigned captures,
+and tables that escape into other code retain the broad inference fallback.
+Validation: all 1,120 merged code-analysis tests passed, including ten new
+regressions. A protocol test using the real `is.lua` and IntelliJ-style pull
+refresh verified unsaved rename/restore and watched changes to a closed file,
+without reopening the consumer or restarting the server.
