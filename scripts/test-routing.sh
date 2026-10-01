@@ -1,7 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-WORKSPACE="$(cd "$PLUGIN_ROOT/../.." && pwd)"
+REPOSITORY_ROOT="$(dirname "$(git -C "$PLUGIN_ROOT" rev-parse --path-format=absolute --git-common-dir)")"
+WORKSPACE="$(cd "$REPOSITORY_ROOT/../.." && pwd)"
 mkdir -p "$PLUGIN_ROOT/build/logs"
 exec > >(tee "$PLUGIN_ROOT/build/logs/test-routing-$(date +%Y%m%d-%H%M%S)-$$.log") 2>&1
 export GRADLE_USER_HOME="$WORKSPACE/dev/cache/gradle"
