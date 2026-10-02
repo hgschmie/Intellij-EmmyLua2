@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-129-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-130-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `e7ffd3b5555618594cb229246a160ae9be65c6b4`.
+  `a7ea9de69d3266c7814f88bc001b263199da93f8`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,8 +44,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-129-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-129-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-130-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-130-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -59,7 +59,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `129`; overriding
+version suffix. The script fixes the build number at `130`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -264,3 +264,29 @@ and enabled. Factorio passed 46 unit tests (one opt-in game test skipped) and
 three relevant platform tests against the prepared build 129. See its acceptance
 notes for evidence paths. These builds have not been installed into the regular
 IDE profile; manual acceptance remains pending.
+
+## Function calls in assignment targets (build 130)
+
+The analyzer pin is `a7ea9de6` on `work/intellij-modules`. Independent branch
+`fix/duplicate-field-index-calls` contains signed commit `3ac513d3`, based directly
+on upstream main `aaaca684`. The patch fixes an upstream false positive:
+`inventory[tools.createItemIdentifier(item)] = item` previously reported that the
+imported function was being redefined. The duplicate-field checker now requires
+the member reference to be the complete assignment target. References used to
+calculate the target's key or prefix are reads; direct writes still warn.
+
+Two regression tests cover eight read-only cases and five actual redefinitions,
+including bracket syntax, multiple assignment, function-valued right-hand sides
+and function declarations. The read-only test fails before the fix. The independent
+branch passed 1,093 analysis, 213 LSP and 191 parser tests; the merged work branch
+passed 1,159 analysis, 239 LSP and 191 parser tests. Each LSP suite retains one
+existing ignored test. All 22 EmmyLua2 plugin tests passed.
+
+Install build 130 with Factorio `0.5.2-dev`. Only the macOS arm64 server contains
+the local patches. Both release packages were verified for plugin versions,
+analyzer pin, matching server hashes and executable permissions (`0755`). A
+stdio LSP check against the packaged server confirms the original expression
+has no duplicate warning while actual reassignment still warns. Factorio passed
+46 unit tests (one opt-in game test skipped) and three relevant IntelliJ platform
+tests. See its acceptance notes for evidence paths. Manual IDE acceptance remains
+pending; these builds were not installed into the regular IDE profile.
