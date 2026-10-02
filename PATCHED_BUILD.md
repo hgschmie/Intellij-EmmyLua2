@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-128-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-129-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `772ec76d0cb5086e62a2136a8d2a5ce40e55c77b`.
+  `e7ffd3b5555618594cb229246a160ae9be65c6b4`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is the official nightly `0.21.1-20260930-013028`, which includes
   the upstream breakpoint-removal fix. Prepare it with
@@ -44,8 +44,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-128-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-128-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-129-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-129-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -59,7 +59,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `128`; overriding
+version suffix. The script fixes the build number at `129`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -237,3 +237,30 @@ ZIP and extracted server retain executable mode `0755` and the expected source
 pin. The build did not install the plugins into the regular IDE profile. On
 2026-10-01, the user confirmed that the rebuilt patch works in their running
 IntelliJ instance.
+
+## Optional dictionary keys (build 129)
+
+The analyzer pin is `e7ffd3b5` on `work/intellij-modules`. Independent branch
+`fix/optional-dictionary-keys` contains signed commits `e3d5b79e` and `8dcd6c95`.
+A `table<uint64, ProcInfo>` indexed by `uint64?` now produces `ProcInfo?`, removing
+the false always-falsy condition warning. This works with `strict.tableIndex`
+disabled or enabled. Literal and instantiated generic aliases are resolved,
+including `Maybe<T> = T|nil`. Exact key-alias matches are reused during expansion
+so large matching aliases avoid quadratic checking; nil branches are preserved.
+
+Source validation passed 1,106 analysis, 213 LSP and 191 parser tests independently;
+the combined work branch passed 1,157 analysis, 239 LSP and 191 parser tests. Each
+LSP suite retains one ignored test. Coverage includes read/write compatibility,
+named-field overrides, recursive generic aliases and 8,192-member key aliases.
+The latter take about 6 ms in the debug regression test, versus seconds before
+the review fixes. These timings are not release-server latency measurements.
+
+Install this ZIP with Factorio `0.5.1-dev`. Only the macOS arm64 analyzer contains
+the local patches. Release packaging and all 22 plugin tests passed. Archive
+descriptors, analyzer pin, binary hashes and executable permissions (`0755`)
+were verified. The extracted release server passed stdio LSP checks for the
+original optional-key example and both alias cases with strict indexing disabled
+and enabled. Factorio passed 46 unit tests (one opt-in game test skipped) and
+three relevant platform tests against the prepared build 129. See its acceptance
+notes for evidence paths. These builds have not been installed into the regular
+IDE profile; manual acceptance remains pending.
