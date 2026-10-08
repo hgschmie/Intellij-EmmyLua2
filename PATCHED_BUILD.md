@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-131-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.25.1-132-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -19,7 +19,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   The current pin is
   `a7ea9de69d3266c7814f88bc001b263199da93f8`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
-  dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched`, which includes
+  dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
   breakpoint-removal contribution is already part of upstream main. Prepare it with
   `bash "$WORKSPACE/intellij-factorio/scripts/build-lsp4ij.sh"`; see the Factorio plugin's
@@ -45,8 +45,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-131-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-131-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-132-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-132-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -60,7 +60,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `131`; overriding
+version suffix. The script fixes the build number at `132`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -304,3 +304,15 @@ All 22 EmmyLua2 plugin tests passed against the new LSP4IJ dependency. Release
 packaging verified the plugin descriptor, analyzer pin and binary hash, `0755`
 Unix server permissions, and matching worktree/main-repository ZIPs. Logs are in
 `build/logs/file-scoped-131-{tests,build}.log`. The regular IDE was not updated.
+
+## Reviewed formatting integration (build 132)
+
+Rebuilt for Factorio `0.5.4-dev` against LSP4IJ
+`0.21.1-SNAPSHOT-factorio-formatting-patched2`. The LSP4IJ PR #1688 follow-up
+`4ef6aa5c` shares its matching predicate and rejects missing virtual files before
+checking server enablement. No EmmyLua2 implementation or analyzer pin changed.
+
+All 22 plugin tests passed. Packaging verified the plugin version, analyzer pin,
+server binary hash and `0755` executable modes, then copied the ZIP to the usual
+main-repository distribution directory and refreshed the prepared dependency.
+Logs: `build/logs/file-scoped-review-132-{tests,build}.log`.
