@@ -13,7 +13,9 @@ group = "com.cppcxy"
 
 // 版本配置
 object Versions {
+    // Downloaded fallback binaries; only macOS arm64 is rebuilt locally.
     const val emmyluaAnalyzer = "0.25.1"
+    const val patchedAnalyzer = "0.30.0"
     const val emmyDebugger = "1.9.2"
     const val jvm = "17"
     const val ideaSDK = "2026.2"
@@ -38,11 +40,12 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "130"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "133"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
 val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
-version = "${Versions.emmyluaAnalyzer}-${runnerNumber}-IDEA${buildVersion}-${patchedSuffix}"
+val analyzerVersion = if (localAnalyzerPath == null) Versions.emmyluaAnalyzer else Versions.patchedAnalyzer
+version = "${analyzerVersion}-${runnerNumber}-IDEA${buildVersion}-${patchedSuffix}"
 
 // 下载URL配置
 object DownloadUrls {

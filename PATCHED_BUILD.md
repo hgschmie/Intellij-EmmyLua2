@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.25.1-132-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-133-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `a7ea9de69d3266c7814f88bc001b263199da93f8`.
+  `78c3ea62b1b3ace4e011310dd66fa1179ffc45fb`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -45,8 +45,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.25.1-132-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.25.1-132-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-133-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-133-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -60,7 +60,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `132`; overriding
+version suffix. The script fixes the build number at `133`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -316,3 +316,31 @@ All 22 plugin tests passed. Packaging verified the plugin version, analyzer pin,
 server binary hash and `0755` executable modes, then copied the ZIP to the usual
 main-repository distribution directory and refreshed the prepared dependency.
 Logs: `build/logs/file-scoped-review-132-{tests,build}.log`.
+
+## Analyzer 0.30.0 integration (build 133, 2026-10-12)
+
+The macOS arm64 server is rebuilt from `work/intellij-modules`, pin
+`78c3ea62b1b3ace4e011310dd66fa1179ffc45fb`. That branch now starts at upstream
+main `1c8589bb` plus the squashed and pushed PR #1266 commit `ef3cf3c8`.
+All internal analyzer patches were ported to upstream's new semantic database;
+independent contribution branches remain separate. See the analyzer's
+`docs/intellij-development-handoff.md` for the port's scope and backup refs.
+
+The analyzer passed all 2,455 workspace tests, rustfmt and workspace Clippy with
+warnings denied. Real LSP checks passed module-local and cross-mod imports,
+locale watcher updates, cross-file diagnostic refresh, and all 17 asymmetric
+attributes in the installed Factorio 2.1.21 API. The package script checked the
+ZIP version, analyzer source pin, binary hash, extraction and executable modes.
+
+All 22 EmmyLua2 tests passed. FDE 0.7.0-dev passed 59 unit tests (one optional
+native test skipped) and nine real-process IntelliJ platform tests, including
+navigation/storage hovers in copies of the user's mods. Compatibility fixes on
+the internal analyzer branch preserve API/event annotations, imported factory
+signatures, class navigation and open-table hover fields. PR #1266 is unchanged.
+
+The downloaded fallback binaries remain upstream 0.25.1; the package version
+identifies the locally rebuilt 0.30.0 arm64 server. This is a macOS arm64
+validation, not validation of the patched analyzer on other platforms.
+
+Build log: `build/logs/analyzer-030-build133.log`. Plugin test log:
+`build/logs/analyzer-030-plugin-tests.log`. No regular IDE installation is changed.
