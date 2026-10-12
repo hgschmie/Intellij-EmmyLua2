@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-133-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-134-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `78c3ea62b1b3ace4e011310dd66fa1179ffc45fb`.
+  `f6e67847612be9ae8822e7fad0e865849a78510c`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -45,8 +45,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-133-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-133-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-134-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-134-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -60,7 +60,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `133`; overriding
+version suffix. The script fixes the build number at `134`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -344,3 +344,31 @@ validation, not validation of the patched analyzer on other platforms.
 
 Build log: `build/logs/analyzer-030-build133.log`. Plugin test log:
 `build/logs/analyzer-030-plugin-tests.log`. No regular IDE installation is changed.
+
+## Upstream module-resolution merge (build 134, 2026-10-12)
+
+PR #1266 is now part of upstream main. The internal analyzer branch is rebased
+onto `dbb68f470f1bd7f7bd7761dc661242e794340be8`, retaining upstream's additional
+callable-table and tuple/dictionary fixes. The current analyzer pin is
+`f6e67847612be9ae8822e7fad0e865849a78510c`. All remaining internal patches are retained; independent fix
+branches are unchanged. The previous work tip is available as
+`backup/internal-before-merged-module-rebase-2026-10-12`.
+
+The only rebase conflict was in metatable indexing. Scanning all calls retains
+both upstream's declaration/member initializers and the local standalone-call
+support. The other 19 internal commits replayed without changes.
+
+All 2,471 Rust workspace tests passed with all features, rustfmt and workspace
+Clippy passed with warnings denied, and all 22 EmmyLua2 plugin tests passed.
+FDE uses this package in version `0.7.1-dev`. Only the macOS arm64 server is
+rebuilt; the fallback platform binaries remain upstream 0.25.1.
+
+Evidence: `build/logs/merged-module-build134.log` and
+`build/logs/merged-module-plugin-tests.log`; analyzer logs use the same
+`merged-module-` prefix. See FDE's `docs/ACCEPTANCE.md` for integration results.
+
+Final integration validation passed 59 FDE unit tests (one optional native-game
+test skipped), all nine IntelliJ platform tests and the language-service,
+module-service, diagnostic-refresh and asymmetric API protocol tests. The build
+script verified the archive descriptor, source pin, binary hash and executable
+permissions. Install both build 134 and FDE 0.7.1-dev; no regular IDE was updated.
