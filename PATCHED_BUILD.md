@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-134-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-135-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 ## Prerequisites and layout
@@ -17,7 +17,7 @@ this ZIP updates the existing EmmyLua2 plugin.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `f6e67847612be9ae8822e7fad0e865849a78510c`.
+  `f5349db8ee7c970d654720fcb8b64b0736bc788b`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -45,8 +45,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-134-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-134-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-135-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-135-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -60,7 +60,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `134`; overriding
+version suffix. The script fixes the build number at `135`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Included patches
@@ -76,7 +76,7 @@ version suffix. The script fixes the build number at `134`; overriding
 - Analyzer module imports: independent analyzer branch
   `fix/workspace-relative-module-resolution`, merged into `work/intellij-modules`.
 - Analyzer diagnostic refresh: independent analyzer branch
-  `fix/cross-file-diagnostic-refresh`, commit `69b1c31a`, also merged into
+  `fix/cross-file-diagnostic-refresh`, commits `8cbc71ca` and `1c47a240`, also merged into
   `work/intellij-modules`. See [details and validation](docs/diagnostic-refresh.md).
 
 Keep local package versions, source pins and build-layout changes off analyzer
@@ -372,3 +372,38 @@ test skipped), all nine IntelliJ platform tests and the language-service,
 module-service, diagnostic-refresh and asymmetric API protocol tests. The build
 script verified the archive descriptor, source pin, binary hash and executable
 permissions. Install both build 134 and FDE 0.7.1-dev; no regular IDE was updated.
+
+## Diagnostic-refresh review integration (build 135, 2026-10-12)
+
+The analyzer work branch merges PR #1283's review follow-up `1c47a240` through
+`49a9ed3f`. The pinned revision is
+`f5349db8ee7c970d654720fcb8b64b0736bc788b`, including the internal handoff update.
+The merge adds exactly the reviewed ten-file follow-up; the other internal
+patches and upstream `dbb68f47` baseline are unchanged. The contribution branch
+remains separate and unchanged.
+
+Refresh cancellation now happens before shutdown acknowledgement and on context
+close, including when queued tasks retain snapshots. Timer tasks do not retain
+the client. Tracked close/removal, rename and configuration reload use the same
+capability-gated refresh scheduler. See [diagnostic refresh](docs/diagnostic-refresh.md).
+
+All 2,473 analyzer workspace tests with all features, rustfmt and workspace
+Clippy with warnings denied passed. All 22 EmmyLua2 tests passed on retry. The
+initial run hit an existing LSP4IJ `LanguageServerWrapper.isActive()` null
+`launcherFuture` race during a parser test; its report is preserved in
+`build/reports/refresh-review-initial/`. No Java/Kotlin behavior was changed.
+
+The protocol regression passed against the packaged arm64 binary, covering
+edits, tracked close/deletion, watched events, rename, configuration reload,
+capability gating and shutdown. ZIP checks verified the version, source pin,
+binary hash and executable mode after extraction. Generated translations were
+restored after Rust tests, before building the release server.
+
+Install this build together with FDE `0.7.2-dev`; its integration validation is
+recorded in FDE's `docs/ACCEPTANCE.md`. The patched server remains macOS arm64
+only; other bundled servers remain upstream 0.25.1. LSP4IJ is unchanged.
+
+Evidence: `build/logs/refresh-review-{build135,plugin-tests,plugin-tests-retry}.log`
+and the analyzer worktree's `build/logs/refresh-review-{workspace,clippy,fmt,refresh-protocol,merge-check}.log`.
+Archive SHA-256:
+`927a0bae786ddfa0a23aca03c27df1ba7aaec4c455ab7cdd0203fa8bc31e6795`.
