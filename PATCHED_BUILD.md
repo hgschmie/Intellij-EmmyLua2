@@ -2,16 +2,18 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-142-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-143-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 142 fixes false undefined-field diagnostics on unannotated local tables
-that follow unrelated class/enum declarations. The checker now uses the actual
-doc-comment owner instead of a same-name/nearest-type heuristic. Existing computed-
-index, dictionary-constructor and cross-file enum fixes remain included. This new
-fix stays local pending a later upstream submission.
+runtime selector and local packaging remain above it. Build 143 fixes rejected
+nominal enum members such as
+`defines.rail_direction.front` passed to a `defines.rail_direction` parameter.
+The analyzer preserves the precise member class while recognizing its membership
+in the enum; unrelated classes, other enums and nil remain invalid. Existing
+unbound-table, computed-index, dictionary-constructor and cross-file enum fixes
+remain included. The new fix stays local pending a later upstream submission.
 
 ## Prerequisites and layout
 
@@ -25,7 +27,7 @@ fix stays local pending a later upstream submission.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `6666fb8402124e510642a5dec3ad40f88e014bc8`.
+  `d750819c0f7d37e25e038c38c6542c95fbc4f41f`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -53,8 +55,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-142-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-142-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-143-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-143-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -68,7 +70,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `142`; overriding
+version suffix. The script fixes the build number at `143`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -759,3 +761,58 @@ Install EmmyLua2 build142 and restart IntelliJ. FDE stays 0.7.8-dev; its existin
 archive is unchanged. Analyzer-only releases update FDE's development pin and
 integration tests without requiring a new FDE installation. No interactive IDE
 or game acceptance was performed; the custom binary remains macOS arm64 only.
+
+
+## Build 143: nominal enum member compatibility (2026-10-13)
+
+Analyzer `d750819c0f7d37e25e038c38c6542c95fbc4f41f` includes standalone
+`fix/nominal-enum-member-compatibility`, signed commit `c6446351` based on
+upstream/main `cb05b0c0`. Signed backport `dd161a18` preserves its provenance;
+only the work branch's existing union iteration API required adaptation.
+Nothing was pushed and no PR was opened.
+
+The rewritten checker omitted enum member-value compatibility. Our existing
+inline member-class preservation exposes that omission for Factorio's generated
+API. The checker now accepts the enum's actual nominal member classes and their
+subclasses without losing precise hover types. It resolves the initializer in
+its defining file, preserves private class identity, and rejects unrelated
+classes, other enums, nil and unresolved/recursive enum members. Required enum
+parameters reject a union containing nil. Strict dictionary indexing is not a
+prerequisite; primitive enum compatibility uses its existing paths.
+
+Validation:
+- Standalone: 2,409 workspace/all-feature tests; combined work: 2,536. Both pass
+  workspace/all-target/all-feature Clippy with warnings denied and rustfmt.
+- EmmyLua2: 22 client tests. FDE: 59 unit tests passed, one optional native-game
+  test skipped.
+- All 9 selected IntelliJ platform tests pass: 8 PerModServersTest cases and
+  1 FactorioLuaLanguageLevelTest case.
+- Packaged-server protocol replay uses identical copies of all 37 LTN Lua files.
+  Only the four ParamTypeMismatch warnings at request_processor.lua:479/487/513/516
+  disappear (41→37 diagnostics). cache.lua stays at 8 and constants.lua at 0.
+  No new diagnostics; all six front/back hovers preserve their precise member
+  classes. Original mod files were not modified.
+- Archive audit verifies plugin version, analyzer pin, matching release/prepared/
+  archive server bytes and Unix0755 executable modes. FDE stays 0.7.8-dev and
+  its existing archive's SHA-256 and modification time remain unchanged.
+
+Evidence:
+- Standalone analyzer `build/logs/standalone-final-{workspace-tests,clippy,fmt}.log`.
+- Work analyzer `build/logs/rail-enum-{workspace-tests,clippy,fmt}.log`.
+- Standalone checkout `build/investigation/{packaged142-real,packaged143-real}/`,
+  including packaged143-real/diagnostic-diff.json.
+- Emmy worktree `build/logs/rail-enum-*` and `build/reports/rail-enum-routing`.
+- FDE `build/logs/rail-enum-*`, including rail-enum-package.json, and saved
+  `build/reports/rail-enum-{unit,platform}` reports.
+
+Artifact:
+`upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-143-IDEA262-patched-modules.zip`
+
+- Emmy ZIP SHA-256: `2950e3bbd69c24995057296ab636e2e2316818b0fe3025fa9e846f19aa207cbd`.
+- Analyzer SHA-256: `f902e64cb59748b2da5aa4f8f263e8ba7420c1268ff56ed0800821dbb929f640`.
+- Unchanged FDE ZIP SHA-256: `97f14b6051ebd3ef1565b6b085863a1579b7002abe932c0a054790978127f90b`.
+
+Install only EmmyLua2 build 143 and restart IntelliJ. No FDE reinstall is needed.
+No interactive IDE/game test or Plugin Verifier run. The custom analyzer remains
+macOS arm64 only; other bundled server binaries remain upstream 0.25.1. Toolkit
+and LSP4IJ are unchanged.
