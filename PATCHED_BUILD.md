@@ -2,16 +2,16 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-138-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-139-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 138 adds flow-aware
-union-member argument checking from
-[PR #1286](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1286).
-It retains the named-cast fix and its compatibility follow-up from
-[PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
+runtime selector and local packaging remain above it. Build 139 adds generic
+type display and inline type-assertion scope fixes from
+[PR #1289](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1289) and
+[PR #1290](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1290),
+while retaining the earlier named-cast and union-argument fixes.
 
 ## Prerequisites and layout
 
@@ -25,7 +25,7 @@ It retains the named-cast fix and its compatibility follow-up from
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `f653fa59ba576db2c2330b41e14b2702ddde62b9`.
+  `8b32942e911f4ed49351f8383b41d09aa140d557`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -53,8 +53,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-138-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-138-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-139-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-139-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -68,7 +68,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `138`; overriding
+version suffix. The script fixes the build number at `139`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -542,3 +542,70 @@ and `build/reports/union-argument-{unit,platform}/`, analyzer worktree
 
 ZIP SHA-256: `b53caf8025cdae10f84067fccffc83172fbffb1de751c146c0d07b2849cb35ae`.
 Arm64 server SHA-256: `21e0c03fca8997fa2a195e16599296283d27a02374e2d5aba8ccc5750269c6dc`.
+
+## Build 139 — table rendering and inline assertions (2026-10-13)
+
+The analyzer pin is `8b32942e911f4ed49351f8383b41d09aa140d557` on
+`work/intellij-modules`. Two independent upstream fixes address the
+LogisticTrainNetwork table annotation reports:
+
+- [PR #1289](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1289)
+  preserves explicit generic arguments in rendering. Built-in `table` declarations
+  have no declared generic parameters; the renderer previously dropped their
+  supplied key/value types and displayed `table<>`.
+- [PR #1290](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1290)
+  confines inline `@as` assertions to their attached expression. A constructor's
+  `@as ltn.FreeTrain` no longer casts its individual fields or unrelated later reads.
+
+Both branches start at upstream main `cb05b0c0`, were submitted as drafts, and
+received review follow-ups before integration. Signed backports `71c30d1c`,
+`6c341ed2`, `f5ee2ad1`, and `18ea33d9` preserve our existing Arc baseline without
+importing unrelated upstream changes. Work-only commit `581ba186` applies the
+same expression-local rule to our directional-field read walker and adds a
+compatibility regression. Both PRs have 15 successful CI checks and the expected
+skipped release job; no additional feedback appeared at the final check.
+
+All 2,510 combined Rust workspace tests passed with all features, plus
+workspace/all-target Clippy with warnings denied and rustfmt. All 22 EmmyLua2
+tests, 59 FDE unit tests (one optional native-game skip), and nine selected
+IntelliJ platform tests passed. No platform retry was needed. Platform coverage
+includes real Lua/FMTK processes, per-module routing/formatting, lifecycle/EDT,
+dependency edits, configuration reload, generated API/asymmetric fields, copied
+real-mod navigation/storage and Lua language level.
+
+The packaged server was tested with copies of all 37 LogisticTrainNetwork Lua
+files. Hover now displays `table<integer,ltn.FreeTrain>` and the constructor
+fields retain LuaTrain, LuaSurface and integer types. File diagnostics decreased
+from 57 to 53: four false constructor-field warnings removed, with no new warning
+locations. An existing LocalisedString/boolean warning at line 889 now names the
+literal string instead of the enclosing assertion type. The earlier line 365/366
+warnings remain absent, and every cast/index probe case matches packaged build
+138, including FreeTrain? lookup and FreeTrain after assert. The standalone
+minimal constructor probe also passes with and without the inline assertion.
+
+Archive IDs/versions, analyzer pins, hashes and Unix 0755 executable modes were
+verified. The release, prepared and ZIP arm64 server bytes match. Only macOS arm64
+carries the custom analyzer patches; other bundled servers remain upstream
+0.25.1. LSP4IJ/toolkit pins are unchanged. No ordinary IDE installation,
+interactive IDE/game test or Plugin Verifier run was performed. Original mods
+were not changed. Internal branches remain local; only PR branches were pushed.
+
+Evidence: this checkout's `build/logs/table-annotations-*` and
+`build/reports/table-annotations-plugin-tests/`; FDE
+`build/logs/table-annotations-*` and `build/reports/table-annotations-{unit,platform}/`;
+analyzer work `build/logs/table-annotations-*`; main analyzer
+`build/investigations/table-annotations/{packaged139,real-mod-packaged139}/`,
+`build/investigations/cast-index/packaged139/` and
+`build/investigations/union-member-argument/real-mod-packaged139/`.
+
+Artifacts:
+
+- `upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-139-IDEA262-patched-modules.zip`
+- `intellij-factorio/build/distributions/intellij-factorio-0.7.6-dev.zip`
+
+ZIP SHA-256:
+
+- EmmyLua2: `d1021bdd5068aab43bd5349cf8138b8c1a7f1e6e115dbd99787ffa14aadd13bf`.
+- FDE: `cebe773a4f01dee4faba385a085e587972bdb3a3d79fcaa9df72016805d0d63c`.
+
+Arm64 analyzer SHA-256: `d9a1a4a2f0c118bd6e3e50ac21d24e20aa1f3f0568c570f1e54d1fd132fed867`.
