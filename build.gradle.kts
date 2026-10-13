@@ -40,7 +40,7 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "138"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "139"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
 val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
