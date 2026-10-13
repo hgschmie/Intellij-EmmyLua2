@@ -2,13 +2,13 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-135-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-136-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. The history cleanup keeps
-build 135, the analyzer pin and the existing archives unchanged.
+runtime selector and local packaging remain above it. Build 136 adds the named-cast analyzer fix from
+[draft PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
 
 ## Prerequisites and layout
 
@@ -22,7 +22,7 @@ build 135, the analyzer pin and the existing archives unchanged.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `f5349db8ee7c970d654720fcb8b64b0736bc788b`.
+  `8548f5d19da5c965f95886d6103b0cba6dbe5bd1`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -50,8 +50,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-135-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-135-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-136-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-136-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -65,7 +65,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `135`; overriding
+version suffix. The script fixes the build number at `136`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -87,7 +87,8 @@ Remaining IntelliJ contributions:
   lets the Factorio plugin claim files for its per-module servers and route gutter
   requests. It also removes the duplicate Gradle import introduced by upstream's
   merge of the test setup.
-- Default Lua runtime: `feat/default-lua-version`, signed commit `7fd3745`;
+- Default Lua runtime: `feat/default-lua-version`, signed commit `8186872`,
+  [draft PR #63](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/63);
   the equivalent work-branch commit is `1678db5`. This includes the settings-field
   width correction. See [language-level configuration](docs/language-level.md).
 
@@ -452,3 +453,23 @@ existing result of 22 passing tests because sources and test inputs were
 unchanged. No fresh test execution or package rebuild was needed. Evidence:
 `build/logs/upstream-cleanup-plugin-tests.log` and
 `build/logs/upstream-cleanup-signatures.log`.
+
+## Build 136 — named cast expression scope (2026-10-12)
+
+Pins analyzer `8548f5d19da5c965f95886d6103b0cba6dbe5bd1`, including signed
+fix `b9a3d375` from [draft PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
+Named casts narrow their intended target without changing the enclosing array
+lookup's result, and dynamic member keys retain their narrowed types. The
+original reproduction now infers `ltn.FreeTrain?` and nonnullable `ltn.FreeTrain`
+after `assert`.
+
+The release build, archive version/pin/hash and executable-mode checks passed.
+All 22 plugin tests passed. The packaged arm64 server passed the direct LSP cast
+regression. FDE 0.7.3-dev passed 59 unit tests (one optional native-game test
+skipped) and nine selected platform tests, one on retry after an IntelliJ
+DiscoveryService teardown thread-leak assertion. Initial evidence is retained.
+No regular IDE installation or interactive IDE/game acceptance was performed.
+
+Evidence: `build/logs/named-cast-{build136,plugin-tests}.log`,
+`build/reports/named-cast-plugin-tests/`, and FDE's `build/logs/named-cast-*`.
+ZIP SHA-256: `46f8b212a1fe01c92fdd025a35f1ff47bfa3e36e44fd8a413024c048baebdb55`.
