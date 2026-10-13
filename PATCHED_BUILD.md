@@ -5,6 +5,11 @@ Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/pat
 `0.30.0-135-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
+The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
+Merged contributions are supplied by that baseline; only server routing, the Lua
+runtime selector and local packaging remain above it. The history cleanup keeps
+build 135, the analyzer pin and the existing archives unchanged.
+
 ## Prerequisites and layout
 
 - macOS arm64, Cargo/Rust, Python 3, and JDK 25.
@@ -63,21 +68,34 @@ without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
 version suffix. The script fixes the build number at `135`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
-## Included patches
+## Upstream contributions and remaining local changes
 
-- macOS architecture selection: JVM names `aarch64` and `arm64` select the
-  bundled `darwin-arm64/emmylua_ls` server.
-- File-aware server routing: independent branch `fix/file-language-server-routing`.
-  The [extension contract](docs/server-routing.md) allows the Factorio plugin's
-  per-module server manager to claim files and route gutter requests.
-- Legacy Lua member names: independent branch `fix/global-member-name`, commit
-  `cf55a94`, permits expressions such as `settings.global[name]` while retaining
-  Lua 5.5 global declarations. Development contains the original commit `6893a12`.
-- Analyzer module imports: independent analyzer branch
-  `fix/workspace-relative-module-resolution`, merged into `work/intellij-modules`.
-- Analyzer diagnostic refresh: independent analyzer branch
-  `fix/cross-file-diagnostic-refresh`, commits `8cbc71ca` and `1c47a240`, also merged into
-  `work/intellij-modules`. See [details and validation](docs/diagnostic-refresh.md).
+Already included by upstream:
+
+- [PR #59](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/59): macOS architecture
+  selection recognizes both JVM names `aarch64` and `arm64`.
+- [PR #61](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/61): legacy `global`
+  member names parse before Lua 5.5; Lua 5.5 retains its reserved-word rules.
+- [PR #62](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/62): Lua indentation
+  code-style settings.
+
+Remaining IntelliJ contributions:
+
+- Server routing: `fix/file-language-server-routing`, signed commit `b9f1ce9`,
+  [PR #60](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/60). It is the first
+  commit above upstream on the work branch. The [extension contract](docs/server-routing.md)
+  lets the Factorio plugin claim files for its per-module servers and route gutter
+  requests. It also removes the duplicate Gradle import introduced by upstream's
+  merge of the test setup.
+- Default Lua runtime: `feat/default-lua-version`, signed commit `7fd3745`;
+  the equivalent work-branch commit is `1678db5`. This includes the settings-field
+  width correction. See [language-level configuration](docs/language-level.md).
+
+The pinned analyzer remains separate: module imports are already upstream through
+PR #1266, while diagnostic refresh (PR #1283) and the other internal analyzer
+patches are retained on `work/intellij-modules`. See [diagnostic refresh](docs/diagnostic-refresh.md)
+and the analyzer's development handoff. Local build scripts, source pins and the
+build-history documentation are work-branch changes, not upstream submissions.
 
 Keep local package versions, source pins and build-layout changes off analyzer
 contribution branches. The key-aware index follow-up below builds on the separate
@@ -407,3 +425,30 @@ Evidence: `build/logs/refresh-review-{build135,plugin-tests,plugin-tests-retry}.
 and the analyzer worktree's `build/logs/refresh-review-{workspace,clippy,fmt,refresh-protocol,merge-check}.log`.
 Archive SHA-256:
 `927a0bae786ddfa0a23aca03c27df1ba7aaec4c455ab7cdd0203fa8bc31e6795`.
+
+## Work-branch cleanup after upstream merges (2026-10-12)
+
+Rebased `work/patched-build` onto upstream main `ee21110` and the current routing
+commit `b9f1ce9`. The old tip `d0eb286` is retained at
+`backup/patched-build-before-upstream-cleanup-20261012`. The code-style patch and
+the two older global-member parser commits are no longer local patches. The
+runtime selector and width correction are represented by the current combined
+feature patch. All 29 work-only build/documentation commits were preserved.
+Obsolete merge commits were flattened; other branches were not moved.
+
+Before this documentation update, the only tree difference from the backup was
+in `build.gradle.kts`: upstream's test plugin-loading setting and removal of one
+blank line. Production sources, resources, analyzer pin and packaging versions
+are identical. Existing build 135 / FDE 0.7.2-dev archives and the prepared
+EmmyLua2 dependency were not rebuilt or replaced during this history cleanup.
+
+Audit evidence: `build/logs/upstream-cleanup-{commits,refs-before,refs-after}.json`,
+`build/logs/upstream-cleanup-range-diff.log` and
+`build/logs/upstream-cleanup-todo.txt`.
+
+All 31 commits above upstream have verified signatures. Gradle validation
+(`scripts/test-routing.sh`) succeeded; `test` was up-to-date and reused the
+existing result of 22 passing tests because sources and test inputs were
+unchanged. No fresh test execution or package rebuild was needed. Evidence:
+`build/logs/upstream-cleanup-plugin-tests.log` and
+`build/logs/upstream-cleanup-signatures.log`.
