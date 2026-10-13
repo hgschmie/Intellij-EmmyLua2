@@ -2,15 +2,16 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-141-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-142-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 141 adds a local fix
-for computed-index reads after assignment, plus the reviewed follow-ups to the
-dictionary-constructor and cross-file enum fixes (PRs 1291/1292). The computed-
-index branch remains local pending a later upstream submission.
+runtime selector and local packaging remain above it. Build 142 fixes false undefined-field diagnostics on unannotated local tables
+that follow unrelated class/enum declarations. The checker now uses the actual
+doc-comment owner instead of a same-name/nearest-type heuristic. Existing computed-
+index, dictionary-constructor and cross-file enum fixes remain included. This new
+fix stays local pending a later upstream submission.
 
 ## Prerequisites and layout
 
@@ -24,7 +25,7 @@ index branch remains local pending a later upstream submission.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `c29ce116c7eebeb46a54b0f1b42d862b8af3271c`.
+  `6666fb8402124e510642a5dec3ad40f88e014bc8`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -52,8 +53,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-141-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-141-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-142-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-142-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -67,7 +68,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `141`; overriding
+version suffix. The script fixes the build number at `142`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -723,3 +724,38 @@ Evidence:
 Install both archives from their usual directories, then restart IntelliJ:
 - `upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-141-IDEA262-patched-modules.zip`
 - `intellij-factorio/build/distributions/intellij-factorio-0.7.8-dev.zip`
+
+## Build 142: unbound-table field diagnostics (2026-10-13)
+
+Analyzer `6666fb8402124e510642a5dec3ad40f88e014bc8` includes local standalone
+`fix/unbound-table-field-diagnostics` (`fb18e8d6`, upstream/main `cb05b0c0`) via
+signed backport `3cbe6449`. The undefined-field checker previously assigned
+unannotated tables the nearest preceding or same-named class/enum definition.
+It now uses the declaration's doc-comment owner. Existing class/enum checks
+remain, including differently named runtime tables. This fix is independent of
+strict dictionary indexing. No branch or PR was pushed.
+
+Standalone all-feature workspace validation passes 2,405 tests; combined work
+passes 2,529. Both pass workspace/all-target/all-feature Clippy with warnings
+denied and rustfmt. Emmy's 22 client tests and FDE's 59 unit tests pass (one optional
+native-game test skipped). Final platform results are recorded in FDE
+`docs/ACCEPTANCE.md`.
+
+A raw-LSP replay against identical copies of all 37 LTN Lua files removes the
+false writes at request_processor.lua:475/482/490, plus the same false binding at
+926/927. Diagnostics change 45→40; constants remains 0 and cache remains 8. No
+new diagnostics in the three checked files. All six `train.id` hovers remain
+uint32. Original mods were not modified. Evidence:
+- Analyzer `build/investigations/unbound-table-fields/{packaged141,packaged142}/`
+  and packaged142/diagnostic-diff.json.
+- This worktree `build/logs/unbound-*` and `build/reports/unbound-routing/`.
+- FDE `build/logs/unbound-table-package.json` verifies ZIP metadata/pin, executable
+  permissions, and identical release/prepared/archive arm64 server bytes.
+
+ZIP SHA-256: `519f7bf56d05ba17867e476490feee650627ce39e6832cbee9aa6bdf103d851f`.
+Analyzer SHA-256: `bbc0ddfa4a7619886de31407c60323dec3ca5e53b16080a3169f9fc25c95d3b7`.
+
+Install EmmyLua2 build142 and restart IntelliJ. FDE stays 0.7.8-dev; its existing
+archive is unchanged. Analyzer-only releases update FDE's development pin and
+integration tests without requiring a new FDE installation. No interactive IDE
+or game acceptance was performed; the custom binary remains macOS arm64 only.
