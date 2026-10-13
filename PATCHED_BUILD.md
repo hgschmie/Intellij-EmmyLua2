@@ -2,12 +2,12 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-136-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-137-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 136 adds the named-cast analyzer fix from
+runtime selector and local packaging remain above it. Build 137 includes the named-cast analyzer fix and its review follow-up from
 [draft PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
 
 ## Prerequisites and layout
@@ -22,7 +22,7 @@ runtime selector and local packaging remain above it. Build 136 adds the named-c
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `8548f5d19da5c965f95886d6103b0cba6dbe5bd1`.
+  `4b1a0c2cef5f358bef03ba356038286cded26f64`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -50,8 +50,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-136-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-136-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-137-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-137-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -65,7 +65,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `136`; overriding
+version suffix. The script fixes the build number at `137`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -473,3 +473,25 @@ No regular IDE installation or interactive IDE/game acceptance was performed.
 Evidence: `build/logs/named-cast-{build136,plugin-tests}.log`,
 `build/reports/named-cast-plugin-tests/`, and FDE's `build/logs/named-cast-*`.
 ZIP SHA-256: `46f8b212a1fe01c92fdd025a35f1ff47bfa3e36e44fd8a413024c048baebdb55`.
+
+## Build 137 — named cast review follow-up (2026-10-12)
+
+Pins analyzer `4b1a0c2cef5f358bef03ba356038286cded26f64`, including signed
+review follow-up `3b0d6831` on [draft PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
+The VM uses an enum for static/dynamic index operands and debug stack checks;
+regressions additionally cover owner/statement casts, nil/never key types and
+nested/recursive computed keys. Signed merge `697f751d` integrates the exact
+follow-up into the internal analyzer branch.
+
+All 2,392 standalone and 2,478 combined analyzer workspace tests passed with all
+features, along with Clippy (warnings denied) and rustfmt. All 22 EmmyLua2 plugin
+tests passed. The packaged arm64 server passes the original cast/index/assert
+LSP reproduction; ZIP version, pin, binary hash and executable modes match the
+release and prepared binaries. FDE 0.7.4-dev passed all nine platform tests on
+the first run; integration results are recorded in its `docs/ACCEPTANCE.md`.
+No ordinary IDE installation or interactive test.
+
+Evidence: `build/logs/cast-review-{build137,plugin-tests}.log`,
+`build/reports/cast-review-plugin-tests/`, FDE `build/logs/cast-review-*`, and
+analyzer `build/investigations/cast-index/packaged137/`.
+ZIP SHA-256: `2366a953236e1fc28fc0671ce52dd11f25a23fab282b011182ac407057900ea8`.
