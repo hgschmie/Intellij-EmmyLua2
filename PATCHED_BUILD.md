@@ -2,16 +2,15 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-139-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-140-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 139 adds generic
-type display and inline type-assertion scope fixes from
-[PR #1289](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1289) and
-[PR #1290](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1290),
-while retaining the earlier named-cast and union-argument fixes.
+runtime selector and local packaging remain above it. Build 140 adds independent
+local fixes for dictionary constructor field diagnostics and cross-file enum
+runtime members, retaining the earlier type rendering and cast fixes. These two
+new contribution branches have not been pushed yet.
 
 ## Prerequisites and layout
 
@@ -25,7 +24,7 @@ while retaining the earlier named-cast and union-argument fixes.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `8b32942e911f4ed49351f8383b41d09aa140d557`.
+  `5a064469ebcbfdd7faca3bfcbd24ee4ba716ebb8`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -53,8 +52,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-139-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-139-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-140-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-140-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -68,7 +67,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `139`; overriding
+version suffix. The script fixes the build number at `140`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -609,3 +608,66 @@ ZIP SHA-256:
 - FDE: `cebe773a4f01dee4faba385a085e587972bdb3a3d79fcaa9df72016805d0d63c`.
 
 Arm64 analyzer SHA-256: `d9a1a4a2f0c118bd6e3e50ac21d24e20aa1f3f0568c570f1e54d1fd132fed867`.
+
+## Build 140 — dictionary constructors and enum tables (2026-10-13)
+
+Analyzer pin `5a064469ebcbfdd7faca3bfcbd24ee4ba716ebb8` retains the previous
+work branch and adds two independent diagnostic fixes based on upstream main
+`cb05b0c0`. Both failures originate in the upstream semantic rewrite, not our
+local patches. Neither branch was pushed and no PR was created, at the user's
+request; future PR descriptions are saved in each checkout's ignored
+`build/PR_DESCRIPTION.md`.
+
+- `fix/dictionary-constructor-fields`, signed `cdf32d10`: the field checker
+  treated `table<K,V>` as the standard library table class's closed record
+  surface. A narrow guard matches the existing assignment checker's treatment
+  of dictionaries. Class missing/extra field checks remain enabled. This does
+  not add dictionary key/value validation.
+- `fix/cross-file-enum-members`, signed `7727a58f`: the checker looked for an enum
+  runtime declaration in the current file and checked its enum type rather than
+  its constructor's fields. It now uses the owning file and runtime table surface.
+  Enum-typed values and missing fields remain errors, including in conditions.
+
+Signed backports `5c39ca41` and `14ac6b9e` applied cleanly to the existing work
+branch; no compatibility glue or unrelated upstream changes were needed.
+Standalone checker/type-check suites passed 639 and 638 tests, respectively,
+with Clippy and formatting checks. The new positive regressions fail before
+fixing. All 2,515 combined workspace tests with all features, workspace/all-target
+Clippy with warnings denied, and rustfmt passed.
+
+All 22 EmmyLua2 tests, 59 FDE unit tests (one optional native-game test skipped),
+and nine selected IntelliJ platform tests passed on the first run. Platform tests
+exercise real Lua/FMTK processes, routing/formatting, lifecycle/EDT, dependency
+and configuration updates, generated APIs/asymmetric fields, copied real-mod
+navigation/storage and Lua language level.
+
+The packaged server was tested against copies of all 37 LogisticTrainNetwork
+Lua files. Comparing build 139 with 140 gives constants.lua 17→0 diagnostics,
+request_processor.lua 53→46, and cache.lua 21→8. No diagnostics were added. All
+reported dictionary constructor and DISTANCE_RESULT member warnings disappeared.
+Original mod files and the ordinary IDE profile were not changed.
+
+Archive IDs/versions, pins, hashes and Unix 0755 executable permissions were
+verified. Release, prepared and archived arm64 server binaries are identical.
+Custom analyzer changes remain macOS arm64 only; other bundled servers remain
+upstream 0.25.1. LSP4IJ/toolkit pins are unchanged. No interactive IDE/game test
+or Plugin Verifier run was performed. All branches remain local for this task.
+
+Evidence: plugin repositories `build/logs/constructor-enum-*`,
+`build/reports/constructor-enum-{unit,platform,plugin-tests}/` as applicable;
+analyzer work `build/logs/constructor-enum-*`; standalone checkout `build/logs/`;
+main analyzer `build/investigations/constructor-enum/{packaged139,packaged140}/`
+(including `packaged140/diagnostic-diff.json`). Archive audit is FDE
+`build/logs/constructor-enum-packages.json`.
+
+Artifacts:
+
+- `upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-140-IDEA262-patched-modules.zip`
+- `intellij-factorio/build/distributions/intellij-factorio-0.7.7-dev.zip`
+
+ZIP SHA-256:
+
+- EmmyLua2: `8bd8744807452933a16b190b788aba9e49fca2dccd3aca5be4f338c0d16c7257`.
+- FDE: `4929d27ccc8d9a76d04806a1edfb677405128af3cb7fb67fce7fc240f1f382dc`.
+
+Arm64 analyzer SHA-256: `7256ebb3e2de790a227cbd4af0ea89197ffd76e6214ef92d81b9b6618f249f7e`.
