@@ -2,13 +2,16 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-137-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-138-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 137 includes the named-cast analyzer fix and its review follow-up from
-[draft PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
+runtime selector and local packaging remain above it. Build 138 adds flow-aware
+union-member argument checking from
+[PR #1286](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1286).
+It retains the named-cast fix and its compatibility follow-up from
+[PR #1285](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1285).
 
 ## Prerequisites and layout
 
@@ -22,7 +25,7 @@ runtime selector and local packaging remain above it. Build 137 includes the nam
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `4b1a0c2cef5f358bef03ba356038286cded26f64`.
+  `f653fa59ba576db2c2330b41e14b2702ddde62b9`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -50,8 +53,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-137-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-137-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-138-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-138-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -65,7 +68,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `137`; overriding
+version suffix. The script fixes the build number at `138`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -495,3 +498,47 @@ Evidence: `build/logs/cast-review-{build137,plugin-tests}.log`,
 `build/reports/cast-review-plugin-tests/`, FDE `build/logs/cast-review-*`, and
 analyzer `build/investigations/cast-index/packaged137/`.
 ZIP SHA-256: `2366a953236e1fc28fc0671ce52dd11f25a23fab282b011182ac407057900ea8`.
+
+
+## Build 138 — flow-aware union member arguments (2026-10-12)
+
+Pins analyzer `f653fa59ba576db2c2330b41e14b2702ddde62b9`. The argument diagnostic
+check uses the owner's flow type after casts, guards and assignments, avoiding
+synthetic nil mismatches from discarded union members. [PR #1286](https://github.com/EmmyLuaLs/emmylua-analyzer-rust/pull/1286)
+contains `430fe1de` and review follow-up `272d3096`; signed merges `b62f2f41` and
+`3862d97d` integrate them. Its eleven regressions cover narrowed/widened unions,
+nested/recursive owners, branch isolation and actual incompatible field types.
+
+The combined tests exposed a PR #1285 compatibility gap for ambiguous union
+members without a unique member ID. Follow-up `4dbecfe5`, merged as `525a6f0f`,
+restores the immediate named cast only for the exact static member path and
+resolved root declaration. Unique-member casts keep their existing tracing;
+unrelated owners and enclosing expressions stay unaffected. The pre-existing
+lack of ambiguous-cast persistence after an intervening statement remains;
+this correction does not add a general flow walker. Both PRs are ready for review.
+
+All 2,492 combined Rust workspace tests passed with all features, alongside
+workspace/all-target Clippy with warnings denied and rustfmt. The PR #1285
+follow-up separately passed all 2,395 standalone tests. All 22 EmmyLua2 tests,
+59 FDE unit tests (one optional native-game skip) and all nine selected IntelliJ
+platform tests passed. The platform tests required no retries.
+
+The packaged server was tested against a copy of all 37 LogisticTrainNetwork Lua
+files. The reported argument diagnostics on request_processor.lua lines 365/366
+are gone; its complete diagnostic count fell from 69 to 58, with eleven nil
+mismatches removed and no added diagnostics. The original cast/index probe still
+returns `ltn.FreeTrain?` for the raw lookup and `ltn.FreeTrain` after `assert`.
+Archive descriptor/version, source pin, Unix executable permissions and matching
+release/prepared/ZIP server bytes were verified. Only the macOS arm64 server
+carries the custom patches; other bundled servers remain upstream 0.25.1.
+No ordinary IDE installation, interactive IDE/game test or Plugin Verifier run.
+
+Evidence: `build/logs/union-argument-{build138,plugin-tests}.log`,
+`build/reports/union-argument-plugin-tests/`, FDE `build/logs/union-argument-*`
+and `build/reports/union-argument-{unit,platform}/`, analyzer worktree
+`build/logs/union-argument-*`, and main analyzer repository
+`build/investigations/union-member-argument/real-mod-packaged138/` and
+`build/investigations/cast-index/packaged138/`.
+
+ZIP SHA-256: `b53caf8025cdae10f84067fccffc83172fbffb1de751c146c0d07b2849cb35ae`.
+Arm64 server SHA-256: `21e0c03fca8997fa2a195e16599296283d27a02374e2d5aba8ccc5750269c6dc`.
