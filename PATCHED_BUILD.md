@@ -2,18 +2,16 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-143-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-144-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 143 fixes rejected
-nominal enum members such as
-`defines.rail_direction.front` passed to a `defines.rail_direction` parameter.
-The analyzer preserves the precise member class while recognizing its membership
-in the enum; unrelated classes, other enums and nil remain invalid. Existing
-unbound-table, computed-index, dictionary-constructor and cross-file enum fixes
-remain included. The new fix stays local pending a later upstream submission.
+runtime selector and local packaging remain above it. Build 144 fixes valid
+callback returns rejected through union aliases, including Factorio's recursive
+LocalisedString tuple. Empty variadic tails are accepted and present entries are
+checked. Existing dictionary, enum and module fixes remain included. The new
+fix stays local pending later upstream submission.
 
 ## Prerequisites and layout
 
@@ -27,7 +25,7 @@ remain included. The new fix stays local pending a later upstream submission.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `d750819c0f7d37e25e038c38c6542c95fbc4f41f`.
+  `f09c538f04fef94371780cf8917f4474f855d5ae`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -816,3 +814,50 @@ Install only EmmyLua2 build 143 and restart IntelliJ. No FDE reinstall is needed
 No interactive IDE/game test or Plugin Verifier run. The custom analyzer remains
 macOS arm64 only; other bundled server binaries remain upstream 0.25.1. Toolkit
 and LSP4IJ are unchanged.
+
+## Build 144: callback return aliases and variadic tuple tails (2026-10-13)
+
+LTN `tools.printmsg` rejected callbacks returning `LocalisedString`, including
+request_processor.lua502. The higher-order solver left union aliases opaque;
+table-to-tuple checking also treated the repeated tail as a required slot.
+Both failures reproduce on upstream without the local analyzer patches.
+
+- Local standalone fix/callback-return-type on upstream/main119d0e10:
+  signed/verified13cef7ff. No push or PR for this fix yet.
+- Signed work backport4acdc110 retains the older union representation.
+- Upstream tuple-argument prerequisite3e9bc8d6 is integrated as signed3fde3155,
+  with the same assignment context for fixed elements and repeated tails.
+- Final signed analyzer pin `f09c538f04fef94371780cf8917f4474f855d5ae`; standalone/work checkouts clean.
+
+The solver expands aliases with cycle/depth guards and checks every possible
+actual return against an allowed expected alternative. Repeated tuple tails can
+be empty; present numeric entries, required headers and invalid nested values
+are checked. Six test groups cover scalar/table callbacks, aliases/chains/unions,
+parameter variance, nullable returns, recursive aliases and tuple tails.
+
+Validation:
+- All2,408 standalone and2,544 combined workspace/all-feature Rust tests pass,
+  plus workspace/all-target/all-feature Clippy(-Dwarnings) and rustfmt.
+- Emmy22 tests and FDE59 unit tests pass (one optional native-game skip).
+- All9 IntelliJ platform compatibility checks pass. The initial invocation
+  omitted -PrealMods and failed only that fixture precondition; its corrected
+  rerun with read-only mods_21 sources passes. Both reports are retained.
+- Packaged-server replay against the same37saved LTN Lua files removes exactly
+  eight msg_func warnings at502/781/798/839/862/894/945/949. request_processor
+  diagnostics37->29; cache8, constants0 and tools31 unchanged. No added diagnostics
+  or changed sampled hovers in the four checked files.
+- ZIP ID/version/source pin, release/prepared/archive binary identity and Unix
+  executable modes verified. FDE0.7.8-dev archive hash AND mtime are unchanged.
+
+Logs: standalone build/logs/, work build/logs/callback-return-*, this checkout's
+build/logs/callback-return-{build144,routing}.log, FDE's corresponding unit/platform
+logs and preserved build/reports/callback-return-* snapshots. Protocol evidence:
+analyzer build/investigations/callback-return/{packaged143-real,packaged144-real}/,
+including packaged144-real/diagnostic-diff.json. Archive audit:
+FDE build/logs/callback-return-package.json.
+
+Install only
+`upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-144-IDEA262-patched-modules.zip`
+and restart IntelliJ. FDE stays0.7.8-dev and needs no reinstall. Only macOSarm64
+has the custom analyzer; other bundled binaries remain upstream0.25.1. No ordinary
+IDE installation, interactive game test, Plugin Verifier run, or new upstream push.
