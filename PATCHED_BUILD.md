@@ -2,19 +2,17 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-146-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-147-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
 Merged contributions, including the default Lua runtime selector, are supplied by
-that baseline; only server routing and local packaging remain above it. Build 146
-rebases onto that upstream baseline and uses official LSP4IJ nightly
-`0.21.1-20261011-014957`. The pinned analyzer is unchanged. Build 145 fixed built-in
-length results, aliased argument matching and discriminant narrowing, nil guards on computed collection
-reads, union table constructors, and asserted call arguments. Numeric-indexed
-classes also satisfy compatible array parameters. Existing dictionary, enum,
-callback, and module fixes remain included. Fix branches are pushed to origin;
-upstream PRs require an explicit request.
+that baseline; only server routing and local packaging remain above it. Build 147
+adds integer arithmetic through numeric aliases and corrects nullable dictionary
+writes. The fixes address LTN request_processor.lua:667,679,698,699. Existing
+module, API, formatter and analyzer fixes remain included. Official LSP4IJ nightly
+`0.21.1-20261011-014957` remains the development dependency. The new analyzer
+commits are local; no upstream PR or push was requested.
 
 ## Prerequisites and layout
 
@@ -28,7 +26,7 @@ upstream PRs require an explicit request.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `f93fb93873e7dcda3f23335c12c7f44709718af6`.
+  `210923cfd388f3559652c55d1fb1da96490f4bb0`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is official nightly `0.21.1-20261011-014957`, which includes both
   our file-specific server enablement and breakpoint-removal contributions.
@@ -56,8 +54,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-146-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-146-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-147-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-147-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -71,7 +69,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `146`; overriding
+version suffix. The script fixes the build number at `147`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -932,6 +930,52 @@ are also under `build/logs/ltn-batch-*` and `build/reports/ltn-batch-*`; FDE's
 
 The custom analyzer fixes apply to macOS arm64 only. Other packaged server
 binaries remain upstream 0.25.1. Toolkit and LSP4IJ dependencies are unchanged.
+
+## Build 147: numeric aliases and nullable dictionary writes (2026-10-13)
+
+Install **0.30.0-147-IDEA262-patched-modules** and restart IntelliJ. Only EmmyLua2
+needs updating; FDE remains 0.7.8-dev. Its development analyzer pin was updated,
+but its existing ZIP was not rebuilt. The regular IDE profile was not modified.
+
+Analyzer pin: `210923cfd388f3559652c55d1fb1da96490f4bb0`.
+The canonical workspace inventory now assigns permanent identifiers:
+
+- **UP-016 — `fix/nullable-table-index`:** standalone regression `ba8080c2`
+  records the old branch's existing nullable-write contract. Work correction
+  `4bee6720` fixes its semantic-rewrite port: dictionary writes accept T or nil,
+  while wrong non-nil types, required fields and directional write contracts
+  remain checked. The old contribution branch still needs porting before a PR.
+- **UP-040 — `fix/numeric-alias-arithmetic`:** standalone `bb9e92f7`, based on
+  upstream `a0ce1512`, recognizes integer aliases in addition/subtraction/
+  multiplication. Work cherry-pick `34a147b2` retains provenance. Mixed numeric
+  operands, nullable values, division/power and custom operators retain their
+  existing behavior. `d56f66df` adds the combined LTN regression.
+
+All new commits are signed and local; no upstream PR or push was requested.
+
+Validation:
+
+- Standalone arithmetic: all 1,453 code-analysis tests, including five new
+  regression groups, plus workspace/all-target Clippy and formatting.
+- Original dictionary branch: all 11 table-index tests.
+- Combined analyzer: all 2,591 workspace/all-feature tests, Clippy and formatting.
+- Packaged-server replay of a fixed LTN snapshot: warnings at 667, 679, 698 and
+  699 are gone. Diagnostics fell from nine to four with no newly introduced
+  diagnostics. The remaining event, return-type and SignalID indexing reports
+  are separate issues.
+- Three IntelliJ platform checks passed: generated API definitions in separate
+  workspaces, asymmetric API attributes, and Lua runtime selection.
+- Packaging verified the plugin version, analyzer pin/hash and executable 0755
+  modes. FDE's existing archive and four unrelated uncommitted nightly-pin/docs
+  files were verified unchanged by SHA-256.
+
+This validation does not retest build 146's two file-notification/RPC timeout
+cases or claim that those existing limitations are resolved. Java plugin code
+is unchanged; there was no interactive IDE test.
+
+Evidence: analyzer `build/investigations/numeric-assignments-20261013/`, including
+`diagnostic-diff.json`, `package-verification.json`, and `fix-logs/`. Build/test
+logs also remain under the EmmyLua2 and FDE repositories' `build/logs/` folders.
 
 ## Build 146: upstream selector merge and official LSP4IJ (2026-10-13)
 
