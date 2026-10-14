@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-152-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-153-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
@@ -11,8 +11,30 @@ that baseline; only server routing and local packaging remain above it. Build 14
 fixes named union aliases in parameter checks, including both valid custom-event
 calls at LTN request_processor.lua:811 and :910. Existing
 module, API, formatter and analyzer fixes remain included. LSP4IJ
-`0.21.1-SNAPSHOT-workspace-diagnostics-patched2` supplies workspace-pull support. The current analyzer contribution status is recorded below;
+`0.21.1-SNAPSHOT-workspace-diagnostics-patched3` supplies workspace-pull support. The current analyzer contribution status is recorded below;
 no new upstream PRs are opened for this build.
+
+## Build 153 multi-root duplicate classes (2026-10-14)
+
+Analyzer pin `0f4d0c10ca8eefc010caf1aa48d6b5129bfcda8a` includes UP-046, `fix/unique-workspace-id-aggregation`
+(`dc511eeb`, current upstream/main base). The MAIN index is aggregated once even
+when multiple physical roots share it. Removing a file preserves genuine class
+definitions from other files. Other patches, including UP-045, remain included.
+
+Install with LSP4IJ workspace-diagnostics-patched3: its independent DocumentMatcher
+fix prevents default EmmyLua workspace reports from leaking into FDE mod files.
+FDE stays 0.7.8-dev; no new FDE archive is needed. Source commits are local and
+not pushed. Final evidence is in workspace upstream/DUPLICATE_METRICS_2026-10-14.md.
+
+Build153 validation: the packaged server no longer reports duplicate-type for
+LTN metrics.lua with the generic server's eight workspace folders; its unrelated
+line44 assignment warning remains. The frozen LTN request_processor.lua and
+interface.lua baseline has zero diagnostics, and all four FDE platform checks
+pass with patched3 (API workspaces, asymmetric attributes, Lua version and unsaved
+cross-file diagnostics). Archive SHA-256:
+`adc814702317d5be211bdf8d2f3ac58bcaff9ed4c857d3226780df61be35f690`.
+The analyzer SHA-256 is `5009e2d7a4807494131e8777e067e5e928ff6b29e94c1116287bcbf9b37d2dee`;
+packaged/prepared binary identity, source pin and Unix0755 are verified.
 
 ## Build 152 workspace diagnostic scheduling (2026-10-14)
 
