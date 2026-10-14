@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-150-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-151-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
@@ -11,8 +11,21 @@ that baseline; only server routing and local packaging remain above it. Build 14
 fixes named union aliases in parameter checks, including both valid custom-event
 calls at LTN request_processor.lua:811 and :910. Existing
 module, API, formatter and analyzer fixes remain included. Official LSP4IJ nightly
-`0.21.1-20261011-014957` remains the development dependency. All thirty retained analyzer contribution branches are refreshed and pushed;
+`0.21.1-20261011-014957` remains the development dependency. The current analyzer contribution status is recorded below;
 no new upstream PRs are opened for this build.
+
+## Build 151 upstream refresh (2026-10-14)
+
+Analyzer pin `df28f68aed39d36041ee7d5f43da9c361f015f41` uses upstream/main 7096fef5.
+#1285 (named casts), #1289 (generic display) and #1291 (dictionary constructors)
+are supplied by upstream. The remaining 27 fix branches are rebased. #1283 was
+closed without merging and remains a local refresh patch; #1286/#1292 stay open.
+#1290 was closed as superseded by #1288. Production source and tests are identical
+to build150; this refresh changes ancestry and package provenance.
+
+Validation and final artifact evidence are recorded in workspace
+upstream/ANALYZER_REFRESH_2026-10-14.md. FDE remains 0.7.8-dev. The frozen LTN
+request_processor.lua snapshot remains the zero-diagnostic acceptance baseline.
 
 ## Build 150 upstream refresh (2026-10-13)
 
@@ -55,7 +68,7 @@ Evidence: analyzer `build/investigations/analyzer-refresh-20261013/`.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `5ff43630d2dcf704e5b1c4e4204e317f81acf80c`.
+  `df28f68aed39d36041ee7d5f43da9c361f015f41`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is official nightly `0.21.1-20261011-014957`, which includes both
   our file-specific server enablement and breakpoint-removal contributions.
@@ -83,8 +96,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-150-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-150-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-151-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-151-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -98,7 +111,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `150`; overriding
+version suffix. The script fixes the build number at `151`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
