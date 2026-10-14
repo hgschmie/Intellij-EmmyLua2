@@ -2,14 +2,14 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-147-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-148-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
 Merged contributions, including the default Lua runtime selector, are supplied by
-that baseline; only server routing and local packaging remain above it. Build 147
-adds integer arithmetic through numeric aliases and corrects nullable dictionary
-writes. The fixes address LTN request_processor.lua:667,679,698,699. Existing
+that baseline; only server routing and local packaging remain above it. Build 148
+fixes named union aliases in parameter checks, including both valid custom-event
+calls at LTN request_processor.lua:811 and :910. Existing
 module, API, formatter and analyzer fixes remain included. Official LSP4IJ nightly
 `0.21.1-20261011-014957` remains the development dependency. The new analyzer
 commits are local; no upstream PR or push was requested.
@@ -26,7 +26,7 @@ commits are local; no upstream PR or push was requested.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `210923cfd388f3559652c55d1fb1da96490f4bb0`.
+  `c35d8ae451c11f8b493ef0e0380c29a45f6aa353`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is official nightly `0.21.1-20261011-014957`, which includes both
   our file-specific server enablement and breakpoint-removal contributions.
@@ -54,8 +54,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-147-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-147-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-148-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-148-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -69,7 +69,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `147`; overriding
+version suffix. The script fixes the build number at `148`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -930,6 +930,44 @@ are also under `build/logs/ltn-batch-*` and `build/reports/ltn-batch-*`; FDE's
 
 The custom analyzer fixes apply to macOS arm64 only. Other packaged server
 binaries remain upstream 0.25.1. Toolkit and LSP4IJ dependencies are unchanged.
+
+## Build 148: named union parameter aliases (2026-10-13)
+
+UP-041 fixes valid enum/class arguments rejected when a parameter's union is
+hidden behind a named alias. `LuaEventType` explicitly includes `defines.events`,
+so both LTN custom-event calls at request_processor.lua:811 and :910 are valid.
+The parameter matcher now expands these aliases and checks every argument
+alternative against an accepted union member. Cycle/depth guards bound recursive
+aliases; wrong literals, incompatible types and disallowed nil remain errors.
+General compatibility, cast, assignment and strict subtype rules are unchanged.
+
+Standalone branch `fix/union-alias-parameters` has signed commit `20c29828` on
+upstream `a0ce1512`. Signed cherry-pick `f0413972` integrates it into the work
+branch; final analyzer pin is `c35d8ae451c11f8b493ef0e0380c29a45f6aa353`.
+It has no pending-fix prerequisite, including UP-016/UP-040. No push or PR.
+
+Validation:
+
+- Five regression groups pass, including alias chains, source unions, nullable
+  and incompatible arguments, literal alternatives and recursive aliases.
+- Standalone workspace/all-feature suite: 2,417 tests passed. Combined work suite:
+  2,596 passed. Both pass Clippy with warnings denied and formatting checks.
+- Packaged-server replay removes exactly the two reported LTN diagnostics; three
+  unrelated diagnostics remain, with no new diagnostics. The minimal replay
+  accepts enum/class cases and retains the invalid-boolean diagnostic.
+- Three FDE platform tests pass: generated API definitions with separate
+  workspaces, asymmetric API fields, and Lua runtime selection.
+- Packaging verifies descriptor/version, analyzer pin/hash, prepared/archive
+  identity and executable mode 0755. All 23 existing FDE ZIPs retain their hashes
+  and modification times; FDE stays at 0.7.8-dev with a development pin update.
+
+ZIP SHA-256: `a812a1c60a60a04c46a120ed5d339171157bc2f9cdb1aef81f9b317bb4e83a03`.
+Analyzer SHA-256: `3e7131f3d17c84a2e40268c1d7ae1c1597fba84dde21deed10f127ac8020ddd3`.
+Custom analyzer changes apply only to macOS arm64. Java client code is unchanged;
+no interactive IDE validation or regular-profile installation was performed.
+Build 146's two file-event/RPC timeout cases were not retested or fixed.
+Evidence: analyzer `build/investigations/event-type-union-20261013/` and repository
+`build/logs/` directories. All task commits are signed and remain local.
 
 ## Build 147: numeric aliases and nullable dictionary writes (2026-10-13)
 
