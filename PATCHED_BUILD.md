@@ -2,16 +2,18 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-145-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-146-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
-The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
-Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 145 fixes built-in
+The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
+Merged contributions, including the default Lua runtime selector, are supplied by
+that baseline; only server routing and local packaging remain above it. Build 146
+rebases onto that upstream baseline and uses official LSP4IJ nightly
+`0.21.1-20261011-014957`. The pinned analyzer is unchanged. Build 145 fixed built-in
 length results, aliased argument matching and discriminant narrowing, nil guards on computed collection
 reads, union table constructors, and asserted call arguments. Numeric-indexed
 classes also satisfy compatible array parameters. Existing dictionary, enum,
-callback, and module fixes remain included. New fix branches remain local;
+callback, and module fixes remain included. Fix branches are pushed to origin;
 upstream PRs require an explicit request.
 
 ## Prerequisites and layout
@@ -28,11 +30,11 @@ upstream PRs require an explicit request.
   The current pin is
   `f93fb93873e7dcda3f23335c12c7f44709718af6`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
-  dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
-  upstream main and the file-specific server enablement fix. The earlier
-  breakpoint-removal contribution is already part of upstream main. Prepare it with
+  dependency is official nightly `0.21.1-20261011-014957`, which includes both
+  our file-specific server enablement and breakpoint-removal contributions.
+  Prepare the checksum-pinned Marketplace archive with
   `bash "$WORKSPACE/intellij-factorio/scripts/build-lsp4ij.sh"`; see the Factorio plugin's
-  [development layout](../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
+  [development layout](../../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
 
 Shared Cargo, Gradle and npm caches live in `$WORKSPACE/dev/cache/`.
 The build home is `$WORKSPACE/dev/build-home`, and temporary files use
@@ -54,8 +56,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-145-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-145-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-146-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-146-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -69,7 +71,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `145`; overriding
+version suffix. The script fixes the build number at `146`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -82,19 +84,17 @@ Already included by upstream:
   member names parse before Lua 5.5; Lua 5.5 retains its reserved-word rules.
 - [PR #62](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/62): Lua indentation
   code-style settings.
+- [PR #63](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/63): default Lua runtime
+  selector and settings-field width correction. See [language-level configuration](docs/language-level.md).
 
 Remaining IntelliJ contributions:
 
-- Server routing: `fix/file-language-server-routing`, signed commit `b9f1ce9`,
+- Server routing: `fix/file-language-server-routing`, signed contribution commit `b9f1ce9`,
   [PR #60](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/60). It is the first
   commit above upstream on the work branch. The [extension contract](docs/server-routing.md)
   lets the Factorio plugin claim files for its per-module servers and route gutter
-  requests. It also removes the duplicate Gradle import introduced by upstream's
-  merge of the test setup.
-- Default Lua runtime: `feat/default-lua-version`, signed commit `8186872`,
-  [draft PR #63](https://github.com/EmmyLua/Intellij-EmmyLua2/pull/63);
-  the equivalent work-branch commit is `1678db5`. This includes the settings-field
-  width correction. See [language-level configuration](docs/language-level.md).
+  requests. The work-branch copy is rebased on the new upstream baseline; the
+  duplicate Gradle import correction is now supplied by upstream PR #63.
 
 The pinned analyzer remains separate: module imports are already upstream through
 PR #1266, while diagnostic refresh (PR #1283) and the other internal analyzer
@@ -932,3 +932,49 @@ are also under `build/logs/ltn-batch-*` and `build/reports/ltn-batch-*`; FDE's
 
 The custom analyzer fixes apply to macOS arm64 only. Other packaged server
 binaries remain upstream 0.25.1. Toolkit and LSP4IJ dependencies are unchanged.
+
+## Build 146: upstream selector merge and official LSP4IJ (2026-10-13)
+
+Rebased `work/patched-build` from upstream `ee211107` onto `a3a78d9`.
+The merged default runtime selector is now supplied by upstream PR #63; its
+local equivalent `1678db5` was dropped. All 41 other commits were retained and
+re-signed. The routing contribution is the only remaining product source change
+relative to upstream; its work copy is `2334790`, while open PR #60 remains at
+`b9f1ce9`. Local packaging, analyzer pins and history were preserved.
+
+The rebase's Git tree is identical to the prior work head `1cb15df` before the
+build-number/documentation updates. All 1,383 packaged class files also match
+build 145 byte-for-byte. The analyzer pin and binary remain unchanged. A recovery
+branch, `backup/patched-build-before-selector-cleanup-20261013`, retains `1cb15df`.
+The rewritten work branch has not been pushed; contribution branches were not
+rewritten or deleted.
+
+Build 146 uses official LSP4IJ nightly `0.21.1-20261011-014957`. Release packaging
+passed descriptor/version checks, analyzer pin/hash checks, prepared/archive
+identity, and Unix server executable permissions. All 22 EmmyLua2 tests passed.
+
+FDE integration validation is limited: seven of nine selected platform tests
+passed, including formatting, real-mod navigation and Lua-version selection. The
+saved dependency disk-replacement and locale-file deletion checks timed out in
+two runs, including one with a fresh isolated test cache. A comparison with the
+unchanged build 145 also failed the dependency test (a completion RPC timeout).
+No product or test source was changed to suppress these failures. This does not
+establish their precise cause; treat file-notification/test stability as a
+separate follow-up. No interactive IDE/game validation or regular installation
+was performed. FDE's existing uncommitted changes and 0.7.8-dev ZIP were preserved.
+
+Installable archive:
+`$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-146-IDEA262-patched-modules.zip`
+
+- ZIP SHA-256: `08952af104f00595eb6bda47c5609871cfc7cc5e373e86f836906ac41f79ec60`.
+- Analyzer SHA-256: `7f9f185fe0ccaba672702e6405b695c71e1f2fc87d607982370a7b54219b5d0a`.
+- Rebase/signature, package and class comparison evidence:
+  `build/logs/upstream-cleanup-20261013/`.
+- FDE initial, fresh-cache and baseline reports:
+  `$WORKSPACE/intellij-factorio/build/logs/emmy-upstream-cleanup-20261013/`.
+
+Six merged contribution branches can be retired: EmmyLua2's architecture,
+legacy-global parsing, code-style and default-version branches, plus LSP4IJ's
+breakpoint-removal and formatting branches. LSP4IJ's obsolete work branch can
+also be retired after the official nightly adoption. Keep EmmyLua2's open
+routing branch and active work branch. No deletions were performed.
