@@ -2,16 +2,17 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-144-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-145-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `ee211107ae17169048d2d6b5f63040f19e355450`.
 Merged contributions are supplied by that baseline; only server routing, the Lua
-runtime selector and local packaging remain above it. Build 144 fixes valid
-callback returns rejected through union aliases, including Factorio's recursive
-LocalisedString tuple. Empty variadic tails are accepted and present entries are
-checked. Existing dictionary, enum and module fixes remain included. The new
-fix stays local pending later upstream submission.
+runtime selector and local packaging remain above it. Build 145 fixes built-in
+length results, aliased argument matching and discriminant narrowing, nil guards on computed collection
+reads, union table constructors, and asserted call arguments. Numeric-indexed
+classes also satisfy compatible array parameters. Existing dictionary, enum,
+callback, and module fixes remain included. New fix branches remain local;
+upstream PRs require an explicit request.
 
 ## Prerequisites and layout
 
@@ -25,7 +26,7 @@ fix stays local pending later upstream submission.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `f09c538f04fef94371780cf8917f4474f855d5ae`.
+  `f93fb93873e7dcda3f23335c12c7f44709718af6`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
   dependency is `0.21.1-SNAPSHOT-factorio-formatting-patched2`, which includes
   upstream main and the file-specific server enablement fix. The earlier
@@ -53,8 +54,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-143-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-143-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-145-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-145-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -68,7 +69,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `143`; overriding
+version suffix. The script fixes the build number at `145`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -861,3 +862,73 @@ Install only
 and restart IntelliJ. FDE stays0.7.8-dev and needs no reinstall. Only macOSarm64
 has the custom analyzer; other bundled binaries remain upstream0.25.1. No ordinary
 IDE installation, interactive game test, Plugin Verifier run, or new upstream push.
+
+## Build 145: LTN length, alias, guard and constructor fixes (2026-10-13)
+
+Install **0.30.0-145-IDEA262-patched-modules** and restart IntelliJ. The final
+analyzer pin is `f93fb93873e7dcda3f23335c12c7f44709718af6`. FDE stays **0.7.8-dev**:
+its development pin and tests advance, while its existing ZIP remains unchanged.
+
+Seven local fix branches are based on freshly fetched upstream/main `119d0e10`.
+All source commits and their provenance-preserving work backports are signed.
+No new branches were pushed and no PRs were opened for this batch.
+
+| Branch | Standalone commit(s) | Purpose |
+| --- | --- | --- |
+| `fix/builtin-length-result` | `383bcf93`, `2ed70489` | Infer integer for built-in # and inferred fields assigned its result; preserve custom len operators. |
+| `fix/aliased-call-arguments` | `0dbba984` | Match actual aliases against parameter types without losing generic identity or nominal class checks. |
+| `fix/aliased-member-discriminants` | `a325c369` | Expand aliased discriminants during condition narrowing. |
+| `fix/computed-index-guards` | `817fdd25` | Preserve guards for stable computed array/dictionary reads, with mutation and call barriers. |
+| `fix/union-table-constructor-checks` | `a5935c2d` | Validate a whole union alternative instead of selecting an unrelated class or mixing alternatives. |
+| `fix/class-index-array-compatibility` | `498c8f49` | Accept compatible numeric index signatures as array elements, including inherited/generic signatures. |
+| `fix/inline-assertion-arguments` | `83e7e455` | Honor explicit inline assertions consistently in call argument caches and constructor diagnostics. |
+
+The inline assertion branch stacks PR #1290's existing scope fixes and the class
+index/array prerequisite. These must land first before that branch is submitted.
+The other branches are independent of one another. The computed guard integration
+has extra work-only tests for strict dictionary indexing and asymmetric read/write
+contracts; the assertion/union combination has a separate integration test.
+
+Validation:
+
+- All **2,583** final combined Rust workspace/all-feature tests pass; workspace,
+  all-target/all-feature Clippy with warnings denied and rustfmt pass. Each
+  standalone branch also passes its applicable full suite and static checks.
+- EmmyLua2: **22** client tests. FDE: **59** unit tests passed, one optional
+  native-game test skipped; **9** IntelliJ platform tests passed with the final
+  prepared server and the read-only mods_21 fixture.
+- The final packaged server was replayed against identical copies of all **37**
+  LTN Lua files. All four reported sites are clear: #selected_trains is integer;
+  merge_item_info is SignalID? before its guard and SignalID on guarded access;
+  nested Provided lookups retain their guards; the cast LocalisedString constructor
+  has no spurious injection/missing-field/type errors.
+- request_processor.lua diagnostics fall **29→9**; total saved-mod diagnostics
+  fall **1,836→962**. The source mod was not edited. The replay does not establish
+  that all remaining diagnostics are correct or that the whole mod is clean.
+- Archive checks verify plugin ID/version, source pin, identical release/prepared/
+  archive binaries, and Unix0755 server permissions. FDE ZIP SHA-256 and mtime
+  remain unchanged. No interactive IDE/game test or Plugin Verifier run.
+
+Known follow-ups: overloaded on_event calls at init.lua:328/337 were already
+broken; blindly checking every overload now produces different diagnostics at
+those same sites (1,147→466 combined there). Correct return typing exposes the
+broader SignalIDType lookup at request_processor.lua:879. Two string.find guards
+at surface-interface.lua:154/173 now expose a pre-existing string-search truthiness
+bug: a minimal plain-string input warns with build144 too, while the alias input
+was previously hidden by unknown inference. Three uncast LocalisedString
+constructors still have nullable-element diagnostics. These are outside the four
+reported cases; no broad overload or multi-return patch was added.
+
+Evidence: analyzer `build/investigations/ltn-batch-20261013/` contains the frozen
+input manifest, packaged144/packaged145 replay, diagnostic-diff.json, preliminary
+replay and retained binary, OVERLOAD_FOLLOWUP.md, and string-find-before/after.
+Analyzer work logs are `build/logs/ltn-batch-*`. Emmy/FDE logs and preserved reports
+are also under `build/logs/ltn-batch-*` and `build/reports/ltn-batch-*`; FDE's
+`build/logs/ltn-batch-package.json` records archive verification.
+
+- ZIP SHA-256: `9e125a2a215e2be64e148d376bb0b16d4f21f16bf4b8a1bd24cace22b6fc8dbf`.
+- Analyzer SHA-256: `7f9f185fe0ccaba672702e6405b695c71e1f2fc87d607982370a7b54219b5d0a`.
+- Unchanged FDE ZIP SHA-256: `97f14b6051ebd3ef1565b6b085863a1579b7002abe932c0a054790978127f90b`.
+
+The custom analyzer fixes apply to macOS arm64 only. Other packaged server
+binaries remain upstream 0.25.1. Toolkit and LSP4IJ dependencies are unchanged.
