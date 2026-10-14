@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-151-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-152-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
@@ -10,9 +10,40 @@ Merged contributions, including the default Lua runtime selector, are supplied b
 that baseline; only server routing and local packaging remain above it. Build 148
 fixes named union aliases in parameter checks, including both valid custom-event
 calls at LTN request_processor.lua:811 and :910. Existing
-module, API, formatter and analyzer fixes remain included. Official LSP4IJ nightly
-`0.21.1-20261011-014957` remains the development dependency. The current analyzer contribution status is recorded below;
+module, API, formatter and analyzer fixes remain included. LSP4IJ
+`0.21.1-SNAPSHOT-workspace-diagnostics-patched2` supplies workspace-pull support. The current analyzer contribution status is recorded below;
 no new upstream PRs are opened for this build.
+
+## Build 152 workspace diagnostic scheduling (2026-10-14)
+
+Analyzer pin `a8307e66561e661834e9783a6e7fc2fc4538b5de` replaces UP-008 in the active work tree with UP-045,
+`fix/workspace-diagnostic-scheduling` (`7306538d`, based on upstream/main `96545f45`).
+The fix is cherry-picked with provenance onto the existing work baseline to avoid
+importing the unrelated upstream HashMap refactor. UP-008's original branch and
+`backup/intellij-modules-before-workspace-diagnostics-20261014` are retained.
+
+Install this EmmyLua2 ZIP together with LSP4IJ workspace-diagnostics-patched2.
+Ordinary edits now update dependent-file diagnostics through workspace pulls;
+they no longer trigger the old per-edit global refresh request. Closed files,
+open-file document priority, file removals, reloads and cancellation are covered
+by the server regressions. See workspace `upstream/FIX_INVENTORY.md` and HANDOFF.md
+for final integration results. FDE remains 0.7.8-dev; its archive is unchanged.
+
+Validation: 226 standalone server tests and 2,627 combined workspace/all-feature
+Rust tests pass, with Clippy (-Dwarnings) and rustfmt. Seven protocol scenarios
+pass on both standalone and packaged servers; the unsaved-edit case times out
+on unpatched upstream. Four FDE platform tests pass, including automatic warning
+appearance/clearing in open and closed consumers after unsaved type-file edits.
+Frozen LTN request_processor.lua and interface.lua still have zero diagnostics.
+No interactive UI test or regular-profile installation was performed.
+
+ZIP SHA-256: `d658f723b640dbd152d3c16eb9d09dc9c33ec112b32c875de2375a0769da09f2`.
+Analyzer SHA-256: `efbef8886cf539c3d13b06bf026e7ba9bd6539d2ea124c0055e61b690303fea4`.
+Pins, packaged/prepared binary identity and Unix 0755 permissions are verified.
+Evidence: analyzer `build/investigations/workspace-diagnostic-scheduling/verification.json`,
+work `build/logs/workspace-scheduling-*.log`, and FDE
+`build/logs/workspace-diagnostic-platform.log`. Source commits remain local;
+no push or PR was requested for UP-045.
 
 ## Build 151 upstream refresh (2026-10-14)
 
@@ -68,11 +99,11 @@ Evidence: analyzer `build/investigations/analyzer-refresh-20261013/`.
   with no tracked changes. `FMTK_ANALYZER_PATH` can select a separate checkout
   of the same pinned revision, and `CARGO_TARGET_DIR` can select its build cache.
   The current pin is
-  `df28f68aed39d36041ee7d5f43da9c361f015f41`.
+  `a8307e66561e661834e9783a6e7fc2fc4538b5de`.
 - Prepared LSP4IJ at `$WORKSPACE/dev/plugins/lsp4ij`. The current development
-  dependency is official nightly `0.21.1-20261011-014957`, which includes both
-  our file-specific server enablement and breakpoint-removal contributions.
-  Prepare the checksum-pinned Marketplace archive with
+  dependency is `0.21.1-SNAPSHOT-workspace-diagnostics-patched2`, adding workspace
+  pulls to the upstream base containing our merged server-selection and
+  breakpoint-removal contributions. Prepare the pinned development archive with
   `bash "$WORKSPACE/intellij-factorio/scripts/build-lsp4ij.sh"`; see the Factorio plugin's
   [development layout](../../../intellij-factorio/docs/DEVELOPMENT_LAYOUT.md).
 
@@ -96,8 +127,8 @@ refreshes the prepared plugin used by Factorio development builds.
 The script keeps installable ZIPs together even when building from a worktree:
 
 - Installable ZIP beside previous releases:
-  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-151-IDEA262-patched-modules.zip`
-- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-151-IDEA262-patched-modules.zip`
+  `$WORKSPACE/upstream/Intellij-EmmyLua2/build/distributions/IntelliJ-EmmyLua2-0.30.0-152-IDEA262-patched-modules.zip`
+- Identical worktree output: `build/distributions/IntelliJ-EmmyLua2-0.30.0-152-IDEA262-patched-modules.zip`
 - Prepared dependency: `$WORKSPACE/upstream/Intellij-EmmyLua2/build/prepared/IntelliJ-EmmyLua2`
 - Worktree build logs: `build/logs/build-module-patch-*.log`
 
@@ -111,7 +142,7 @@ platform binaries remain upstream 0.25.1. The archive includes
 
 Use the packaging script for the development build: a direct `buildPlugin`
 without `localAnalyzerPath` uses upstream analyzer binaries and the `-patched`
-version suffix. The script fixes the build number at `151`; overriding
+version suffix. The script fixes the build number at `152`; overriding
 `RUNNER_NUMBER` in the calling environment does not change it.
 
 ## Upstream contributions and remaining local changes
@@ -137,8 +168,9 @@ Remaining IntelliJ contributions:
   duplicate Gradle import correction is now supplied by upstream PR #63.
 
 The pinned analyzer remains separate: module imports are already upstream through
-PR #1266, while diagnostic refresh (PR #1283) and the other internal analyzer
-patches are retained on `work/intellij-modules`. See [diagnostic refresh](docs/diagnostic-refresh.md)
+PR #1266. Build 152 replaces the diagnostic-refresh workaround (UP-008/PR #1283)
+with workspace-diagnostic scheduling (UP-045). UP-008 and the previous work head
+are preserved for rollback; the other internal analyzer patches remain included. See [diagnostic refresh](docs/diagnostic-refresh.md)
 and the analyzer's development handoff. Local build scripts, source pins and the
 build-history documentation are work-branch changes, not upstream submissions.
 
