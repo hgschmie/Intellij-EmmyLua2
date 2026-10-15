@@ -34,8 +34,10 @@ public final class EmmyLuaLanguageClient extends LanguageClientImpl {
         var result = settings instanceof JsonObject json ? json.deepCopy() : new JsonObject();
         var workspace = result.has("workspace") && result.get("workspace").isJsonObject()
                 ? result.getAsJsonObject("workspace") : new JsonObject();
-        var ignored = workspace.has("ignoreDir") && workspace.get("ignoreDir").isJsonArray()
-                ? workspace.getAsJsonArray("ignoreDir") : new JsonArray();
+        // Dotted keys take precedence when both notations occur in one layer.
+        var existing = result.has("workspace.ignoreDir")
+                ? result.remove("workspace.ignoreDir") : workspace.get("ignoreDir");
+        var ignored = existing != null && existing.isJsonArray() ? existing.getAsJsonArray() : new JsonArray();
         owned.forEach(path -> ignored.add(path.toString()));
         workspace.add("ignoreDir", ignored);
         result.add("workspace", workspace);
