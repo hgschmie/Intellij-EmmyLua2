@@ -57,6 +57,14 @@ public class EmmyLuaWorkspaceOwnershipTest {
         assertNull(params.getCapabilities().getWorkspace().getConfiguration());
     }
 
+    @Test public void preservesDottedClientExclusions() {
+        var settings = JsonParser.parseString("{\"workspace.ignoreDir\":[\"vendor\"]}").getAsJsonObject();
+        var result = EmmyLuaLanguageClient.withOwnedRoots(settings, List.of(mod));
+        assertFalse(result.has("workspace.ignoreDir"));
+        assertEquals(2, result.getAsJsonObject("workspace").getAsJsonArray("ignoreDir").size());
+        assertTrue(settings.has("workspace.ignoreDir"));
+    }
+
     @Test public void addsExclusionsWithoutMutatingSettingsOrLibraries() {
         var settings = JsonParser.parseString("""
                 {"diagnostics":{"disable":["unused"]},
