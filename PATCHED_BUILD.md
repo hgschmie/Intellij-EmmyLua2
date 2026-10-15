@@ -1,4 +1,27 @@
-# Current annotation-completion package — build157
+# Matching UP-008 comparison — build158
+
+Version: `0.30.0-158-IDEA262-patched-modules-up008`.
+Analyzer pin: `9eac5d7db277b3d086e7c4ba07c8b6fe08e6e1eb`.
+
+This one-off variant contains UP-008 instead of UP-045, plus all current fixes,
+including UP-053 annotation completion and UP-054 request/update ordering. The
+latter is signed integration `1fddc7ba`, with both request cancellation and UP-008
+refresh cleanup preserved on close. The matching normal build158 remains the
+development default. Only macOS arm64 contains the patched analyzer.
+
+Build with `CARGO_TARGET_DIR="$WORKSPACE/upstream/emmylua-analyzer-rust/build/completion-comparison-target" bash scripts/build-module-patch.sh`,
+where WORKSPACE is the absolute workspace root. The script copies the ZIP to the
+usual `upstream/Intellij-EmmyLua2/build/distributions` folder and uses the separate
+`build/prepared-up008` verification copy. It does not change the normal prepared
+plugin, FDE development pin, FDE 0.7.9-dev ZIP or LSP4IJ patched3.
+
+Install one EmmyLua2 variant at a time and restart IntelliJ. Clear any custom
+server override to use its bundled server. Final validation, comparison evidence
+and hashes: workspace `upstream/UP008_COMPARISON_BUILD158.md`. No push or PR.
+
+---
+
+# Previous annotation-completion package — build157
 
 Version: `0.30.0-157-IDEA262-patched-modules-up008`. Analyzer pin: `1e303fabd5978fb79394b468e3a73b1f46a3f361`.
 Contains UP-053 (`fix/doc-type-completion`, signed `7e080f55`), independently based
