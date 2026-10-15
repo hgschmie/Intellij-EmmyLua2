@@ -1,4 +1,26 @@
-# Current annotation-completion package — build157
+# Current development package — build158 (UP-045)
+
+Version: `0.30.0-158-IDEA262-patched-modules`. Analyzer pin: `3c9cdfb4ce4cd42f710f49f41115c8f3053e06e2`.
+UP-054 (`fix/request-update-ordering`, signed `c0f71524`) makes requests wait for
+preceding queued document updates before reading analysis. Semantic highlighting
+and completion can no longer overtake those edits. Waiting remains cancellable;
+the message loop and update worker stay independent of request execution.
+Standalone base: upstream/main `96545f45`; work cherry-pick `0d95174e` preserves
+UP-045's shutdown handling. All previous fixes, including UP-053, remain included.
+
+The user chose UP-045. The one-off UP-008 branch/package stays at build157 and is
+not advanced. Only macOS arm64 includes the patched analyzer. Keep FDE 0.7.9-dev
+and LSP4IJ workspace-diagnostics-patched3; FDE's existing ZIP is unchanged. Install
+this EmmyLua2 ZIP and restart IntelliJ with the custom server override empty.
+
+Build with `bash scripts/build-module-patch.sh`; the ZIP is copied to the common
+`upstream/Intellij-EmmyLua2/build/distributions` folder and the normal prepared
+dependency is refreshed. No push or PR was requested. Final tests, hashes and
+remaining latency limits: workspace `upstream/REQUEST_ORDERING_2026-10-14.md`.
+
+---
+
+# Previous annotation-completion package — build157
 
 Version: `0.30.0-157-IDEA262-patched-modules`. Analyzer pin: `f44bc15020e7c9bfc0c0b73dfadc49550146fc1e`.
 Contains UP-053 (`fix/doc-type-completion`, signed `7e080f55`), independently based
