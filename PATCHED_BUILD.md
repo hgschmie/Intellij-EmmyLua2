@@ -2,17 +2,43 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-153-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-154-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
 Merged contributions, including the default Lua runtime selector, are supplied by
-that baseline; only server routing and local packaging remain above it. Build 148
+that baseline; server routing, workspace ownership and local packaging remain above it. Build 148
 fixes named union aliases in parameter checks, including both valid custom-event
 calls at LTN request_processor.lua:811 and :910. Existing
 module, API, formatter and analyzer fixes remain included. LSP4IJ
 `0.21.1-SNAPSHOT-workspace-diagnostics-patched3` supplies workspace-pull support. The current analyzer contribution status is recorded below;
 no new upstream PRs are opened for this build.
+
+## Build 154 workspace ownership (2026-10-14)
+
+UP-047 adds an optional owned-root API to the existing file-routing provider.
+The default analyzer omits owned workspace roots and receives directory exclusions
+for owned folders nested under a broader root. Provider changes stop the default
+server; unclaimed editors restart it on demand with fresh ownership. FDE 0.7.9-dev
+publishes its reserved modules and managed library roots. Explicit analyzer
+workspace/library/package configuration stays under user control.
+
+Contribution branch `feat/workspace-root-ownership` (`c38ec8b`) is based on the
+pending routing contribution `b9f1ce9` (UP-006/#60). Its signed work copies are
+`23ce780` and `61283d6`. No new PR or push.
+
+Analyzer pin `bc5c9b5a3a1261e0acc17fb70ed93e626cd75a04` includes UP-048,
+`fix/mixed-config-key-merging` (`a9684a5c` on upstream/main `96545f45`). Normalizing
+configuration layers before merging preserves native dotted exclusions alongside
+the nested ownership overlay. The bug reproduced with both unit regressions and
+the real default-server test. All 1,472 standalone and 1,640 combined analysis
+tests pass, as do 29 EmmyLua2 tests. FDE platform/package evidence is recorded in
+workspace `upstream/WORKSPACE_OWNERSHIP_2026-10-14.md`.
+
+Install build154 with FDE 0.7.9-dev; keep LSP4IJ workspace-diagnostics-patched3.
+Only macOS arm64 receives the locally patched analyzer, as in previous builds.
+Archive SHA-256: `58eac2e7dcefedfd1fe9bbbfbae6c0e099c2557de39bb9be4c0b10b21308e4c1`.
+Analyzer SHA-256: `c516b027623dbb7544029df0e581dda4cb7bf949d8a1b8767f7031e8001a8a13`.
 
 ## Build 153 multi-root duplicate classes (2026-10-14)
 
