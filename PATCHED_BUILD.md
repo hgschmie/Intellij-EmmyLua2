@@ -1,3 +1,21 @@
+# Project diagnostics and require resolution — build159 (normal UP-045)
+
+Analyzer pin: `ce7e11e911c8788f7ce88e3db0af3573e45ceb33`. Includes UP-056: existing Lua modules no longer
+produce unresolved-require warnings simply because they have no return value or
+an unknown export. All previous fixes are retained. This is the normal UP-045 variant;
+UP-045 remains the normal work baseline. Both variants are rebuilt because the
+user is currently comparing UP-008 in IntelliJ.
+
+Install with FDE 0.8.1-dev, which fixes all-module service startup and retention.
+LSP4IJ workspace-diagnostics-patched4 is unchanged. Only macOS arm64 contains the
+patched analyzer. The script builds and validates the ZIP in the usual shared
+`upstream/Intellij-EmmyLua2/build/distributions` folder, preserving older archives
+and keeping normal/comparison prepared dependencies separate. Clear a custom
+server override to use the bundled server. No push or PR. Final evidence:
+workspace `upstream/PROJECT_SERVICES_2026-10-15.md`.
+
+---
+
 # Current development package — build158 (UP-045)
 
 Version: `0.30.0-158-IDEA262-patched-modules`. Analyzer pin: `3c9cdfb4ce4cd42f710f49f41115c8f3053e06e2`.
