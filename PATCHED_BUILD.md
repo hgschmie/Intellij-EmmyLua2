@@ -1,3 +1,22 @@
+# Current development package — build156
+
+The normal package is `0.30.0-156-IDEA262-patched-modules`. It retains UP-045 and
+adds UP-051 (callable class overloads) and UP-052 (constructor call self/overload
+alignment), with the existing inline assertion and union checks preserved.
+Only macOS arm64 receives the patched analyzer. Keep FDE 0.7.9-dev and LSP4IJ
+workspace-diagnostics-patched3. FDE's ZIP is unchanged.
+
+A separate `experiment/up008-completion-comparison` branch builds the one-off
+`0.30.0-156-IDEA262-patched-modules-up008` package with UP-008 replacing UP-045.
+The normal prepared plugin and development pins must remain on this branch.
+Both variants include the same entities fixes and unchanged completion code.
+
+Analyzer pin: `54b5a910887ae4f880d5c1e8b5b17df0e3e2d796`. Signed standalone fix commits: `5fbac291`,
+`0307732f` on upstream/main `96545f45`. Nothing pushed and no PR opened.
+Final evidence/hashes: workspace `upstream/COMPLETION_COMPARISON_2026-10-14.md`.
+
+---
+
 # Local patched build
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
