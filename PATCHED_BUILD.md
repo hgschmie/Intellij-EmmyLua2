@@ -1,3 +1,24 @@
+# One-off UP-008 comparison — build156
+
+This branch is an experiment, not the normal development baseline. It contains
+UP-008 instead of UP-045 and the same UP-051/UP-052 entities.lua fixes as normal
+build156. The package version ends in `-patched-modules-up008`. All other plugin
+code and analyzer fixes match the normal package. Only macOS arm64 is patched.
+
+Run `bash scripts/build-module-patch.sh` in this checkout. It uses the analyzer
+comparison checkout by default, writes its prepared plugin to
+`upstream/Intellij-EmmyLua2/build/prepared-up008/IntelliJ-EmmyLua2`, and copies the
+archive alongside normal packages in `upstream/Intellij-EmmyLua2/build/distributions`.
+It does not replace the prepared normal development plugin. Keep FDE 0.7.9-dev and
+LSP4IJ workspace-diagnostics-patched3 installed; swap EmmyLua2 ZIPs and restart the
+IDE for each comparison. No completion-provider fix is included in either set.
+
+Analyzer pin: `bf7b5b74c7ea435c441ca1eefd8c9e8d0e7e2caf`. Signed standalone fix commits: `5fbac291`,
+`0307732f` on upstream/main `96545f45`. Nothing pushed and no PR opened.
+Final evidence/hashes: workspace `upstream/COMPLETION_COMPARISON_2026-10-14.md`.
+
+---
+
 # Local patched build
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where

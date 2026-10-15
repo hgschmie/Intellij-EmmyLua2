@@ -40,10 +40,10 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "155"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "156"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
-val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
+val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules-up008"
 val analyzerVersion = if (localAnalyzerPath == null) Versions.emmyluaAnalyzer else Versions.patchedAnalyzer
 version = "${analyzerVersion}-${runnerNumber}-IDEA${buildVersion}-${patchedSuffix}"
 
