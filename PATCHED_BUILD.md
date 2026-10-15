@@ -1,3 +1,26 @@
+# Current annotation-completion package — build157
+
+Version: `0.30.0-157-IDEA262-patched-modules-up008`. Analyzer pin: `1e303fabd5978fb79394b468e3a73b1f46a3f361`.
+Contains UP-053 (`fix/doc-type-completion`, signed `7e080f55`), independently based
+on upstream/main `96545f45`: visible API/library/metadata types are offered in
+annotations; qualified prefixes and mid-token edits complete correctly. Scope
+visibility is preserved. Both packages retain all previous analyzer fixes,
+including UP-051/UP-052. Only macOS arm64 contains the patched analyzer.
+
+This variant keeps UP-008 instead of UP-045 (one-off comparison only).
+The missing-suggestion repair is identical in both packages. It does not repair
+the separate diagnostic contention or edit/request ordering issues. Install one
+EmmyLua2 variant at a time and restart IntelliJ; leave custom server location empty
+to use the bundled analyzer. FDE remains 0.7.9-dev, LSP4IJ stays
+workspace-diagnostics-patched3. FDE's archive is unchanged.
+
+Build: `bash scripts/build-module-patch.sh`. ZIPs are copied into the common
+`upstream/Intellij-EmmyLua2/build/distributions` directory. Comparison builds use
+`build/prepared-up008`, never the normal prepared dependency. No push or PR.
+Final evidence: workspace `upstream/DOC_TYPE_COMPLETION_2026-10-14.md`.
+
+---
+
 # One-off UP-008 comparison — build156
 
 This branch is an experiment, not the normal development baseline. It contains
