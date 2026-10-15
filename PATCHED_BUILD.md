@@ -1,3 +1,23 @@
+# Class member identity — build160 (normal UP-045)
+
+Version: `0.30.0-160-IDEA262-patched-modules`.
+Analyzer pin: `cb881b4d10b9d3f71850b22e0c4c5d32b4f6fd40`.
+UP-057 (`fix/class-member-value-identity`, signed `d28acce3`) fixes false
+assignment mismatches for `M.__index = M` and other class-valued members. The
+declaration query preserves class/enum identity instead of expanding the runtime
+initializer into an anonymous table. Explicit types and invalid-assignment
+diagnostics remain intact. No prerequisite local patch; all existing work fixes
+remain included through signed cherry-pick `d0097b01`.
+
+Build with `bash scripts/build-module-patch.sh`. Copy the validated archive from
+the shared `upstream/Intellij-EmmyLua2/build/distributions` folder directly into
+workspace `plugins/`. Install the EmmyLua2 ZIP and restart IntelliJ; keep FDE
+0.8.3-dev and LSP4IJ patched4. Only macOS arm64 contains the patched analyzer.
+FDE's development analyzer pin is updated, but its existing ZIP is unchanged.
+The one-off UP-008 comparison remains at build159. No push, upstream PR or
+installation for this fix. Final test/protocol/package report:
+workspace `upstream/CLASS_MEMBER_IDENTITY_2026-10-15.md`.
+
 # Project diagnostics and require resolution — build159 (normal UP-045)
 
 Analyzer pin: `ce7e11e911c8788f7ce88e3db0af3573e45ceb33`. Includes UP-056: existing Lua modules no longer
