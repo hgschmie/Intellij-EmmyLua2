@@ -3,10 +3,10 @@ package com.cppcxy.ide.lsp;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Selects an externally managed EmmyLua LSP4IJ server for a file.
