@@ -2,7 +2,7 @@
 
 Use `work/patched-build` in `$WORKSPACE/upstream/Intellij-EmmyLua2-worktrees/patched-build`, where
 `WORKSPACE` is `~/ai/fmtk`. The current development package is
-`0.30.0-154-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
+`0.30.0-155-IDEA262-patched-modules`. Its plugin ID is unchanged, so installing
 this ZIP updates the existing EmmyLua2 plugin.
 
 The work branch is based on upstream main `a3a78d965d55a8d24ddfff41f839c0432c314cd0`.
@@ -13,6 +13,38 @@ calls at LTN request_processor.lua:811 and :910. Existing
 module, API, formatter and analyzer fixes remain included. LSP4IJ
 `0.21.1-SNAPSHOT-workspace-diagnostics-patched3` supplies workspace-pull support. The current analyzer contribution status is recorded below;
 no new upstream PRs are opened for this build.
+
+## Build 155 bare-table inference and namespace inheritance (2026-10-14)
+
+Analyzer pin `fb7a3502ae2c69aba522e4caed5860a40a23603e` includes two independent
+fix branches against upstream/main `96545f45`:
+
+- UP-049: `fix/bare-table-member-inference` (`c4694854`, `46d93e89`). Bare-table
+  members stay unrestricted, including after field guards and generic copies.
+  Structured generic object arguments retain their known field types.
+- UP-050: `fix/namespaced-constructor-inheritance` (`5dec3623`). Constructor field
+  existence and assigned-value checks resolve inherited members in the declaring
+  namespace, preserving required/optional/unknown-field validation.
+
+Signed cherry-picks `e205e991`, `3eabc2c5` and `e5b1656a` preserve the existing work
+baseline and pending dictionary/read-write patches. Both contribution branches
+remain local; no new PR or push. Standalone analysis suites pass 1,474 and 1,475
+tests respectively. All 2,645 combined workspace/all-feature Rust tests pass,
+as do Clippy with all targets/features and -D warnings, and rustfmt.
+
+Install build155 with existing FDE 0.7.9-dev and LSP4IJ workspace-diagnostics-patched3.
+FDE's development analyzer pin is updated; its ZIP is unchanged. Only macOS arm64
+receives the locally patched analyzer. Packaged protocol/platform evidence and
+final hashes are in workspace `upstream/DATA_UTIL_FIXES_2026-10-14.md`.
+
+The packaged-server check removes data-util.lua's false condition warnings at
+lines 26/29/32 and the inherited Sprite field errors. The namespace-only fixture
+has zero diagnostics; the four remaining warnings in the original file are its
+separate Sprite/coordinate annotation mismatches. Frozen LTN request_processor.lua
+and interface.lua remain warning-free. The original mod was not changed.
+Archive SHA-256: `4323e3590c66a0d8cf8e958df93382ca5abaf44468cbc7d3670e5d1168f11706`.
+Analyzer SHA-256: `ef8b6b6a9bb57494bf8bc6717703e186f5777726aea63bebc4a72da0bc1c5c4b`.
+Pins, binary identity and Unix0755 modes are verified.
 
 ## Build 154 workspace ownership (2026-10-14)
 
