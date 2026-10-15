@@ -31,3 +31,24 @@ owning project and environment, and remove them on disposal.
 
 Without a provider, the existing default-server behavior is preserved. This
 hook does not itself start multiple servers or impose a module isolation model.
+
+## Workspace ownership
+
+File routing keeps editor requests on the right server. To also keep the default
+analyzer from indexing integration-owned source directories, implement
+`EmmyLuaServerProvider.getOwnedRoots(Project)`. Return immutable absolute paths
+from the same snapshot used for file routing, including roots reserved while a
+server starts. Do not discover roots or start processes inside this callback.
+
+The default server removes owned workspace folders and appends `workspace.ignoreDir`
+through `workspace/configuration`. The exclusions also cover an owned module
+nested below a broader project root. Existing configuration files are not edited.
+Explicit library/package roots remain available as imports under EmmyLua's normal
+ignore-directory semantics; ownership controls the default workspace scan, not
+whether another environment may deliberately import a dependency.
+
+After updating the snapshot, call `EmmyLuaServerRouting.ownershipChanged(project)`
+on the EDT, then refresh affected editors. This stops the default server without
+disabling it or starting a new one. The next unclaimed Lua file starts it with the
+new roots, including when ownership is released. Existing per-file providers are
+compatible: the default implementation advertises no owned roots.
