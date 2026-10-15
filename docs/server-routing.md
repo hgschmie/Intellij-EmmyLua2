@@ -44,8 +44,9 @@ The default server removes owned workspace folders and appends `workspace.ignore
 through `workspace/configuration`. The exclusions also cover an owned module
 nested below a broader project root. Existing configuration files are not edited.
 Explicit library/package roots remain available as imports under EmmyLua's normal
-ignore-directory semantics; ownership controls the default workspace scan, not
-whether another environment may deliberately import a dependency.
+ignore-directory semantics; explicitly configured `workspaceRoots` also remain
+user-controlled. Ownership controls the automatically discovered workspace scan,
+not whether another environment may deliberately include a dependency.
 
 After updating the snapshot, call `EmmyLuaServerRouting.ownershipChanged(project)`
 on the EDT, then refresh affected editors. This stops the default server without
