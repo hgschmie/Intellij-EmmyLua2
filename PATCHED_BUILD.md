@@ -1,3 +1,28 @@
+# Enum assertions and inherited dictionaries — build161 (normal UP-045)
+
+Version: `0.30.0-161-IDEA262-patched-modules`.
+Analyzer pin: `d3dde8476c43c7e415d36f878030dfaa2f0eee1f`.
+
+- UP-058 (`fix/enum-cast-compatibility`, signed `183158c5`) restores primitive
+  casts to compatible enum values, including aliases and cross-file declarations.
+  This is a type assertion, without runtime validation or conversion.
+- UP-059 (`fix/inherited-dictionary-index`, signed `3704f8cd`) retains generic
+  key/value types from dictionary supertypes such as LuaCustomTable. Optional keys
+  produce nullable values. Explicit members and invalid-key diagnostics remain.
+
+Both standalone fixes are based independently on upstream/main `96545f45`.
+Their signed work cherry-picks preserve all earlier fixes. Separate work glue
+connects inherited contracts to UP-016/017's strict dictionary read/write policy.
+Both bugs reproduce in the initial upstream refactor, before our first merged PR.
+
+Build with `bash scripts/build-module-patch.sh`. Copy the validated ZIP from
+`upstream/Intellij-EmmyLua2/build/distributions` directly into workspace `plugins/`.
+Install that EmmyLua2 ZIP and restart IntelliJ. Keep FDE 0.8.3-dev and LSP4IJ
+patched4; only macOS arm64 contains the custom analyzer. The UP-008 comparison
+stays at build159. FDE's development pin advances, but its existing ZIP stays.
+No installation, push or PR performed. Final validation report:
+workspace `upstream/ENUM_CAST_CUSTOM_INDEX_2026-10-15.md`.
+
 # Class member identity — build160 (normal UP-045)
 
 Version: `0.30.0-160-IDEA262-patched-modules`.
