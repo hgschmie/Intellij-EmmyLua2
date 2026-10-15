@@ -23,21 +23,21 @@ server; unclaimed editors restart it on demand with fresh ownership. FDE 0.7.9-d
 publishes its reserved modules and managed library roots. Explicit analyzer
 workspace/library/package configuration stays under user control.
 
-Contribution branch `feat/workspace-root-ownership` (`c38ec8b`) is based on the
+Contribution branch `feat/workspace-root-ownership` (`b4573b5`) is based on the
 pending routing contribution `b9f1ce9` (UP-006/#60). Its signed work copies are
-`23ce780` and `61283d6`. No new PR or push.
+`23ce780`, `61283d6` and `c786770`. No new PR or push.
 
 Analyzer pin `bc5c9b5a3a1261e0acc17fb70ed93e626cd75a04` includes UP-048,
 `fix/mixed-config-key-merging` (`a9684a5c` on upstream/main `96545f45`). Normalizing
 configuration layers before merging preserves native dotted exclusions alongside
 the nested ownership overlay. The bug reproduced with both unit regressions and
 the real default-server test. All 1,472 standalone and 1,640 combined analysis
-tests pass, as do 29 EmmyLua2 tests. FDE platform/package evidence is recorded in
+tests pass, as do 30 EmmyLua2 tests. FDE platform/package evidence is recorded in
 workspace `upstream/WORKSPACE_OWNERSHIP_2026-10-14.md`.
 
 Install build154 with FDE 0.7.9-dev; keep LSP4IJ workspace-diagnostics-patched3.
 Only macOS arm64 receives the locally patched analyzer, as in previous builds.
-Archive SHA-256: `58eac2e7dcefedfd1fe9bbbfbae6c0e099c2557de39bb9be4c0b10b21308e4c1`.
+Archive SHA-256: `c09eaf6017bdc025dd6b6585b764e85c88eeb4f47687bcc81fd17ced3fe574da`.
 Analyzer SHA-256: `c516b027623dbb7544029df0e581dda4cb7bf949d8a1b8767f7031e8001a8a13`.
 
 ## Build 153 multi-root duplicate classes (2026-10-14)
