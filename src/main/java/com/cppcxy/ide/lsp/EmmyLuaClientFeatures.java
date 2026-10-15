@@ -34,18 +34,26 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
         if (isOwned(params.getRootUri(), owned)) {
             String uri = folders == null || folders.isEmpty() ? null : folders.get(0).getUri();
             params.setRootUri(uri);
-            params.setRootPath(uri == null ? null : Path.of(URI.create(uri)).toString());
+            Path path = localPath(uri);
+            params.setRootPath(path == null ? null : path.toString());
         }
         params.getCapabilities().getWorkspace().setConfiguration(true);
     }
 
     private static boolean isOwned(String uri, List<Path> owned) {
-        if (uri == null) return false;
+        Path file = localPath(uri);
+        if (file == null) return false;
+        Path path = canonical(file);
+        return owned.stream().anyMatch(root -> path.startsWith(canonical(root)));
+    }
+
+    private static Path localPath(String value) {
+        if (value == null) return null;
         try {
-            Path path = canonical(Path.of(URI.create(uri)));
-            return owned.stream().anyMatch(root -> path.startsWith(canonical(root)));
+            URI uri = URI.create(value);
+            return "file".equalsIgnoreCase(uri.getScheme()) ? Path.of(uri) : null;
         } catch (IllegalArgumentException e) {
-            return false; // A non-file URI cannot belong to a local directory.
+            return null;
         }
     }
 

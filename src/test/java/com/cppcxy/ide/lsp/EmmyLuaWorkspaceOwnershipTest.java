@@ -49,6 +49,15 @@ public class EmmyLuaWorkspaceOwnershipTest {
         assertEquals(plain.toString(), params.getRootPath());
     }
 
+    @Test public void preservesNonFileWorkspacesWithoutCreatingFilesystemPaths() {
+        var params = params(mod);
+        params.setWorkspaceFolders(List.of(new WorkspaceFolder(mod.toUri().toString(), "mod"),
+                new WorkspaceFolder("untitled:/scratch", "scratch")));
+        EmmyLuaClientFeatures.excludeOwnedRoots(params, List.of(mod));
+        assertEquals("untitled:/scratch", params.getRootUri());
+        assertNull(params.getRootPath());
+    }
+
     @Test public void leavesInitializationUntouchedWithoutOwnership() {
         var params = params(mod);
         EmmyLuaClientFeatures.excludeOwnedRoots(params, List.of());
