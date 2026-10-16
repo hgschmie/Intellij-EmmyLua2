@@ -40,12 +40,11 @@ private val buildDataList = listOf(
 private val buildVersion = System.getProperty("IDEA_VER") ?: buildDataList.first().ideaSDKShortVersion
 private val buildVersionData = buildDataList.find { it.ideaSDKShortVersion == buildVersion }
     ?: error("Unsupported IDEA version: $buildVersion")
-private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "171"
+private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "172"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
-val patchedSuffix = if (localAnalyzerPath == null) "patched" else "patched-modules"
 val analyzerVersion = if (localAnalyzerPath == null) Versions.emmyluaAnalyzer else Versions.patchedAnalyzer
-version = "${analyzerVersion}-${runnerNumber}-IDEA${buildVersion}-${patchedSuffix}"
+version = "${analyzerVersion}-${runnerNumber}"
 
 // 下载URL配置
 object DownloadUrls {

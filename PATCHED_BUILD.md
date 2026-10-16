@@ -1,3 +1,28 @@
+# Build 172 — shorter version and stop-update fixes (2026-10-16)
+
+Current archive: `IntelliJ-EmmyLua2-0.30.0-172.zip`. Plugin version: `0.30.0-172`.
+The build number is the local package identity; IDEA262/patched-modules suffixes
+are removed. `RUNNER_NUMBER` is shared by Gradle and archive validation.
+
+Analyzer pin: `3584adf440832a79863659e363f5d5f199ed3d08`.
+Adds UP-079 optional parameter contracts, UP-080 narrowed member hover and
+nullable receiver method documentation, and UP-081 pairs/ipairs entry facts.
+All earlier local fixes remain. Source branches and regression provenance are in
+workspace `upstream/LTN_STOP_UPDATE_2026-10-16.md`.
+
+Build with `CARGO_TARGET_DIR=../../emmylua-analyzer-rust/target` (or an absolute
+workspace-local path) and `bash scripts/build-module-patch.sh`; its default target
+also works. The script checks the committed analyzer pin and validates the ZIP,
+plugin descriptor, binary identity and Unix0755 modes before preparing the shared
+dependency. The shared archive remains in `upstream/Intellij-EmmyLua2/build/distributions/`;
+a validated copy is also in workspace-root `plugins/`.
+
+Validation: 2,844 analyzer workspace tests, Clippy/rustfmt, 30 Emmy routing/client
+tests, and real LSP replay of stop-update.lua/request_processor.lua. The initial
+sandboxed IntelliJ test JVM could not register with macOS AppKit; the permitted
+rerun outside the sandbox passed. Explicit outputs remain in the workspace.
+Only macOS arm64 contains this custom analyzer. FDE keeps 0.8.6-dev and its ZIP.
+
 # Refreshed upstream work stack — build171 (normal UP-045)
 
 Version: `0.30.0-171-IDEA262-patched-modules`.
