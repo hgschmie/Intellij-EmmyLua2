@@ -1,3 +1,29 @@
+# LTN tools.lua guard effects — build170 (normal UP-045)
+
+Version: `0.30.0-170-IDEA262-patched-modules`.
+Analyzer pin: `0f6001bb5bdb7c64abd7e918e1dff1d676805df9`.
+
+Includes UP-077 (upstream first-result truthiness backport) and UP-078
+(computed guard/assignment effect boundaries). Opaque calls preserve guards as
+requested; visible conflicting mutations still invalidate them. Child writes
+and nonconflicting nested loops preserve the parent container's guard.
+
+Standalone 1,547 analysis tests and combined 1,770 analysis/267 server tests pass,
+with Clippy and rustfmt. Release raw-LSP comparison against the current LTN
+script/tools.lua removes all three warnings, leaving zero diagnostics there.
+The full union/variadic upstream rewrite is deliberately not imported.
+
+Only EmmyLua2 needs installation. Keep FDE0.8.6-dev, LSP4IJ patched4 and normal
+UP-045. FDE's development analyzer pin changes without another FDE ZIP.
+Build with scripts/build-module-patch.sh; descriptor, pin, binary identity and
+0755 checks are built in. Copy the validated ZIP flat into workspace plugins/.
+Only macOS arm64 contains the patched analyzer. No push, PR or IDE installation.
+Final integration/package evidence: workspace upstream/LTN_TOOLS_GUARDS_2026-10-16.md.
+Packaged current tools.lua has zero diagnostics; the frozen full-mod baseline
+falls86→82 (72→68 warnings, unchanged14 hints), with no new diagnostics.
+FDE64 unit tests and two native API tests pass (one existing unit skip).
+Archive SHA256: `3bc8c043cd24f575cce4996e2bfdfdcdee6c9785736f48c8a6f1bdbb3875d7b1`.
+
 # LTN dictionary keys and assignment contracts — build169 (normal UP-045)
 
 Version: `0.30.0-169-IDEA262-patched-modules`.
