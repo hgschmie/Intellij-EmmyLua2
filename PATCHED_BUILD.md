@@ -1,3 +1,27 @@
+# init.lua and remote interface fixes — build165 (normal UP-045)
+
+Version: `0.30.0-165-IDEA262-patched-modules`.
+Analyzer pin: `312a96f93c7161326855e2fb33c55dc3aca748eb`.
+
+Includes UP-064 (declared member self-assignment inference), UP-065 (unknown
+logical-and guards), and UP-066 (dependent generic remote-call constraints).
+The UP-066 checker follow-up and an UP-019 integration adjustment preserve
+generated API generic argument checks and return signatures.
+Each is an independent signed fix branch on upstream/main 96545f45, integrated
+through signed cherry-picks while preserving the local stack. UP-066 predates
+our merged contributions: it fails at the initial upstream analyzer rewrite.
+
+Build using `scripts/build-module-patch.sh`; its native build, pin, archive and
+0755 verification remain unchanged. The local patched server is macOS arm64 only.
+The validated ZIP is retained in both build/distributions locations and copied
+flat into workspace plugins/. Retain the existing FDE 0.8.3-dev and LSP4IJ patched4
+archives; update only FDE's development analyzer pin. UP-008 comparison remains159.
+Validation: 1,731 combined analyzer tests, 267 server tests, Clippy/rustfmt and
+both native FDE API integration tests pass. Packaged raw-LSP checks clear all
+20 init.lua diagnostics and preserve the other checked LTN baselines. Full
+validation/provenance is in workspace upstream/INIT_REMOTE_FIXES_2026-10-15.md.
+No new PR, push, original-mod edit or IDE installation for this build.
+
 # Declared field hover — build164 (normal UP-045)
 
 Version: `0.30.0-164-IDEA262-patched-modules`.
