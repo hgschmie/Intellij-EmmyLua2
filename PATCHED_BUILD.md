@@ -1,3 +1,31 @@
+# Refreshed upstream work stack — build171 (normal UP-045)
+
+Version: `0.30.0-171-IDEA262-patched-modules`.
+Analyzer pin: `ea1f7fbb2134f50522f4178ade5dcc0732d8725e`.
+
+The analyzer work branch is reconstructed on upstream/main `ef6c06a7` with all
+54 retained contributions and the work-only API/integration changes. Obsolete
+UP-009 and already-upstream UP-077 are omitted; UP-008 remains inactive.
+Full validation passes 2,832 tests (1,823 analysis / 267 server), Clippy with
+warnings denied and rustfmt. The frozen LTN replay improves 82 → 81 diagnostics,
+with no new diagnostic locations. request_processor.lua and the newer tools.lua
+snapshot remain clear. EmmyLua2's 30 client/routing tests pass.
+
+Only macOS arm64 contains the custom analyzer. Build with
+`scripts/build-module-patch.sh`; it verifies the descriptor, analyzer pin, binary
+identity and Unix 0755 permissions. Copy the validated archive directly into
+workspace `plugins/`. FDE keeps 0.8.6-dev and its existing ZIP. LSP4IJ is maintained
+separately and is not rebuilt or modified by this task. No IDE installation,
+push or PR operation. Final artifact/integration receipt:
+workspace `upstream/ANALYZER_WORK_REBUILD_2026-10-16.md`.
+
+FDE compatibility: 64 unit tests pass (one existing skip), plus all eight
+native IntelliJ checks after correcting the test's asynchronous-restart wait.
+The final packaged server matches the release replay. Archive SHA256:
+`73124b9fe3be4eb737c085fb1848951f326707092fa06edb31fc883d414bfc4b`.
+
+Older build entries below are historical.
+
 # LTN tools.lua guard effects — build170 (normal UP-045)
 
 Version: `0.30.0-170-IDEA262-patched-modules`.
