@@ -1,3 +1,27 @@
+# Guarded collections and loop-carried values — build162 (normal UP-045)
+
+Version: `0.30.0-162-IDEA262-patched-modules`.
+Analyzer pin: `37ab7b5b78083973a589d465183f46abcfd56b90`.
+
+- UP-060 (`fix/stable-global-index-guards`, signed `d5b17179`) extends shared
+  condition facts to global roots, literal/field keys and inherited dictionary
+  contracts. Guards remain invalidated by mutations, calls and scope changes;
+  explicit `__index` handlers remain conservative. Prerequisites: UP-033/059.
+- UP-061 (`fix/loop-carried-literal-types`, signed `54ea951c`) accounts for
+  assignments from later loop iterations instead of retaining the initial literal
+  value. Fresh locals, independent resets and annotated parameter/local contracts
+  keep their appropriate precision. This fix is independent on upstream/main.
+
+Both minimal bugs reproduce in the initial upstream refactor, before our first
+merged contribution. Signed work picks preserve all existing fixes. Build with
+`bash scripts/build-module-patch.sh`; copy the verified archive from the shared
+`upstream/Intellij-EmmyLua2/build/distributions` folder directly to `plugins/`.
+Only macOS arm64 receives the patched analyzer. Install this EmmyLua2 ZIP and
+restart IntelliJ; keep FDE 0.8.3-dev and LSP4IJ patched4. FDE's development pin
+advances without a new FDE ZIP. UP-008 comparison remains build159.
+No IDE installation, push or PR for the new fixes. Final evidence/report:
+workspace `upstream/CONSOLE_GUARDS_LOOP_2026-10-15.md`.
+
 # Enum assertions and inherited dictionaries — build161 (normal UP-045)
 
 Version: `0.30.0-161-IDEA262-patched-modules`.
