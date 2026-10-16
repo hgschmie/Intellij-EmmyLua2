@@ -1,3 +1,24 @@
+# Numeric enum literal compatibility — build163 (normal UP-045)
+
+Version: `0.30.0-163-IDEA262-patched-modules`.
+Analyzer pin: `d213c89b6127f5a9a497920b94f1b48b525eeb0c`.
+
+UP-062 (`fix/enum-literal-compatibility`, signed `8b7d14af`) fixes false
+mismatches for numeric enum members in returns, arguments and assignments.
+Membership uses the table initializer in the defining file, including aliases
+and optional enum targets. Every source alternative must satisfy the enum
+contract; a nil alternative cannot hide an invalid literal.
+
+This independent upstream/main fix complements UP-028's cross-file lookup,
+UP-031's class-valued enum members and UP-058's explicit enum casts. Signed
+work pick `e5b987cf` preserves all existing fixes. Only macOS arm64 receives
+the patched analyzer. Build with `bash scripts/build-module-patch.sh` and
+copy the validated ZIP from the shared distributions folder directly to plugins/.
+Keep FDE 0.8.3-dev and LSP4IJ patched4; FDE's development analyzer pin advances
+without producing a new FDE archive. The UP-008 comparison remains build159.
+No push, PR or IDE installation. Final validation and provenance:
+workspace `upstream/ENUM_LITERAL_COMPATIBILITY_2026-10-15.md`.
+
 # Guarded collections and loop-carried values — build162 (normal UP-045)
 
 Version: `0.30.0-162-IDEA262-patched-modules`.
