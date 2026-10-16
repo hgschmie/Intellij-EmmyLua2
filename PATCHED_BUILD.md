@@ -1,3 +1,26 @@
+# LTN guard and loop fixes — build168 (normal UP-045)
+
+Version: `0.30.0-168-IDEA262-patched-modules`.
+Analyzer pin: `19f594561ee476f888b044269f0f976df67f6dd0`.
+
+Includes UP-071–074: stable nested/global dictionary initialization, computed
+class-field guards, optional-field conditions and loop-exit assignments. Work
+integration preserves inline casts with UP-061 and optional-field guards in large
+functions. Actual cycle paths remain conservatively uncached; acyclic loop
+summaries avoid repeated declaration traces.
+
+All 1,758 combined analysis tests and 267 server tests pass with all features,
+as do Clippy and rustfmt. Standalone fixes have independent regression coverage.
+See workspace upstream/LTN_FLOW_TRIAGE_2026-10-15.md for full evidence and the
+remaining LTN diagnostics. Install with FDE0.8.6-dev for the separate Problems
+information/hint counts and filters. Keep LSP4IJ patched4; UP-008 comparison159
+is unchanged. Only macOS arm64 receives the custom analyzer.
+
+Build using scripts/build-module-patch.sh. Its archive checks verify the pin,
+descriptor, binary identity and Unix0755 modes. Copy the validated ZIP flat into
+workspace plugins/. Previous outstanding heads were pushed first; these new
+fixes remain local. No PR or IDE installation.
+
 # LocalisedString arrays — build167 (normal UP-045)
 
 Version: `0.30.0-167-IDEA262-patched-modules`.
