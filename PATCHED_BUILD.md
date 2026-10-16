@@ -1,3 +1,28 @@
+# LocalisedString arrays — build167 (normal UP-045)
+
+Version: `0.30.0-167-IDEA262-patched-modules`.
+Analyzer pin: `624585085b10e6ae2c7bad7d443edf3c14b5e873`.
+
+UP-069 (`fix/array-union-alias-compatibility`, signed a916fa61; work pick
+bcb37d34) accepts arrays through named/recursive union alternatives in casts,
+returns and arguments. Element checks and recursion guards remain in force.
+All 1,477 standalone /1,747 combined analysis and 267 server tests pass, including
+slow-feature coverage, as do Clippy and rustfmt.
+UP-041's named-union argument handling is complementary, not a prerequisite.
+
+Install with FDE 0.8.5-dev, which bundles UP-070's documented LocalisedString
+runtime/data aliases, including runtime nil. The original #1195 false warning
+no longer reproduces; invalid-field controls remain rejected. The native FDE
+regression fails as expected with build166 and the corrected aliases.
+
+Build with scripts/build-module-patch.sh; validation checks Unix0755 modes and
+checks the pin, descriptor and binary identity. Only macOS arm64 receives our
+custom analyzer. Keep LSP4IJ patched4 and the UP-008 comparison159 unchanged.
+Copy the validated ZIP flat into workspace plugins/. Full test/package evidence:
+workspace upstream/LOCALISED_STRING_FIXES_2026-10-15.md.
+Prior outstanding commits were pushed first; new changes remain local. No PR or
+IDE installation.
+
 # Named variadic compatibility — build166 (normal UP-045)
 
 Version: `0.30.0-166-IDEA262-patched-modules`.
