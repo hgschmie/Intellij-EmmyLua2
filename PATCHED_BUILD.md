@@ -1,3 +1,24 @@
+# Named variadic compatibility — build166 (normal UP-045)
+
+Version: `0.30.0-166-IDEA262-patched-modules`.
+Analyzer pin: `6f99b56090ffef93a6a3c5464a38c3d32efbe24a`.
+
+UP-067 (`fix/variadic-named-type-compatibility`, signed 4982e0ee; work pick
+792564e1) routes genuine variadic enum/class/alias elements through ordinary
+compatibility checks. Incompatible types remain rejected. All 1,739 combined
+analysis and 267 server tests, Clippy and rustfmt pass.
+
+Remote calls also need UP-068's corrected FMTK annotation: ReturnType<FF> already
+represents the complete return sequence in EmmyLua, so it must not be wrapped in
+another ellipsis. InterfaceMap lookup itself works. FDE 0.8.4-dev bundles that
+separate toolkit fix. Install both packages; keep LSP4IJ patched4. The older
+UP-008 comparison159 is unchanged. Only macOS arm64 receives the patched analyzer.
+
+Build with scripts/build-module-patch.sh. Archive pin, binary identity, descriptor
+and executable-mode validation remain enabled; copy the validated ZIP flat into
+workspace plugins/. Full evidence is in workspace
+upstream/VARIADIC_NAMED_TYPES_2026-10-15.md. No push, PR or IDE installation.
+
 # init.lua and remote interface fixes — build165 (normal UP-045)
 
 Version: `0.30.0-165-IDEA262-patched-modules`.
