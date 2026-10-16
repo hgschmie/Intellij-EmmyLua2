@@ -1,3 +1,25 @@
+# LTN dictionary keys and assignment contracts — build169 (normal UP-045)
+
+Version: `0.30.0-169-IDEA262-patched-modules`.
+Analyzer pin: `d6a763941c80d17046b4356d7e7caa243ba48073`.
+
+Includes independent UP-075 (string aliases as dictionary/class index keys) and
+UP-076 (mutable inferred literal assignment contracts). Explicit annotations,
+inline assertions, named casts and literal read precision remain intact.
+UP-075 shares alias expansion with UP-042 in the combined work branch.
+Each standalone fix passes 1,521 analysis tests, Clippy and rustfmt on upstream
+ca9bec3b. Combined validation passes 1,764 analysis and 267 server tests, Clippy
+and rustfmt. Packaged LTN diagnostics drop from 89 to86 (75 to72 warnings,
+unchanged14 hints), with no new diagnostics and request_processor.lua still clear. The larger new upstream union refactor is not included in this package.
+See workspace upstream/LTN_PRIORITY_FOLLOWUPS_2026-10-16.md for combined tests,
+packaged LTN results, prioritization and the pre-existing class-key limitation.
+
+Only EmmyLua2 needs installation. Keep FDE0.8.6-dev, LSP4IJ patched4 and normal
+UP-045. FDE's development pin is updated without producing another FDE ZIP.
+Build with scripts/build-module-patch.sh; it checks descriptor, analyzer pin,
+binary identity and Unix0755 modes. Only macOS arm64 has the custom analyzer.
+Copy the ZIP flat into workspace plugins/. No push, PR or IDE installation.
+
 # LTN guard and loop fixes — build168 (normal UP-045)
 
 Version: `0.30.0-168-IDEA262-patched-modules`.
