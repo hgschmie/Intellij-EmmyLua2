@@ -1,3 +1,24 @@
+# Declared field hover — build164 (normal UP-045)
+
+Version: `0.30.0-164-IDEA262-patched-modules`.
+Analyzer pin: `a03b57592474a34596e92b0956e6e5b99188429a`.
+
+UP-063 (`fix/declared-field-hover`, signed `aa1a7abc`) retains the declared field
+contract on assignment-target hovers while still displaying the assigned literal.
+LTN `storage.tick_state` now shows `ltn.TickState = 0` instead of `number = 0`.
+The receiver is resolved in scope, including globals and nested generic fields.
+Explicit runtime annotations, function signatures and untyped fields retain
+existing behavior. Core inference and diagnostics are unchanged. No pending
+prerequisite; UP-062's numeric enum compatibility fix is complementary.
+Signed work pick: `3eed5f00`.
+
+Build with `bash scripts/build-module-patch.sh`. Copy the validated archive from
+the shared distributions folder directly to plugins/. Only macOS arm64 receives
+the patched analyzer. Keep FDE 0.8.3-dev and LSP4IJ patched4; FDE's development
+pin advances without a new ZIP. UP-008 comparison remains build159.
+No push, PR or IDE installation. Final evidence:
+workspace `upstream/DECLARED_FIELD_HOVER_2026-10-15.md`.
+
 # Numeric enum literal compatibility — build163 (normal UP-045)
 
 Version: `0.30.0-163-IDEA262-patched-modules`.
