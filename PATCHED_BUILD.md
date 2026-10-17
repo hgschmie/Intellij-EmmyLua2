@@ -1,3 +1,32 @@
+# UP-008 comparison — build 172 (2026-10-16)
+
+Archive and descriptor version: `IntelliJ-EmmyLua2-0.30.0-172-UP-008.zip`
+and `0.30.0-172-UP-008`. This experiment branches from normal build172
+(`cf99251`); Java/Kotlin client code is unchanged. The analyzer retains every
+current fix, replacing only UP-045 with UP-008's document-diagnostic refresh.
+The normal work branch and FDE's analyzer pin stay unchanged.
+
+Build with `CARGO_TARGET_DIR=/Users/henning/ai/fmtk/upstream/emmylua-analyzer-rust/target
+bash scripts/build-module-patch.sh` (set the environment variable on the same
+command line). The script defaults to analyzer checkout
+`upstream/emmylua-analyzer-rust/build/checkouts/up008-build172` and checks
+`analyzer.lock` before building (pin `899bb485d20a8bf0bc6778b5356be6f9f3072e62`). Use its own target when another Cargo build is
+running. Only macOS arm64 contains the custom analyzer.
+
+The script validates the plugin descriptor, embedded pin, server hash and Unix
+0755 permissions. Its verification copy is isolated at
+`upstream/Intellij-EmmyLua2/build/prepared-up008-build172/IntelliJ-EmmyLua2`.
+Keep the normal `build/prepared/IntelliJ-EmmyLua2` dependency intact. The original
+ZIP remains in this checkout's `build/distributions/`, with a shared repository
+copy; copy the validated ZIP directly into workspace `plugins/`.
+
+Install this EmmyLua2 ZIP for comparison, then restart IntelliJ. Keep FDE
+0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7. Leave EmmyLua's custom server location
+empty to use the bundled server. Switch back by installing normal build172.
+No push, PR or automatic IDE installation is part of this experiment.
+Final validation and checksums: workspace `upstream/UP008_COMPARISON_BUILD172.md`.
+Earlier entries below document normal-build deliveries.
+
 # Build 172 — shorter version and stop-update fixes (2026-10-16)
 
 Current archive: `IntelliJ-EmmyLua2-0.30.0-172.zip`. Plugin version: `0.30.0-172`.
