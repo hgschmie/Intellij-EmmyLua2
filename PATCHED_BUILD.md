@@ -1,3 +1,29 @@
+# Build 179 — negative numeric literals (2026-10-17)
+
+Version/archive: `0.30.0-179` / `IntelliJ-EmmyLua2-0.30.0-179.zip`.
+Analyzer pin: `72e366218c4a1d6508d8ba97866413cebf1b5300`.
+UP-090 `fix/negative-literal-hover` / signed `95d49887` fixes numeric unary-minus
+inference and hovering the complete signed literal. Signed work pick `a0931520`
+preserves UP-036 length inference, directional fields and metatable hover.
+All 2,902 combined workspace tests, workspace Clippy and rustfmt pass.
+Standalone: 1,522 analysis and 229 server tests pass, with Clippy/rustfmt.
+
+Build with `bash scripts/build-module-patch.sh`; its archive validation checks
+version, embedded pin, server identity and Unix0755 modes. Copy into the flat
+workspace plugins/ folder. Only macOS arm64 receives the custom analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development pin
+after package validation. Normal UP-045/UP-082 are retained.
+No push, PR or IDE installation requested. Delivery evidence is recorded in
+`upstream/LTN_NEGATIVE_LITERAL_HOVER_2026-10-17.md`.
+
+Packaged replay of the frozen real LTN init.lua143 now returns `-1` at both
+sign and digit positions, with one range covering the whole expression. The
+full frozen LTN scan is identical to build178 (104 diagnostics; request_processor
+still zero). Both forced native IntelliJ integration tests pass, with fresh
+2-test XML and no failures/errors/skips. ZIP SHA-256:
+`0e587f82b57b42bbe7d84d9f5f68b4ac71547d9ced678474c2d7ea4d19b39576`.
+The validated archive is copied flat into workspace plugins/.
+
 # Build 178 — contextual callbacks and table-field hover (2026-10-17)
 
 Version/archive: `0.30.0-178` / `IntelliJ-EmmyLua2-0.30.0-178.zip`.
