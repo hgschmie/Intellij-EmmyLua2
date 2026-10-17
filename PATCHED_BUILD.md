@@ -1,3 +1,20 @@
+# Build 174 — nested receiver field contracts (2026-10-17)
+
+Version/archive: `0.30.0-174` / `IntelliJ-EmmyLua2-0.30.0-174.zip`.
+Analyzer pin: `d4f2b723b0bc8b58fe74391e93190b9de257a13d`.
+UP-083 (`fix/nested-member-field-contracts`, `7daee751`) preserves declared
+fields on narrowed nested receivers instead of using an inferred runtime write.
+This fixes the LTN stop-update.lua601/608 integer-alias self-update warnings.
+Normal UP-045 and the UP-082 performance fix are retained.
+
+Build using `bash scripts/build-module-patch.sh`. It validates the embedded
+pin/version, binary identity and Unix0755 permissions. Copy the validated ZIP
+flat into workspace `plugins/`. Only macOS arm64 contains the custom analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update only FDE's development
+analyzer pin. Final standalone/combined/native/replay validation and package
+receipt: workspace `upstream/LTN_NESTED_FIELD_CONTRACTS_2026-10-17.md`.
+No push, upstream PR or user IDE installation.
+
 # Build 173 — member-flow performance (2026-10-16)
 
 Archive/version: `IntelliJ-EmmyLua2-0.30.0-173.zip` / `0.30.0-173`.
