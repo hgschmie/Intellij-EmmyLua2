@@ -1,3 +1,21 @@
+# Build 177 — optional member hover presentation (2026-10-17)
+
+Version/archive: `0.30.0-177` / `IntelliJ-EmmyLua2-0.30.0-177.zip`.
+Analyzer pin: `c31e503d74deaf8e49eb40f0cdf570a348785ff5`.
+UP-080 amendment `33e7abe3` is integrated as `a70ecda2`; UP-087 independent
+`fix/optional-class-hover-fields` / `a8c897fe` is integrated through `82e42ad5`
+and final work glue `aa7fb451`. Casts and guards narrow direct member hovers;
+expanded object/class summaries retain optional field markers. The integration
+preserves receiver-specific flow, generic optional fields, writes and method docs.
+
+All 2,885 combined workspace tests, workspace Clippy and rustfmt pass. Build with
+`bash scripts/build-module-patch.sh`; archive pin/version, server identity and
+Unix0755 modes are validated. Keep all variants flat in workspace plugins/.
+Only macOS arm64 includes the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
+0.21.1-SNAPSHOT-7; update FDE's development pin after the package is validated.
+Normal UP-045/UP-082 remain. Receipt: `upstream/LTN_OPTIONAL_HOVER_2026-10-17.md`.
+No push, PR or user IDE installation.
+
 # Build 176 — nullable class arguments (2026-10-17)
 
 Version/archive: `0.30.0-176` / `IntelliJ-EmmyLua2-0.30.0-176.zip`.
