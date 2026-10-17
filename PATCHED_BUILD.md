@@ -1,3 +1,32 @@
+# Build 178 — contextual callbacks and table-field hover (2026-10-17)
+
+Version/archive: `0.30.0-178` / `IntelliJ-EmmyLua2-0.30.0-178.zip`.
+Analyzer pin: `d69ba527115d65f2bd5ca2eabb56913223655c7a`.
+UP-088 `fix/contextual-callback-parameters` / `4cedbc3a` supplies declared
+callback parameter types from dictionary values and annotated local initializers.
+UP-089 `fix/table-field-hover-context` / `aaae6fcf` stops table-field annotations
+and constructor hover context leaking onto members inside callback bodies.
+Independent on upstream/main d823745f; signed work picks c56755b4/dd91889d
+preserve the work baseline. Integration d69ba527 checks strict/non-strict
+callback hovers with and without individual entry annotations.
+
+All 2,897 combined workspace tests, Clippy and rustfmt pass. Build with
+`bash scripts/build-module-patch.sh`; it verifies the descriptor version,
+embedded analyzer pin, binary identity and Unix0755 modes. Copy flat into
+workspace plugins/. Only macOS arm64 receives the custom analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development
+analyzer pin after validating this archive. Normal UP-045/UP-082 are retained.
+Receipt: `upstream/LTN_CONTEXTUAL_CALLBACKS_2026-10-17.md`.
+Packaged LSP replay confirms all six minimal callback variants and every callback
+parameter in the updated real settings.lua. Its message_level/member hovers retain
+integer/boolean/number contracts. The frozen full LTN scan changes 79→104:
+settings.lua gains newly visible assignment-contract warnings (34→58), and
+stop-update.lua17 gains a valid always-truthy check on integer signal.count.
+Both forced native IntelliJ API/separate-workspace and asymmetric-attribute tests
+pass. ZIP SHA-256: `815661e90e75252cf1e1877d68c3ce74f46c71c95afe1af8115b9394b80b1586`.
+Earlier outstanding work was pushed first; these new fixes/builds stay local.
+No PR or IDE installation. Function-keyword hover remains language help.
+
 # Build 177 — optional member hover presentation (2026-10-17)
 
 Version/archive: `0.30.0-177` / `IntelliJ-EmmyLua2-0.30.0-177.zip`.
