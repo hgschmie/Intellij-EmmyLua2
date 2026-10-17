@@ -44,7 +44,7 @@ private val runnerNumber = System.getenv("RUNNER_NUMBER") ?: "173"
 
 val localAnalyzerPath = providers.gradleProperty("localAnalyzerPath").orNull
 val analyzerVersion = if (localAnalyzerPath == null) Versions.emmyluaAnalyzer else Versions.patchedAnalyzer
-version = "${analyzerVersion}-${runnerNumber}"
+version = "${analyzerVersion}-${runnerNumber}-UP-008"
 
 // 下载URL配置
 object DownloadUrls {

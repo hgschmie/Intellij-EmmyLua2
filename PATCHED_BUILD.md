@@ -1,3 +1,21 @@
+# UP-008 comparison — build173 (2026-10-16)
+
+Archive/version: `IntelliJ-EmmyLua2-0.30.0-173-UP-008.zip` / `0.30.0-173-UP-008`.
+Analyzer `da77e58e42d0072c5bf9dd308975753db5c74ddf` replaces only UP-045 with UP-008 on normal work
+ec216e69, retaining UP-082 and all other current fixes. Client code is identical
+to normal build173. The prepared copy is isolated in
+`upstream/Intellij-EmmyLua2/build/prepared-up008-build173/IntelliJ-EmmyLua2`.
+
+Build using `bash scripts/build-module-patch.sh` and a workspace-local Cargo
+target. The script checks the clean pinned source and validates the descriptor,
+binary identity and Unix0755 modes before preparing the dependency. Keep the
+normal prepared folder and FDE pin unchanged. Copy the validated archive flat
+into workspace plugins/. Only macOS arm64 contains the custom analyzer.
+
+Install either this variant or normal173 and restart IntelliJ. Keep FDE0.8.6-dev
+and LSP4IJ0.21.1-SNAPSHOT-7. No automatic installation, PR or push.
+Final receipt: workspace upstream/ANALYZER_EDIT_LATENCY_2026-10-16.md.
+
 # Build 173 — member-flow performance (2026-10-16)
 
 Archive/version: `IntelliJ-EmmyLua2-0.30.0-173.zip` / `0.30.0-173`.

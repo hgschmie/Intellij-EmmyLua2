@@ -3,7 +3,7 @@ set -euo pipefail
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 REPOSITORY_ROOT="$(dirname "$(git -C "$PLUGIN_ROOT" rev-parse --path-format=absolute --git-common-dir)")"
 WORKSPACE="$(cd "$REPOSITORY_ROOT/../.." && pwd)"
-ANALYZER="${FMTK_ANALYZER_PATH:-$WORKSPACE/upstream/emmylua-analyzer-rust/build/checkouts/intellij-work}"
+ANALYZER="${FMTK_ANALYZER_PATH:-$WORKSPACE/upstream/emmylua-analyzer-rust/build/checkouts/up008-build173}"
 if [ "$(uname -m)" != arm64 ]; then
   echo 'This development package builds the patched server for macOS arm64 only.' >&2
   exit 1
@@ -40,9 +40,9 @@ import xml.etree.ElementTree as ET
 
 plugin, workspace, binary = map(Path, sys.argv[1:])
 version = subprocess.check_output([str(binary), '--version'], text=True).strip().split()[-1]
-package_version = f'{version}-{os.environ["RUNNER_NUMBER"]}'
+package_version = f'{version}-{os.environ["RUNNER_NUMBER"]}-UP-008'
 archive = plugin / f'build/distributions/IntelliJ-EmmyLua2-{package_version}.zip'
-target = workspace / 'upstream/Intellij-EmmyLua2/build/prepared'
+target = workspace / 'upstream/Intellij-EmmyLua2/build/prepared-up008-build173'
 target.mkdir(parents=True, exist_ok=True)
 with tempfile.TemporaryDirectory(dir=target.parent) as temporary:
     extracted = Path(temporary) / 'IntelliJ-EmmyLua2'
