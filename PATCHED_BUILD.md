@@ -1,3 +1,21 @@
+# Build 175 — receiver documentation and explicit method display (2026-10-17)
+
+Version/archive: `0.30.0-175` / `IntelliJ-EmmyLua2-0.30.0-175.zip`.
+Analyzer pin: `9f1b230a529f61b3695dc45cb6bf71757e84f448`.
+UP-084 (`fix/flow-receiver-hover`, `a6ec9d6a`) recovers member documentation
+for receivers whose class becomes known through later assignments. UP-085
+(`fix/explicit-method-hover`, `355a672f`) displays a colon only for an explicit
+colon declaration or first parameter named self/_self. Both fixes are merged
+into the work branch; UP-080, normal UP-045 and UP-082 are retained.
+
+The combined workspace passes 2,861 Rust tests plus Clippy/rustfmt. Build with
+`bash scripts/build-module-patch.sh`; copy the verified ZIP flat into plugins/.
+Only macOS arm64 contains the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
+0.21.1-SNAPSHOT-7; update only FDE's development analyzer pin.
+Final packaged replay/native validation and archive receipt: workspace
+`upstream/LTN_STOP_EVENTS_HOVER_FIXES_2026-10-17.md`.
+No push, upstream PR or user IDE installation.
+
 # Build 174 — nested receiver field contracts (2026-10-17)
 
 Version/archive: `0.30.0-174` / `IntelliJ-EmmyLua2-0.30.0-174.zip`.
