@@ -1,3 +1,23 @@
+# Build 176 — nullable class arguments (2026-10-17)
+
+Version/archive: `0.30.0-176` / `IntelliJ-EmmyLua2-0.30.0-176.zip`.
+Analyzer pin: `b128755c9adaab03ffd75a6ed19d7236357def62`.
+UP-086 (`fix/nullable-required-arguments`, `38d309c6`) is independently based on
+upstream/main d823745f and integrated as signed pick `31d29cf8`, avoiding the
+unrelated upstream refactor. Nullable class values now warn when passed to
+required parameters; optional contracts and guarded values remain accepted.
+Work-only strict dictionary coverage is included. Normal UP-045/UP-082 remain.
+
+All 2,871 combined Rust tests, Clippy and rustfmt pass. Build with
+`bash scripts/build-module-patch.sh`; it verifies the embedded version/pin,
+server identity and Unix0755 modes. Copy the validated ZIP flat into plugins/.
+Only macOS arm64 contains the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
+0.21.1-SNAPSHOT-7; update only FDE's development analyzer pin.
+Final packaged/native verification and scope limits are recorded in workspace
+`upstream/LTN_NULLABLE_CONNECTOR_ARGUMENT_2026-10-17.md`.
+Existing work/fix/comparison branches were pushed before this task. No new PR
+or user IDE installation. General primitive/callback union behavior is unchanged.
+
 # Build 175 — receiver documentation and explicit method display (2026-10-17)
 
 Version/archive: `0.30.0-175` / `IntelliJ-EmmyLua2-0.30.0-175.zip`.
