@@ -1,3 +1,20 @@
+# Build 173 — member-flow performance (2026-10-16)
+
+Archive/version: `IntelliJ-EmmyLua2-0.30.0-173.zip` / `0.30.0-173`.
+Normal UP-045 scheduling is retained. UP-082 memoizes safe member-flow states;
+the exact LTN annotation-edit replay drops from about 15 s to 340 ms without
+changing diagnostics. Background workspace pulls can still cause contention.
+All 2,846 combined workspace tests pass, plus Clippy, rustfmt and focused
+branch/cast/acyclic-loop regressions. The defect predates our merged patches.
+
+Analyzer pin: `ec216e69381ce505d08b6dc1707b031c2e8caabc`. Source: standalone
+`fix/member-flow-trace-memoization` (`54aaa7b8`), integrated as `95e1c923`.
+Build using `bash scripts/build-module-patch.sh`; archive validation checks the
+embedded pin, binary identity and Unix 0755 modes. Only macOS arm64 carries the
+custom server. A separate `173-UP-008` variant retains the comparison scheduler.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7. See workspace
+`upstream/ANALYZER_EDIT_LATENCY_2026-10-16.md` for final measurements and receipts.
+
 # Build 172 — shorter version and stop-update fixes (2026-10-16)
 
 Current archive: `IntelliJ-EmmyLua2-0.30.0-172.zip`. Plugin version: `0.30.0-172`.
@@ -13,7 +30,7 @@ workspace `upstream/LTN_STOP_UPDATE_2026-10-16.md`.
 Build with `CARGO_TARGET_DIR=../../emmylua-analyzer-rust/target` (or an absolute
 workspace-local path) and `bash scripts/build-module-patch.sh`; its default target
 also works. The script checks the committed analyzer pin and validates the ZIP,
-plugin descriptor, binary identity and Unix0755 modes before preparing the shared
+plugin descriptor, binary identity and Unix 0755 modes before preparing the shared
 dependency. The shared archive remains in `upstream/Intellij-EmmyLua2/build/distributions/`;
 a validated copy is also in workspace-root `plugins/`.
 
@@ -66,7 +83,7 @@ with Clippy and rustfmt. Release raw-LSP comparison against the current LTN
 script/tools.lua removes all three warnings, leaving zero diagnostics there.
 The full union/variadic upstream rewrite is deliberately not imported.
 
-Only EmmyLua2 needs installation. Keep FDE0.8.6-dev, LSP4IJ patched4 and normal
+Only EmmyLua2 needs installation. Keep FDE 0.8.6-dev, LSP4IJ patched4 and normal
 UP-045. FDE's development analyzer pin changes without another FDE ZIP.
 Build with scripts/build-module-patch.sh; descriptor, pin, binary identity and
 0755 checks are built in. Copy the validated ZIP flat into workspace plugins/.
@@ -93,10 +110,10 @@ unchanged14 hints), with no new diagnostics and request_processor.lua still clea
 See workspace upstream/LTN_PRIORITY_FOLLOWUPS_2026-10-16.md for combined tests,
 packaged LTN results, prioritization and the pre-existing class-key limitation.
 
-Only EmmyLua2 needs installation. Keep FDE0.8.6-dev, LSP4IJ patched4 and normal
+Only EmmyLua2 needs installation. Keep FDE 0.8.6-dev, LSP4IJ patched4 and normal
 UP-045. FDE's development pin is updated without producing another FDE ZIP.
 Build with scripts/build-module-patch.sh; it checks descriptor, analyzer pin,
-binary identity and Unix0755 modes. Only macOS arm64 has the custom analyzer.
+binary identity and Unix 0755 modes. Only macOS arm64 has the custom analyzer.
 Copy the ZIP flat into workspace plugins/. No push, PR or IDE installation.
 
 # LTN guard and loop fixes — build168 (normal UP-045)
@@ -113,12 +130,12 @@ summaries avoid repeated declaration traces.
 All 1,758 combined analysis tests and 267 server tests pass with all features,
 as do Clippy and rustfmt. Standalone fixes have independent regression coverage.
 See workspace upstream/LTN_FLOW_TRIAGE_2026-10-15.md for full evidence and the
-remaining LTN diagnostics. Install with FDE0.8.6-dev for the separate Problems
+remaining LTN diagnostics. Install with FDE 0.8.6-dev for the separate Problems
 information/hint counts and filters. Keep LSP4IJ patched4; UP-008 comparison159
 is unchanged. Only macOS arm64 receives the custom analyzer.
 
 Build using scripts/build-module-patch.sh. Its archive checks verify the pin,
-descriptor, binary identity and Unix0755 modes. Copy the validated ZIP flat into
+descriptor, binary identity and Unix 0755 modes. Copy the validated ZIP flat into
 workspace plugins/. Previous outstanding heads were pushed first; these new
 fixes remain local. No PR or IDE installation.
 
@@ -139,7 +156,7 @@ runtime/data aliases, including runtime nil. The original #1195 false warning
 no longer reproduces; invalid-field controls remain rejected. The native FDE
 regression fails as expected with build166 and the corrected aliases.
 
-Build with scripts/build-module-patch.sh; validation checks Unix0755 modes and
+Build with scripts/build-module-patch.sh; validation checks Unix 0755 modes and
 checks the pin, descriptor and binary identity. Only macOS arm64 receives our
 custom analyzer. Keep LSP4IJ patched4 and the UP-008 comparison159 unchanged.
 Copy the validated ZIP flat into workspace plugins/. Full test/package evidence:
@@ -431,7 +448,7 @@ separate Sprite/coordinate annotation mismatches. Frozen LTN request_processor.l
 and interface.lua remain warning-free. The original mod was not changed.
 Archive SHA-256: `4323e3590c66a0d8cf8e958df93382ca5abaf44468cbc7d3670e5d1168f11706`.
 Analyzer SHA-256: `ef8b6b6a9bb57494bf8bc6717703e186f5777726aea63bebc4a72da0bc1c5c4b`.
-Pins, binary identity and Unix0755 modes are verified.
+Pins, binary identity and Unix 0755 modes are verified.
 
 ## Build 154 workspace ownership (2026-10-14)
 
@@ -479,7 +496,7 @@ pass with patched3 (API workspaces, asymmetric attributes, Lua version and unsav
 cross-file diagnostics). Archive SHA-256:
 `adc814702317d5be211bdf8d2f3ac58bcaff9ed4c857d3226780df61be35f690`.
 The analyzer SHA-256 is `5009e2d7a4807494131e8777e067e5e928ff6b29e94c1116287bcbf9b37d2dee`;
-packaged/prepared binary identity, source pin and Unix0755 are verified.
+packaged/prepared binary identity, source pin and Unix 0755 are verified.
 
 ## Build 152 workspace diagnostic scheduling (2026-10-14)
 
@@ -1245,7 +1262,7 @@ Validation completed:
   request_processor.lua 46→45, constants.lua 0→0, cache.lua 8→8. No diagnostics
   added in the three checked files. Original mod sources were not modified.
 - Archive audit verifies plugin IDs/versions, source pin, matching release/
-  prepared/ZIP server bytes and Unix0755 executable modes.
+  prepared/ZIP server bytes and Unix 0755 executable modes.
 
 IntelliJ platform verification: all 9 selected tests passed (8 PerModServersTest
 and 1 FactorioLuaLanguageLevelTest).
@@ -1331,7 +1348,7 @@ Validation:
   No new diagnostics; all six front/back hovers preserve their precise member
   classes. Original mod files were not modified.
 - Archive audit verifies plugin version, analyzer pin, matching release/prepared/
-  archive server bytes and Unix0755 executable modes. FDE stays 0.7.8-dev and
+  archive server bytes and Unix 0755 executable modes. FDE stays 0.7.8-dev and
   its existing archive's SHA-256 and modification time remain unchanged.
 
 Evidence:
@@ -1445,7 +1462,7 @@ Validation:
   fall **1,836→962**. The source mod was not edited. The replay does not establish
   that all remaining diagnostics are correct or that the whole mod is clean.
 - Archive checks verify plugin ID/version, source pin, identical release/prepared/
-  archive binaries, and Unix0755 server permissions. FDE ZIP SHA-256 and mtime
+  archive binaries, and Unix 0755 server permissions. FDE ZIP SHA-256 and mtime
   remain unchanged. No interactive IDE/game test or Plugin Verifier run.
 
 Known follow-ups: overloaded on_event calls at init.lua:328/337 were already
