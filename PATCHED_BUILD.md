@@ -1,3 +1,29 @@
+# Build 182 — refreshed upstream and loop-cache integration (2026-10-18)
+
+Version/archive: `0.30.0-182` / `IntelliJ-EmmyLua2-0.30.0-182.zip`.
+Analyzer pin: `1c82cf231e824f279efec1f73bd32bd61415db16`; upstream/main base `3d4d1b73`.
+The rebuilt work stack retains 68 pending contributions and work-only compatibility
+changes. UP-050 and UP-056 are retired in favor of upstream d823745f/a0dcb60d.
+UP-074 depends on UP-094's path-aware declaration memo: guard/cast facts remain
+separate while equivalent routes share results. UP-074 and UP-082 use per-node
+cycle metadata. Normal UP-045 remains active. All 2,921 combined tests pass.
+The saved LTN replay retains exactly six diagnostics, zero in request_processor,
+and concrete integer/FreeTrain iterator inference and hover.
+
+Build with `bash scripts/build-module-patch.sh`. Archive validation checks the
+version, embedded pin, binary identity and Unix0755 permissions. Copy the verified
+archive flat into workspace plugins/. Only macOS arm64 has the patched analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update the FDE development pin
+after validation. Final branch and delivery evidence is recorded in
+`upstream/ANALYZER_REFRESH_2026-10-18.md`. No push, new PR or IDE installation.
+
+Final archive SHA-256: `bc35a134108a9e791353efadccc9fba67ab17ff566464b286ebbc4417372d97e`.
+Verified and copied flat into plugins/. All-target/all-feature workspace Clippy
+and rustfmt pass; three forced native IntelliJ tests pass with no failures/errors/skips.
+Packaged replay with the saved resource cache preserves the exact six-diagnostic
+LTN baseline. The initial provisional archive was withheld and replaced after
+UP-094 corrected seven new false warnings; its evidence stays under build/.
+
 # Build 181 — refresh same-version analyzer resources (2026-10-18)
 
 Version/archive: `0.30.0-181` / `IntelliJ-EmmyLua2-0.30.0-181.zip`.
