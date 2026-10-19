@@ -1,3 +1,31 @@
+# Build 181 — refresh same-version analyzer resources (2026-10-18)
+
+Version/archive: `0.30.0-181` / `IntelliJ-EmmyLua2-0.30.0-181.zip`.
+Analyzer pin: `6a6d08d5bb443d4ad97b213c47241e36daba0bbf`.
+UP-093 `fix/std-resource-cache-fingerprint` / signed ef3674de is independently
+based on upstream/main dd80bd92, integrated as 80eedd82. Bundled-resource content
+now participates in cache identity; explicit resource paths use their own marker.
+Base extraction precedes translations and locale cache identities include
+translation metadata. This refreshes UP-092's declarations in existing installs
+whose analyzer package version is still 0.30.0. Same-content restarts reuse files.
+
+The integrated branch passes three resource tests and all 306 server tests,
+Clippy with all targets/features and rustfmt. Normal UP-045/UP-082 and all existing
+fixes remain. Build with `bash scripts/build-module-patch.sh`; validate and copy
+flat into workspace plugins/. Only macOS arm64 contains the custom analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update only the FDE development
+analyzer pin after package validation. No push, PR or IDE installation.
+Receipt: `upstream/LTN_RESOURCE_CACHE_UPGRADE_2026-10-18.md`.
+
+Packaged upgrade replay using the copied live LTN cache now shows
+integer/ltn.FreeTrain for pairs/ipairs; a second launch retains the corrected
+hover and reuses cached files (unchanged mtimes). Full-mod diagnostics are
+identical: six total, zero in request_processor.lua. Both forced native IntelliJ
+tests pass with fresh 2-test XML and no failures/errors/skips.
+Archive validation passed and the ZIP is copied flat into plugins/. SHA-256:
+`df7d0ffd0153ed4f73ad7d61a465dae1c9abb968e31848c659ab4f3cae7296df`.
+Standalone: three resource tests and all 228 server tests pass; Clippy/fmt pass.
+
 # Build 180 — iterator inference and concrete hover (2026-10-18)
 
 Version/archive: `0.30.0-180` / `IntelliJ-EmmyLua2-0.30.0-180.zip`.
