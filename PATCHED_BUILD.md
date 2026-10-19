@@ -1,3 +1,30 @@
+# Build 183 — equality and computed guard preservation (2026-10-18)
+
+Version/archive: `0.30.0-183` / `IntelliJ-EmmyLua2-0.30.0-183.zip`.
+Analyzer pin: `f1d218d402dcc38bcb43415234073093dd644d33`.
+UP-095 preserves required values after inequality exit guards. The UP-078
+amendment tracks stable local aliases and guards across nonconflicting branch
+merges, retaining invalidation after relevant writes and visible mutators.
+All previous patches remain; normal UP-045/UP-082 are retained.
+
+The combined workspace passes all 2,929 tests (1,876 analysis / 306 server),
+including the large linear-assignment stress test. Standalone analysis suites
+pass 1,528 and 1,559 tests. Release raw-LSP replay of the same refactored LTN
+snapshot removes both cache.lua diagnostics and the stop-update.lua392 warning.
+The explicit-deletion negative control continues to warn.
+
+Build with `bash scripts/build-module-patch.sh`; it validates the descriptor,
+pin, analyzer identity and Unix0755 modes and refreshes the prepared dependency.
+Copy the archive directly into workspace plugins/. Only macOS arm64 receives
+the patched analyzer. Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7 unchanged;
+update only FDE's development pin after validating this archive. No push, PR or
+IDE installation requested. Final checks and archive hash are recorded in
+workspace `upstream/LTN_EQUALITY_ALIAS_FIXES_2026-10-18.md`.
+
+Archive validation passed; copied flat into plugins/. The packaged binary matches
+the binary used for the successful LTN replay. SHA-256:
+`fd511b115b55c88d01af359a399dd48f994d0a436eeb789bf6fcac14963438bc`.
+
 # Build 182 — refreshed upstream and loop-cache integration (2026-10-18)
 
 Version/archive: `0.30.0-182` / `IntelliJ-EmmyLua2-0.30.0-182.zip`.
