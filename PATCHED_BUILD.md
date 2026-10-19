@@ -1,3 +1,36 @@
+# Build 180 — iterator inference and concrete hover (2026-10-18)
+
+Version/archive: `0.30.0-180` / `IntelliJ-EmmyLua2-0.30.0-180.zip`.
+Analyzer pin: `278036c34fe0b274ab54dd1ef0ad3025d9b2dd0b`.
+Independent upstream/main dd80bd92 fixes UP-091 (`e41571d3`) and UP-092
+(`df55badc`) restore ipairs array/dictionary loop types and concrete collection
+call-site hovers. Library annotations describe the iterator/state/control triple.
+Signed work picks ba4d368c/fd4e6a0d and amendment dee9b41e preserve existing
+fixes including UP-041 ordinary-union matching. Normal UP-045/UP-082 remain.
+
+All 2,908 combined tests pass across completed suites, with Clippy/rustfmt.
+One formatter timing test exceeded its 10 ms limit under parallel execution;
+all 304 server tests passed serially. No test was disabled or source changed
+for that retry. Standalone UP-091 passes 1,524 analysis tests; UP-092 passes
+1,525 analysis and 226 server tests.
+
+Build with `bash scripts/build-module-patch.sh`; validation checks archive
+version, embedded pin, binary identity and Unix0755 modes. Copy the validated
+archive flat into workspace plugins/. Only macOS arm64 has the custom analyzer.
+Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development
+analyzer pin only after archive validation. No push, PR or IDE installation.
+Receipt: `upstream/LTN_ITERATOR_HOVER_INVESTIGATION_2026-10-18.md`.
+
+Both forced native IntelliJ tests pass (asymmetric API attributes and separate
+module workspaces), with fresh 2-test XML and no failures/errors/skips.
+
+Packaged replay at actual LTN request_processor.lua583 now shows
+integer/ltn.FreeTrain for both iterator signatures and both loop-variable pairs.
+The fixed current-mod scan remains identical: six diagnostics, zero in
+request_processor. Archive validation passed and the ZIP is copied flat into
+plugins/. SHA-256:
+`9ac2a206914c0742309b7b88869726dd1703905c18cf8d8e1d6a607b73b3ba25`.
+
 # Build 179 — negative numeric literals (2026-10-17)
 
 Version/archive: `0.30.0-179` / `IntelliJ-EmmyLua2-0.30.0-179.zip`.
