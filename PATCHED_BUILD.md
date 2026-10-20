@@ -12,7 +12,7 @@ patched analyzer. The script builds and validates the ZIP in the usual shared
 `upstream/Intellij-EmmyLua2/build/distributions` folder, preserving older archives
 and keeping normal/comparison prepared dependencies separate. Clear a custom
 server override to use the bundled server. No push or PR. Final evidence:
-workspace `upstream/PROJECT_SERVICES_2026-10-15.md`.
+workspace `upstream/memory/PROJECT_SERVICES_2026-10-15.md`.
 
 ---
 
@@ -35,7 +35,7 @@ plugin, FDE development pin, FDE 0.7.9-dev ZIP or LSP4IJ patched3.
 
 Install one EmmyLua2 variant at a time and restart IntelliJ. Clear any custom
 server override to use its bundled server. Final validation, comparison evidence
-and hashes: workspace `upstream/UP008_COMPARISON_BUILD158.md`. No push or PR.
+and hashes: workspace `upstream/memory/UP008_COMPARISON_BUILD158.md`. No push or PR.
 
 ---
 
@@ -58,7 +58,7 @@ workspace-diagnostics-patched3. FDE's archive is unchanged.
 Build: `bash scripts/build-module-patch.sh`. ZIPs are copied into the common
 `upstream/Intellij-EmmyLua2/build/distributions` directory. Comparison builds use
 `build/prepared-up008`, never the normal prepared dependency. No push or PR.
-Final evidence: workspace `upstream/DOC_TYPE_COMPLETION_2026-10-14.md`.
+Final evidence: workspace `upstream/memory/DOC_TYPE_COMPLETION_2026-10-14.md`.
 
 ---
 
@@ -79,7 +79,7 @@ IDE for each comparison. No completion-provider fix is included in either set.
 
 Analyzer pin: `bf7b5b74c7ea435c441ca1eefd8c9e8d0e7e2caf`. Signed standalone fix commits: `5fbac291`,
 `0307732f` on upstream/main `96545f45`. Nothing pushed and no PR opened.
-Final evidence/hashes: workspace `upstream/COMPLETION_COMPARISON_2026-10-14.md`.
+Final evidence/hashes: workspace `upstream/memory/COMPLETION_COMPARISON_2026-10-14.md`.
 
 ---
 
@@ -120,7 +120,7 @@ as do Clippy with all targets/features and -D warnings, and rustfmt.
 Install build155 with existing FDE 0.7.9-dev and LSP4IJ workspace-diagnostics-patched3.
 FDE's development analyzer pin is updated; its ZIP is unchanged. Only macOS arm64
 receives the locally patched analyzer. Packaged protocol/platform evidence and
-final hashes are in workspace `upstream/DATA_UTIL_FIXES_2026-10-14.md`.
+final hashes are in workspace `upstream/memory/DATA_UTIL_FIXES_2026-10-14.md`.
 
 The packaged-server check removes data-util.lua's false condition warnings at
 lines 26/29/32 and the inherited Sprite field errors. The namespace-only fixture
@@ -150,7 +150,7 @@ configuration layers before merging preserves native dotted exclusions alongside
 the nested ownership overlay. The bug reproduced with both unit regressions and
 the real default-server test. All 1,472 standalone and 1,640 combined analysis
 tests pass, as do 30 EmmyLua2 tests. FDE platform/package evidence is recorded in
-workspace `upstream/WORKSPACE_OWNERSHIP_2026-10-14.md`.
+workspace `upstream/memory/WORKSPACE_OWNERSHIP_2026-10-14.md`.
 
 Install build154 with FDE 0.7.9-dev; keep LSP4IJ workspace-diagnostics-patched3.
 Only macOS arm64 receives the locally patched analyzer, as in previous builds.
@@ -167,7 +167,7 @@ definitions from other files. Other patches, including UP-045, remain included.
 Install with LSP4IJ workspace-diagnostics-patched3: its independent DocumentMatcher
 fix prevents default EmmyLua workspace reports from leaking into FDE mod files.
 FDE stays 0.7.8-dev; no new FDE archive is needed. Source commits are local and
-not pushed. Final evidence is in workspace upstream/DUPLICATE_METRICS_2026-10-14.md.
+not pushed. Final evidence is in workspace upstream/memory/DUPLICATE_METRICS_2026-10-14.md.
 
 Build153 validation: the packaged server no longer reports duplicate-type for
 LTN metrics.lua with the generic server's eight workspace folders; its unrelated
@@ -220,7 +220,7 @@ closed without merging and remains a local refresh patch; #1286/#1292 stay open.
 to build150; this refresh changes ancestry and package provenance.
 
 Validation and final artifact evidence are recorded in workspace
-upstream/ANALYZER_REFRESH_2026-10-14.md. FDE remains 0.7.8-dev. The frozen LTN
+upstream/memory/ANALYZER_REFRESH_2026-10-14.md. FDE remains 0.7.8-dev. The frozen LTN
 request_processor.lua snapshot remains the zero-diagnostic acceptance baseline.
 
 ## Build 150 upstream refresh (2026-10-13)
@@ -237,7 +237,7 @@ its standalone suite and checks. Debug, release and packaged build-150 servers
 report zero diagnostics in the frozen request_processor.lua and
 interface.lua using the existing module configuration. No new suppressions.
 FDE remains 0.7.8-dev. Packaging and platform evidence are recorded in the
-workspace's upstream/ANALYZER_REFRESH_2026-10-13.md.
+workspace's upstream/memory/ANALYZER_REFRESH_2026-10-13.md.
 
 ## Build 149 baseline (2026-10-13)
 
