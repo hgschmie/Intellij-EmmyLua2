@@ -1,3 +1,30 @@
+# Build 184 — table constructor completion (2026-10-19)
+
+Version/archive: `0.30.0-184` / `IntelliJ-EmmyLua2-0.30.0-184.zip`.
+Analyzer pin: `17a76f41f43ac1d8c7fc2b3c13e120ef11f62500`.
+UP-096 `fix/union-table-field-completion` / signed `89b80eb8` is independently
+based on current upstream/main `51f2aa7b`. Work pick `a5929fe7` preserves the
+existing stack without importing unrelated upstream changes. Table constructor
+completion now suggests fields from table alternatives of unions/aliases,
+excluding string-library methods and array-element fields. Normal string member
+completion and field-value suggestions remain unchanged.
+
+All 233 standalone and 313 combined server tests pass, including seven new
+regressions. Build with `bash scripts/build-module-patch.sh`; it validates the
+archive, embedded pin, binary identity and executable modes and refreshes the
+prepared dependency. Copy the validated archive flat into workspace plugins/.
+Only macOS arm64 receives this patched analyzer. Keep FDE 0.8.6-dev and LSP4IJ
+SNAPSHOT-10 ZIPs unchanged; update FDE's development analyzer pin after validation.
+No push, new PR or regular IDE installation. Final evidence and archive hash:
+workspace `upstream/memory/LTN_TABLE_COMPLETION_2026-10-19.md`.
+
+Archive validation and all 14 before/after completion checks passed, including
+in-memory edits of the frozen actual LTN file. Both forced native IntelliJ
+integration tests pass (two executed, zero failures/errors/skips). ZIP SHA-256:
+`6a9707ec3cb460d191fa7d8291c808513e444ac7ef10d2d48d62eb42353a9d7c`.
+The verified ZIP is copied flat into plugins/ and retained in both distribution
+folders. FDE's development pin matches; existing FDE/LSP4IJ ZIPs are unchanged.
+
 # Build 183 — equality and computed guard preservation (2026-10-18)
 
 Version/archive: `0.30.0-183` / `IntelliJ-EmmyLua2-0.30.0-183.zip`.
@@ -19,7 +46,7 @@ Copy the archive directly into workspace plugins/. Only macOS arm64 receives
 the patched analyzer. Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7 unchanged;
 update only FDE's development pin after validating this archive. No push, PR or
 IDE installation requested. Final checks and archive hash are recorded in
-workspace `upstream/LTN_EQUALITY_ALIAS_FIXES_2026-10-18.md`.
+workspace `upstream/memory/LTN_EQUALITY_ALIAS_FIXES_2026-10-18.md`.
 
 Archive validation passed; copied flat into plugins/. The packaged binary matches
 the binary used for the successful LTN replay. SHA-256:
@@ -42,7 +69,7 @@ version, embedded pin, binary identity and Unix0755 permissions. Copy the verifi
 archive flat into workspace plugins/. Only macOS arm64 has the patched analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update the FDE development pin
 after validation. Final branch and delivery evidence is recorded in
-`upstream/ANALYZER_REFRESH_2026-10-18.md`. No push, new PR or IDE installation.
+`upstream/memory/ANALYZER_REFRESH_2026-10-18.md`. No push, new PR or IDE installation.
 
 Final archive SHA-256: `bc35a134108a9e791353efadccc9fba67ab17ff566464b286ebbc4417372d97e`.
 Verified and copied flat into plugins/. All-target/all-feature workspace Clippy
@@ -68,7 +95,7 @@ fixes remain. Build with `bash scripts/build-module-patch.sh`; validate and copy
 flat into workspace plugins/. Only macOS arm64 contains the custom analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update only the FDE development
 analyzer pin after package validation. No push, PR or IDE installation.
-Receipt: `upstream/LTN_RESOURCE_CACHE_UPGRADE_2026-10-18.md`.
+Receipt: `upstream/memory/LTN_RESOURCE_CACHE_UPGRADE_2026-10-18.md`.
 
 Packaged upgrade replay using the copied live LTN cache now shows
 integer/ltn.FreeTrain for pairs/ipairs; a second launch retains the corrected
@@ -100,7 +127,7 @@ version, embedded pin, binary identity and Unix0755 modes. Copy the validated
 archive flat into workspace plugins/. Only macOS arm64 has the custom analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development
 analyzer pin only after archive validation. No push, PR or IDE installation.
-Receipt: `upstream/LTN_ITERATOR_HOVER_INVESTIGATION_2026-10-18.md`.
+Receipt: `upstream/memory/LTN_ITERATOR_HOVER_INVESTIGATION_2026-10-18.md`.
 
 Both forced native IntelliJ tests pass (asymmetric API attributes and separate
 module workspaces), with fresh 2-test XML and no failures/errors/skips.
@@ -128,7 +155,7 @@ workspace plugins/ folder. Only macOS arm64 receives the custom analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development pin
 after package validation. Normal UP-045/UP-082 are retained.
 No push, PR or IDE installation requested. Delivery evidence is recorded in
-`upstream/LTN_NEGATIVE_LITERAL_HOVER_2026-10-17.md`.
+`upstream/memory/LTN_NEGATIVE_LITERAL_HOVER_2026-10-17.md`.
 
 Packaged replay of the frozen real LTN init.lua143 now returns `-1` at both
 sign and digit positions, with one range covering the whole expression. The
@@ -156,7 +183,7 @@ embedded analyzer pin, binary identity and Unix0755 modes. Copy flat into
 workspace plugins/. Only macOS arm64 receives the custom analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update FDE's development
 analyzer pin after validating this archive. Normal UP-045/UP-082 are retained.
-Receipt: `upstream/LTN_CONTEXTUAL_CALLBACKS_2026-10-17.md`.
+Receipt: `upstream/memory/LTN_CONTEXTUAL_CALLBACKS_2026-10-17.md`.
 Packaged LSP replay confirms all six minimal callback variants and every callback
 parameter in the updated real settings.lua. Its message_level/member hovers retain
 integer/boolean/number contracts. The frozen full LTN scan changes 79→104:
@@ -182,7 +209,7 @@ All 2,885 combined workspace tests, workspace Clippy and rustfmt pass. Build wit
 Unix0755 modes are validated. Keep all variants flat in workspace plugins/.
 Only macOS arm64 includes the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
 0.21.1-SNAPSHOT-7; update FDE's development pin after the package is validated.
-Normal UP-045/UP-082 remain. Receipt: `upstream/LTN_OPTIONAL_HOVER_2026-10-17.md`.
+Normal UP-045/UP-082 remain. Receipt: `upstream/memory/LTN_OPTIONAL_HOVER_2026-10-17.md`.
 No push, PR or user IDE installation.
 
 # Build 176 — nullable class arguments (2026-10-17)
@@ -204,7 +231,7 @@ server identity and Unix0755 modes. Copy the validated ZIP flat into plugins/.
 Only macOS arm64 contains the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
 0.21.1-SNAPSHOT-7; update only FDE's development analyzer pin.
 Final packaged/native verification and scope limits are recorded in workspace
-`upstream/LTN_NULLABLE_CONNECTOR_ARGUMENT_2026-10-17.md`.
+`upstream/memory/LTN_NULLABLE_CONNECTOR_ARGUMENT_2026-10-17.md`.
 Existing work/fix/comparison branches were pushed before this task. No new PR
 or user IDE installation. General primitive/callback union behavior is unchanged.
 
@@ -223,7 +250,7 @@ The combined workspace passes 2,861 Rust tests plus Clippy/rustfmt. Build with
 Only macOS arm64 contains the custom analyzer. Keep FDE 0.8.6-dev and LSP4IJ
 0.21.1-SNAPSHOT-7; update only FDE's development analyzer pin.
 Final packaged replay/native validation and archive receipt: workspace
-`upstream/LTN_STOP_EVENTS_HOVER_FIXES_2026-10-17.md`.
+`upstream/memory/LTN_STOP_EVENTS_HOVER_FIXES_2026-10-17.md`.
 No push, upstream PR or user IDE installation.
 
 # Build 174 — nested receiver field contracts (2026-10-17)
@@ -240,7 +267,7 @@ pin/version, binary identity and Unix0755 permissions. Copy the validated ZIP
 flat into workspace `plugins/`. Only macOS arm64 contains the custom analyzer.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7; update only FDE's development
 analyzer pin. Final standalone/combined/native/replay validation and package
-receipt: workspace `upstream/LTN_NESTED_FIELD_CONTRACTS_2026-10-17.md`.
+receipt: workspace `upstream/memory/LTN_NESTED_FIELD_CONTRACTS_2026-10-17.md`.
 No push, upstream PR or user IDE installation.
 
 # Build 173 — member-flow performance (2026-10-16)
@@ -258,7 +285,7 @@ Build using `bash scripts/build-module-patch.sh`; archive validation checks the
 embedded pin, binary identity and Unix 0755 modes. Only macOS arm64 carries the
 custom server. A separate `173-UP-008` variant retains the comparison scheduler.
 Keep FDE 0.8.6-dev and LSP4IJ 0.21.1-SNAPSHOT-7. See workspace
-`upstream/ANALYZER_EDIT_LATENCY_2026-10-16.md` for final measurements and receipts.
+`upstream/memory/ANALYZER_EDIT_LATENCY_2026-10-16.md` for final measurements and receipts.
 
 # Build 172 — shorter version and stop-update fixes (2026-10-16)
 
@@ -270,7 +297,7 @@ Analyzer pin: `3584adf440832a79863659e363f5d5f199ed3d08`.
 Adds UP-079 optional parameter contracts, UP-080 narrowed member hover and
 nullable receiver method documentation, and UP-081 pairs/ipairs entry facts.
 All earlier local fixes remain. Source branches and regression provenance are in
-workspace `upstream/LTN_STOP_UPDATE_2026-10-16.md`.
+workspace `upstream/memory/LTN_STOP_UPDATE_2026-10-16.md`.
 
 Build with `CARGO_TARGET_DIR=../../emmylua-analyzer-rust/target` (or an absolute
 workspace-local path) and `bash scripts/build-module-patch.sh`; its default target
@@ -304,7 +331,7 @@ identity and Unix 0755 permissions. Copy the validated archive directly into
 workspace `plugins/`. FDE keeps 0.8.6-dev and its existing ZIP. LSP4IJ is maintained
 separately and is not rebuilt or modified by this task. No IDE installation,
 push or PR operation. Final artifact/integration receipt:
-workspace `upstream/ANALYZER_WORK_REBUILD_2026-10-16.md`.
+workspace `upstream/memory/ANALYZER_WORK_REBUILD_2026-10-16.md`.
 
 FDE compatibility: 64 unit tests pass (one existing skip), plus all eight
 native IntelliJ checks after correcting the test's asynchronous-restart wait.
@@ -333,7 +360,7 @@ UP-045. FDE's development analyzer pin changes without another FDE ZIP.
 Build with scripts/build-module-patch.sh; descriptor, pin, binary identity and
 0755 checks are built in. Copy the validated ZIP flat into workspace plugins/.
 Only macOS arm64 contains the patched analyzer. No push, PR or IDE installation.
-Final integration/package evidence: workspace upstream/LTN_TOOLS_GUARDS_2026-10-16.md.
+Final integration/package evidence: workspace upstream/memory/LTN_TOOLS_GUARDS_2026-10-16.md.
 Packaged current tools.lua has zero diagnostics; the frozen full-mod baseline
 falls86→82 (72→68 warnings, unchanged14 hints), with no new diagnostics.
 FDE64 unit tests and two native API tests pass (one existing unit skip).
@@ -352,7 +379,7 @@ Each standalone fix passes 1,521 analysis tests, Clippy and rustfmt on upstream
 ca9bec3b. Combined validation passes 1,764 analysis and 267 server tests, Clippy
 and rustfmt. Packaged LTN diagnostics drop from 89 to86 (75 to72 warnings,
 unchanged14 hints), with no new diagnostics and request_processor.lua still clear. The larger new upstream union refactor is not included in this package.
-See workspace upstream/LTN_PRIORITY_FOLLOWUPS_2026-10-16.md for combined tests,
+See workspace upstream/memory/LTN_PRIORITY_FOLLOWUPS_2026-10-16.md for combined tests,
 packaged LTN results, prioritization and the pre-existing class-key limitation.
 
 Only EmmyLua2 needs installation. Keep FDE 0.8.6-dev, LSP4IJ patched4 and normal
@@ -374,7 +401,7 @@ summaries avoid repeated declaration traces.
 
 All 1,758 combined analysis tests and 267 server tests pass with all features,
 as do Clippy and rustfmt. Standalone fixes have independent regression coverage.
-See workspace upstream/LTN_FLOW_TRIAGE_2026-10-15.md for full evidence and the
+See workspace upstream/memory/LTN_FLOW_TRIAGE_2026-10-15.md for full evidence and the
 remaining LTN diagnostics. Install with FDE 0.8.6-dev for the separate Problems
 information/hint counts and filters. Keep LSP4IJ patched4; UP-008 comparison159
 is unchanged. Only macOS arm64 receives the custom analyzer.
@@ -405,7 +432,7 @@ Build with scripts/build-module-patch.sh; validation checks Unix 0755 modes and
 checks the pin, descriptor and binary identity. Only macOS arm64 receives our
 custom analyzer. Keep LSP4IJ patched4 and the UP-008 comparison159 unchanged.
 Copy the validated ZIP flat into workspace plugins/. Full test/package evidence:
-workspace upstream/LOCALISED_STRING_FIXES_2026-10-15.md.
+workspace upstream/memory/LOCALISED_STRING_FIXES_2026-10-15.md.
 Prior outstanding commits were pushed first; new changes remain local. No PR or
 IDE installation.
 
@@ -428,7 +455,7 @@ UP-008 comparison159 is unchanged. Only macOS arm64 receives the patched analyze
 Build with scripts/build-module-patch.sh. Archive pin, binary identity, descriptor
 and executable-mode validation remain enabled; copy the validated ZIP flat into
 workspace plugins/. Full evidence is in workspace
-upstream/VARIADIC_NAMED_TYPES_2026-10-15.md. No push, PR or IDE installation.
+upstream/memory/VARIADIC_NAMED_TYPES_2026-10-15.md. No push, PR or IDE installation.
 
 # init.lua and remote interface fixes — build165 (normal UP-045)
 
@@ -451,7 +478,7 @@ archives; update only FDE's development analyzer pin. UP-008 comparison remains1
 Validation: 1,731 combined analyzer tests, 267 server tests, Clippy/rustfmt and
 both native FDE API integration tests pass. Packaged raw-LSP checks clear all
 20 init.lua diagnostics and preserve the other checked LTN baselines. Full
-validation/provenance is in workspace upstream/INIT_REMOTE_FIXES_2026-10-15.md.
+validation/provenance is in workspace upstream/memory/INIT_REMOTE_FIXES_2026-10-15.md.
 No new PR, push, original-mod edit or IDE installation for this build.
 
 # Declared field hover — build164 (normal UP-045)
@@ -473,7 +500,7 @@ the shared distributions folder directly to plugins/. Only macOS arm64 receives
 the patched analyzer. Keep FDE 0.8.3-dev and LSP4IJ patched4; FDE's development
 pin advances without a new ZIP. UP-008 comparison remains build159.
 No push, PR or IDE installation. Final evidence:
-workspace `upstream/DECLARED_FIELD_HOVER_2026-10-15.md`.
+workspace `upstream/memory/DECLARED_FIELD_HOVER_2026-10-15.md`.
 
 # Numeric enum literal compatibility — build163 (normal UP-045)
 
@@ -494,7 +521,7 @@ copy the validated ZIP from the shared distributions folder directly to plugins/
 Keep FDE 0.8.3-dev and LSP4IJ patched4; FDE's development analyzer pin advances
 without producing a new FDE archive. The UP-008 comparison remains build159.
 No push, PR or IDE installation. Final validation and provenance:
-workspace `upstream/ENUM_LITERAL_COMPATIBILITY_2026-10-15.md`.
+workspace `upstream/memory/ENUM_LITERAL_COMPATIBILITY_2026-10-15.md`.
 
 # Guarded collections and loop-carried values — build162 (normal UP-045)
 
@@ -518,7 +545,7 @@ Only macOS arm64 receives the patched analyzer. Install this EmmyLua2 ZIP and
 restart IntelliJ; keep FDE 0.8.3-dev and LSP4IJ patched4. FDE's development pin
 advances without a new FDE ZIP. UP-008 comparison remains build159.
 No IDE installation, push or PR for the new fixes. Final evidence/report:
-workspace `upstream/CONSOLE_GUARDS_LOOP_2026-10-15.md`.
+workspace `upstream/memory/CONSOLE_GUARDS_LOOP_2026-10-15.md`.
 
 # Enum assertions and inherited dictionaries — build161 (normal UP-045)
 
@@ -543,7 +570,7 @@ Install that EmmyLua2 ZIP and restart IntelliJ. Keep FDE 0.8.3-dev and LSP4IJ
 patched4; only macOS arm64 contains the custom analyzer. The UP-008 comparison
 stays at build159. FDE's development pin advances, but its existing ZIP stays.
 No installation, push or PR performed. Final validation report:
-workspace `upstream/ENUM_CAST_CUSTOM_INDEX_2026-10-15.md`.
+workspace `upstream/memory/ENUM_CAST_CUSTOM_INDEX_2026-10-15.md`.
 
 # Class member identity — build160 (normal UP-045)
 
@@ -563,7 +590,7 @@ workspace `plugins/`. Install the EmmyLua2 ZIP and restart IntelliJ; keep FDE
 FDE's development analyzer pin is updated, but its existing ZIP is unchanged.
 The one-off UP-008 comparison remains at build159. No push, upstream PR or
 installation for this fix. Final test/protocol/package report:
-workspace `upstream/CLASS_MEMBER_IDENTITY_2026-10-15.md`.
+workspace `upstream/memory/CLASS_MEMBER_IDENTITY_2026-10-15.md`.
 
 # Project diagnostics and require resolution — build159 (normal UP-045)
 
@@ -579,7 +606,7 @@ patched analyzer. The script builds and validates the ZIP in the usual shared
 `upstream/Intellij-EmmyLua2/build/distributions` folder, preserving older archives
 and keeping normal/comparison prepared dependencies separate. Clear a custom
 server override to use the bundled server. No push or PR. Final evidence:
-workspace `upstream/PROJECT_SERVICES_2026-10-15.md`.
+workspace `upstream/memory/PROJECT_SERVICES_2026-10-15.md`.
 
 ---
 
@@ -601,7 +628,7 @@ this EmmyLua2 ZIP and restart IntelliJ with the custom server override empty.
 Build with `bash scripts/build-module-patch.sh`; the ZIP is copied to the common
 `upstream/Intellij-EmmyLua2/build/distributions` folder and the normal prepared
 dependency is refreshed. No push or PR was requested. Final tests, hashes and
-remaining latency limits: workspace `upstream/REQUEST_ORDERING_2026-10-14.md`.
+remaining latency limits: workspace `upstream/memory/REQUEST_ORDERING_2026-10-14.md`.
 
 ---
 
@@ -624,7 +651,7 @@ workspace-diagnostics-patched3. FDE's archive is unchanged.
 Build: `bash scripts/build-module-patch.sh`. ZIPs are copied into the common
 `upstream/Intellij-EmmyLua2/build/distributions` directory. Comparison builds use
 `build/prepared-up008`, never the normal prepared dependency. No push or PR.
-Final evidence: workspace `upstream/DOC_TYPE_COMPLETION_2026-10-14.md`.
+Final evidence: workspace `upstream/memory/DOC_TYPE_COMPLETION_2026-10-14.md`.
 
 ---
 
@@ -643,7 +670,7 @@ Both variants include the same entities fixes and unchanged completion code.
 
 Analyzer pin: `54b5a910887ae4f880d5c1e8b5b17df0e3e2d796`. Signed standalone fix commits: `5fbac291`,
 `0307732f` on upstream/main `96545f45`. Nothing pushed and no PR opened.
-Final evidence/hashes: workspace `upstream/COMPLETION_COMPARISON_2026-10-14.md`.
+Final evidence/hashes: workspace `upstream/memory/COMPLETION_COMPARISON_2026-10-14.md`.
 
 ---
 
@@ -684,7 +711,7 @@ as do Clippy with all targets/features and -D warnings, and rustfmt.
 Install build155 with existing FDE 0.7.9-dev and LSP4IJ workspace-diagnostics-patched3.
 FDE's development analyzer pin is updated; its ZIP is unchanged. Only macOS arm64
 receives the locally patched analyzer. Packaged protocol/platform evidence and
-final hashes are in workspace `upstream/DATA_UTIL_FIXES_2026-10-14.md`.
+final hashes are in workspace `upstream/memory/DATA_UTIL_FIXES_2026-10-14.md`.
 
 The packaged-server check removes data-util.lua's false condition warnings at
 lines 26/29/32 and the inherited Sprite field errors. The namespace-only fixture
@@ -714,7 +741,7 @@ configuration layers before merging preserves native dotted exclusions alongside
 the nested ownership overlay. The bug reproduced with both unit regressions and
 the real default-server test. All 1,472 standalone and 1,640 combined analysis
 tests pass, as do 30 EmmyLua2 tests. FDE platform/package evidence is recorded in
-workspace `upstream/WORKSPACE_OWNERSHIP_2026-10-14.md`.
+workspace `upstream/memory/WORKSPACE_OWNERSHIP_2026-10-14.md`.
 
 Install build154 with FDE 0.7.9-dev; keep LSP4IJ workspace-diagnostics-patched3.
 Only macOS arm64 receives the locally patched analyzer, as in previous builds.
@@ -731,7 +758,7 @@ definitions from other files. Other patches, including UP-045, remain included.
 Install with LSP4IJ workspace-diagnostics-patched3: its independent DocumentMatcher
 fix prevents default EmmyLua workspace reports from leaking into FDE mod files.
 FDE stays 0.7.8-dev; no new FDE archive is needed. Source commits are local and
-not pushed. Final evidence is in workspace upstream/DUPLICATE_METRICS_2026-10-14.md.
+not pushed. Final evidence is in workspace upstream/memory/DUPLICATE_METRICS_2026-10-14.md.
 
 Build153 validation: the packaged server no longer reports duplicate-type for
 LTN metrics.lua with the generic server's eight workspace folders; its unrelated
@@ -784,7 +811,7 @@ closed without merging and remains a local refresh patch; #1286/#1292 stay open.
 to build150; this refresh changes ancestry and package provenance.
 
 Validation and final artifact evidence are recorded in workspace
-upstream/ANALYZER_REFRESH_2026-10-14.md. FDE remains 0.7.8-dev. The frozen LTN
+upstream/memory/ANALYZER_REFRESH_2026-10-14.md. FDE remains 0.7.8-dev. The frozen LTN
 request_processor.lua snapshot remains the zero-diagnostic acceptance baseline.
 
 ## Build 150 upstream refresh (2026-10-13)
@@ -801,7 +828,7 @@ its standalone suite and checks. Debug, release and packaged build-150 servers
 report zero diagnostics in the frozen request_processor.lua and
 interface.lua using the existing module configuration. No new suppressions.
 FDE remains 0.7.8-dev. Packaging and platform evidence are recorded in the
-workspace's upstream/ANALYZER_REFRESH_2026-10-13.md.
+workspace's upstream/memory/ANALYZER_REFRESH_2026-10-13.md.
 
 ## Build 149 baseline (2026-10-13)
 
