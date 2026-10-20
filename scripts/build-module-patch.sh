@@ -23,7 +23,7 @@ export CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$ANALYZER/target}"
 export TMPDIR="$WORKSPACE/dev/tmp"
 mkdir -p "$CARGO_HOME" "$TMPDIR" "$WORKSPACE/dev/build-home"
 cargo build --locked --release --manifest-path "$ANALYZER/Cargo.toml" -p emmylua_ls
-export RUNNER_NUMBER=184
+export RUNNER_NUMBER=185
 export GRADLE_USER_HOME="$WORKSPACE/dev/cache/gradle"
 export npm_config_cache="$WORKSPACE/dev/cache/npm"
 export JAVA_HOME="${FMTK_JAVA_HOME:-/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home}"

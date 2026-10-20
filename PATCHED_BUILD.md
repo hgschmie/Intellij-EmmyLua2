@@ -1,3 +1,25 @@
+# Build 185 — collection-union iterator inference (2026-10-19)
+
+Version/archive: `0.30.0-185` / `IntelliJ-EmmyLua2-0.30.0-185.zip`.
+Analyzer pin: `4bf6a91ea91b031f44d99ca673bfd8d9c74983a4`. UP-097 independent signed `d2351942`
+on upstream/main `51f2aa7b`, integrated by signed work pick `2a1e0199`.
+Pairs inference follows inherited generic table bases and combines collection
+union key/value types. Call-site signatures and loop variables agree; for the
+actual LTN players union this is uint32|string|integer and LuaPlayer. The prior
+UP-091/092 fixes remain, with no pending prerequisite for this patch.
+
+All 2,548 standalone / 2,944 combined workspace tests, Clippy and rustfmt pass.
+Seven packaged before/after real-API/actual-mod comparisons pass, and both
+forced native IntelliJ tests pass (two executed, zero failures/errors/skips).
+The archive's descriptor, pin, binary identity and executable modes pass; it is
+copied flat into plugins/ and retained in both build/distributions folders.
+SHA-256: `a03a5106c02f090056587a6471043721caca31ec4c3ececbc3f0090c3e7ee841`.
+
+Only macOS arm64 receives the custom analyzer. FDE's development pin matches;
+FDE 0.8.6-dev and LSP4IJ build10 ZIPs remain unchanged. No push, new PR or regular
+IDE installation. Full report: workspace
+`upstream/memory/LTN_UNION_ITERATOR_2026-10-19.md`.
+
 # Build 184 — table constructor completion (2026-10-19)
 
 Version/archive: `0.30.0-184` / `IntelliJ-EmmyLua2-0.30.0-184.zip`.
