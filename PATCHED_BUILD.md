@@ -1,3 +1,31 @@
+# Build 187 — post-refresh LTN warnings (2026-10-21)
+
+Version/archive: `0.30.0-187` / `IntelliJ-EmmyLua2-0.30.0-187.zip`.
+Analyzer pin: `1e45b2e1c611a6ec83d4e2d39902efff3b328af8` on upstream/main `bb7c7d4c`.
+UP-040 adds alias-aware numeric-for inference. New UP-101 preserves concrete
+table literals during call matching; UP-102 removes nil from standard iterator
+values; UP-103 retains field casts on guarded receiver paths. Existing fixes
+and UP-045 remain integrated. No LSP4IJ changes.
+
+All 3,039 combined tests (1,977 analysis / 315 server), full-workspace Clippy
+and rustfmt pass. The fixes address seven newly exposed false positives. The
+remaining optional `CircuitCondition.first_signal` argument needs a stronger
+Lua annotation or an explicit guard; original mod files remain unchanged.
+
+Only macOS arm64 receives the custom analyzer. Keep FDE 0.9.3-dev and LSP4IJ
+SNAPSHOT-13 archives. Package validation, raw-LSP comparisons, routing/native
+checks and hashes are recorded in workspace
+`upstream/memory/LTN_POST_REFRESH_WARNINGS_2026-10-21.md`.
+No push, new PR or installation into the running IDE.
+
+All30 routing tests were forced to execute and pass. Five native FDE tests
+pass (generated API/separate workspaces, remote return shapes, LocalisedString,
+asymmetric attributes and Lua language level), with zero failures/errors/skips.
+The packaged binary confirms seven original false positives are gone; the
+unchanged files retain three contract diagnostics, and the optional annotation
+proposal clears all five checked files. Archive SHA-256:
+`c0c5992d72ecb55f29309f33a31e30f8732e74aac215150acc453e82ff9e5a07`.
+
 # Build 186 — upstream refresh and member completion (2026-10-21)
 
 Version/archive: `0.30.0-186` / `IntelliJ-EmmyLua2-0.30.0-186.zip`.
