@@ -1,3 +1,26 @@
+# Build 188 — LTN cache, metrics and settings warnings (2026-10-21)
+
+Version/archive: `0.30.0-188` / `IntelliJ-EmmyLua2-0.30.0-188.zip`.
+Analyzer pin: `42ab2605f060015a226bf40c7449270f5a9db354` on upstream/main `bb7c7d4c`.
+UP-036 preserves array length guards across unrelated calls. UP-062 restores
+integer-to-enum compatibility under both literal settings after the checker
+rebase. New UP-105/106 resolve
+broad rawget index contracts and preserve truthy short-circuit branches.
+The existing stack, including UP-045, remains integrated.
+
+All four standalone analysis suites, Clippy and rustfmt pass. Combined tests,
+real-mod before/after results, routing/native checks and the archive hash are
+recorded in workspace `upstream/memory/LTN_SEVEN_WARNINGS_2026-10-21.md`.
+Only macOS arm64 receives the custom analyzer. Keep FDE 0.9.3-dev and LSP4IJ
+SNAPSHOT-15 archives; update only FDE's analyzer development pin after validation.
+No push, new PR or installation into the running IDE.
+
+Final verification: all **3,049 combined tests**, Clippy/rustfmt, 30 routing
+tests and five native FDE integration tests pass. The packaged binary reports
+**zero diagnostics across all 37 unchanged LTN Lua files**, down from seven.
+The validated ZIP is copied flat into plugins/. SHA-256:
+`58030e0fb7a550cb9c7eb0638f55dc7730b420810b0c8b2b34a8cefbef6bc801`.
+
 # Build 187 — post-refresh LTN warnings (2026-10-21)
 
 Version/archive: `0.30.0-187` / `IntelliJ-EmmyLua2-0.30.0-187.zip`.
