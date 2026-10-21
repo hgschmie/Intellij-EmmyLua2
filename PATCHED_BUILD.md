@@ -1,3 +1,29 @@
+# Build 186 — upstream refresh and member completion (2026-10-21)
+
+Version/archive: `0.30.0-186` / `IntelliJ-EmmyLua2-0.30.0-186.zip`.
+Analyzer pin: `36826d58c38a7134efb41b3a6f7dc8fbf72fdc13` on upstream/main `bb7c7d4c`.
+Retains 65 contribution branches and internal UP-019/020/021. Upstream supplies
+merged UP-046 and superseded UP-041/043/067/069/079/086; historical refs remain.
+UP-099 fixes manual prefix completion aborting at a nonmatching candidate.
+The real LTN `new_known_train.c` now offers `current_network_id` repeatedly.
+
+All 3,018 combined tests (1,956 analysis / 315 server), 30 client routing tests,
+Clippy and rustfmt pass. The real-mod comparison exposes eight diagnostics
+with the same hover types as build185; tighter checking reveals existing flow/
+iteration gaps and a potentially nil `first_signal` argument. The zero-warning
+baseline is not preserved. Full diagnostic triage and delivery receipt:
+workspace `upstream/memory/ANALYZER_REFRESH_2026-10-21.md`.
+
+Only macOS arm64 receives the custom analyzer. Preserve FDE 0.9.2-dev and
+LSP4IJ SNAPSHOT-13 archives. No push, new PR or installation into the running IDE.
+Package descriptor/pin/binary identity/executable-mode validation passes; the ZIP
+is copied flat into plugins/. SHA-256:
+`522a19e5ea63992deae2a1e5b752237672df4808a304fd483db1ba59c312b5c3`.
+Fourteen native FDE tests pass. Two broader integration timeouts also reproduce
+with build185; two fixture-dependent tests lack their explicit path. The full
+platform suite is not clean. Details and archived before/after evidence are in
+the delivery report.
+
 # Build 185 — collection-union iterator inference (2026-10-19)
 
 Version/archive: `0.30.0-185` / `IntelliJ-EmmyLua2-0.30.0-185.zip`.
