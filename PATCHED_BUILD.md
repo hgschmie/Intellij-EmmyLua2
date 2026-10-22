@@ -1,3 +1,32 @@
+# Build 191 — unused includes unused-self (2026-10-21)
+
+Version/archive: `0.30.0-191` / `IntelliJ-EmmyLua2-0.30.0-191.zip`.
+Analyzer pin: `2486fc957e29a44e56b239493900dc7068d6e87a`.
+UP-108 follow-up `069441cf` makes `unused` the parent suppression category:
+disabling `unused` suppresses ordinary unused and implicit-self diagnostics;
+disabling only `unused-self` retains ordinary unused diagnostics. This applies
+to configuration and file/current-line/next-line annotations. Existing `unused`
+suppressions keep their behavior. Enabling the child cannot bypass a disabled
+parent. The emitted code, default hint severity and unnecessary tag are retained.
+
+All **952 standalone / 1,237 combined selected tests** pass (diagnostic/type-check
+and complete server suites), as do full-workspace Clippy/rustfmt. All nine packaged
+protocol scenarios and both native FDE integration tests pass. The unchanged LTN
+baseline remains **37 files / zero diagnostics**. Full workspace suites from
+build190 are prior evidence; this scoped follow-up did not repeat flow stress tests.
+Work integration preserves UP-052's unfiltered structural constructor checks.
+
+The ZIP is verified in plugins/, with original distribution archives retained.
+Descriptor, analyzer pin, release/prepared/archive binary equality, Unix0755 and
+bundled schema verified. SHA-256: `9bd23f589deaa7611005b812576b1892a4c19e0160d419f177555af11272f81f`.
+Only macOS arm64 receives the custom analyzer. FDE's development pin is updated;
+FDE 0.9.3-dev and LSP4IJ SNAPSHOT-15 ZIPs are unchanged. Changes are local/unpushed;
+no new PR, user settings change or regular IDE installation.
+Receipt: `upstream/memory/UNUSED_SELF_DIAGNOSTIC_2026-10-21.md`.
+
+The build190 entry below is historical; its independent-suppression migration
+instructions are superseded by build191.
+
 # Build 190 — independently configurable unused self (2026-10-21)
 
 Version/archive: `0.30.0-190` / `IntelliJ-EmmyLua2-0.30.0-190.zip`.
