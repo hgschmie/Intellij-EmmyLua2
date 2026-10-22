@@ -1,3 +1,29 @@
+# Build 197 — explicit module return types (2026-10-21)
+
+Version/archive: `0.30.0-197` / `IntelliJ-EmmyLua2-0.30.0-197.zip`.
+Analyzer pin: `e0698d2ae8179d5158d89c01459190375346654b`.
+UP-111 `76c321fd` preserves a returned local's explicit @type without adding
+the variable name as another union alternative. The train-tracker lib/this.lua
+assignment correctly receives ff2.ModSettings instead of Settings|ff2.ModSettings.
+Unannotated module lookup, class/enum identity and prior fixes remain integrated.
+UP-111 is independent of UP-110's field-validation fix.
+
+All 1,602 standalone analysis tests and 3,109 combined workspace tests pass,
+as do Clippy/rustfmt. Wrong consumer types and invalid annotated initializers
+still produce diagnostics. Original mod files are unchanged.
+
+Packaged replay reports zero diagnostics in lib/this.lua and preserves the
+ff2.ModSettings hovers. LTN exactly matches build196:37 files, zero warnings/errors
+and two existing local-alias hints. Descriptor, pin, binary identity, executable0755
+and retained unused-self schema are verified. ZIP SHA-256:
+`b48108dad5ce8bdface3478ee702143b53eb487ba3878615c662f4b74ae905c9`.
+The ZIP is retained in both distribution directories and copied to plugins/.
+Packaged replay and archive validation are recorded in workspace
+`upstream/memory/TRAIN_TRACKER_MODULE_SETTINGS_2026-10-21.md`.
+Only macOS arm64 receives the custom analyzer. FDE's development pin follows
+the validated analyzer; its 0.9.3-dev archive and LSP4IJ SNAPSHOT-15 archive
+remain unchanged. Local commits only; no push, PR or IDE installation.
+
 # Build 196 — declared module export fields (2026-10-21)
 
 Version/archive: `0.30.0-196` / `IntelliJ-EmmyLua2-0.30.0-196.zip`.
