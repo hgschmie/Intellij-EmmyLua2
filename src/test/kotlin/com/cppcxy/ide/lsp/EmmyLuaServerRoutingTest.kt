@@ -3,6 +3,7 @@ package com.cppcxy.ide.lsp
 import com.intellij.testFramework.ExtensionTestUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.tang.intellij.lua.editor.LuaGutterCacheManager
+import java.util.concurrent.CompletableFuture
 
 class EmmyLuaServerRoutingTest : BasePlatformTestCase() {
     private fun providers(vararg providers: EmmyLuaServerProvider) {
@@ -61,17 +62,23 @@ class EmmyLuaServerRoutingTest : BasePlatformTestCase() {
     fun testGutterCacheDoesNotCrossServerRoutes() {
         val a = LuaGutterCacheManager.Key(project, "mod-a", "file:///control.lua")
         val b = LuaGutterCacheManager.Key(project, "mod-b", a.uri)
+        val pending = mutableListOf<CompletableFuture<List<GutterInfo>>>()
+        fun get(key: LuaGutterCacheManager.Key) = LuaGutterCacheManager.getOrRequest(key, 1, {
+            CompletableFuture<List<GutterInfo>>().also { pending.add(it) }
+        }) {}
         try {
-            LuaGutterCacheManager.setCache(a, emptyList())
-            assertNotNull(LuaGutterCacheManager.getCache(a))
-            assertNull(LuaGutterCacheManager.getCache(b))
-            LuaGutterCacheManager.setCache(b, emptyList())
+            assertNull(get(a))
+            pending.last().complete(emptyList())
+            assertNotNull(get(a))
+            assertNull(get(b))
+            pending.last().complete(emptyList())
+            assertNotNull(get(b))
             LuaGutterCacheManager.clearCache(a.uri)
-            assertNull(LuaGutterCacheManager.getCache(a))
-            assertNull(LuaGutterCacheManager.getCache(b))
-            LuaGutterCacheManager.setCache(a, emptyList())
+            assertNull(get(a))
+            assertNull(get(b))
             LuaGutterCacheManager.clearProject(project)
-            assertNull(LuaGutterCacheManager.getCache(a))
+            assertTrue(pending.takeLast(2).all { it.isCancelled })
+            assertNull(get(a))
         } finally {
             LuaGutterCacheManager.clearProject(project)
         }
