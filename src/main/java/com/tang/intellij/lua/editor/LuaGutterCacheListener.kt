@@ -25,38 +25,26 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiManager
 import com.tang.intellij.lua.lang.LuaFileType
 import com.tang.intellij.lua.psi.LuaPsiFile
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CompletableFuture
 
 /**
  * Manager to handle gutter cache and trigger updates
  */
 object LuaGutterCacheManager {
     data class Key(val project: Project, val serverId: String, val uri: String)
+    private val requests = GutterRequestCache<Key>()
 
-    private val gutterCache = ConcurrentHashMap<Key, List<GutterInfo>>()
-    private val cacheTimestamps = ConcurrentHashMap<Key, Long>()
+    fun clearCache(uri: String) = requests.invalidate { it.uri == uri }
 
-    fun clearCache(uri: String) {
-        gutterCache.keys.removeIf { it.uri == uri }
-        cacheTimestamps.keys.removeIf { it.uri == uri }
-    }
+    fun clearProject(project: Project) = requests.invalidate { it.project === project }
 
-    fun clearProject(project: Project) {
-        gutterCache.keys.removeIf { it.project === project }
-        cacheTimestamps.keys.removeIf { it.project === project }
-    }
-
-    fun getCache(key: Key): List<GutterInfo>? = gutterCache[key]
-
-    fun setCache(key: Key, infos: List<GutterInfo>) {
-        gutterCache[key] = infos
-        cacheTimestamps[key] = System.currentTimeMillis()
-    }
-
-    fun isCacheStale(key: Key, maxAgeMs: Long = 1000): Boolean {
-        val timestamp = cacheTimestamps[key] ?: return true
-        return System.currentTimeMillis() - timestamp > maxAgeMs
-    }
+    internal fun getOrRequest(
+        key: Key,
+        stamp: Long,
+        load: () -> CompletableFuture<List<GutterInfo>>,
+        updated: () -> Unit
+    ): List<GutterInfo>? = if (key.project.isDisposed) null
+        else requests.getOrRequest(key, stamp, load, updated)
 
 }
 
@@ -126,6 +114,10 @@ class LuaDocumentListener(private val project: Project) : DocumentListener {
  * File editor listener to trigger gutter update when files are opened
  */
 class LuaFileEditorListener(private val project: Project) : FileEditorManagerListener {
+    override fun fileClosed(source: FileEditorManager, file: VirtualFile) {
+        LuaGutterCacheManager.clearCache(file.url)
+    }
+
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (file.fileType === LuaFileType.INSTANCE) {
             // Clear cache for the newly opened file to ensure fresh data
