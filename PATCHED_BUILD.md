@@ -1,3 +1,29 @@
+# Build 190 — independently configurable unused self (2026-10-21)
+
+Version/archive: `0.30.0-190` / `IntelliJ-EmmyLua2-0.30.0-190.zip`.
+Analyzer pin: `b27a6d00febe537ffaf72d47b2124c561a5bf201` on upstream/main `bb7c7d4c`.
+UP-108 (`feat/unused-self-diagnostic`, signed `ec1094a9`) adds `unused-self`
+for implicit colon-method parameters. Ordinary locals and explicit parameters
+retain `unused`. Both codes keep hint severity and unnecessary tagging and can
+be suppressed independently. Existing `unused` suppression no longer covers
+implicit self; list both codes to suppress both. The bundled configuration
+schema also includes the new code. All previous patches, including UP-045, remain.
+
+All **2,577 standalone / 3,058 combined workspace tests**, full-workspace
+Clippy and rustfmt pass. The packaged server passes all six configuration,
+annotation and severity scenarios, including code completion and line/file/project
+suppression actions. Both native FDE integration tests pass, with no skips.
+The unchanged frozen LTN baseline remains **37 Lua files / zero diagnostics**.
+
+Descriptor, pin, release/prepared/archive binary identity, executable0755 and
+bundled schema are verified. Archive SHA-256:
+`62d7b7f816953261db0e1f7d163402ba2a6a4389dbb4f1c22caf4e4aabeaf9ec`.
+The ZIP is copied flat into plugins/, with build/distributions originals retained.
+Only macOS arm64 receives the custom analyzer. FDE's development pin is updated;
+FDE 0.9.3-dev and LSP4IJ SNAPSHOT-15 archives are unchanged. No push, PR, user
+settings changes or regular IDE installation.
+Workspace receipt: `upstream/memory/UNUSED_SELF_DIAGNOSTIC_2026-10-21.md`.
+
 # Build 189 — precise member navigation (2026-10-21)
 
 Version/archive: `0.30.0-189` / `IntelliJ-EmmyLua2-0.30.0-189.zip`.
