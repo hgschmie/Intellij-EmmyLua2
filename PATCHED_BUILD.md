@@ -1,3 +1,33 @@
+# Build 192 — array callback parameters (2026-10-21)
+
+Version/archive: `0.30.0-192` / `IntelliJ-EmmyLua2-0.30.0-192.zip`.
+Analyzer pin: `da3b12a1af2f87d4ae5e5aa88e1e18f82005447c`.
+UP-088 amendment `b457f521` supplies callback parameter contracts from annotated
+array elements, including assignments to table members. The work merge retains
+its broader assignment-context fallback and directional write contracts. This
+closes an upstream gap; no new fix ID or prerequisite is introduced.
+
+The packaged server correctly reports all eight parameter hovers in the frozen
+train-tracker `lib/constants.lua`: `tt.TrainInfo`, `string?`, and `LuaPlayer?`.
+The old return mismatch disappears. Correct typing also exposes two nullable
+argument contract mismatches and one remaining alias-guard warning there;
+these are recorded in the investigation, and the original mod is unchanged.
+The frozen LTN baseline remains **37 files / zero diagnostics**.
+
+Validation: **2,582 standalone tests**, **3,064 distinct combined tests**,
+Clippy/rustfmt and two native FDE tests pass. Combined final run: 3,063 passed;
+only the unchanged flow stress test was filtered, having passed in preceding
+full runs before an assertion-only integration adjustment. Ten semantic callback
+tests cover aliases, integer keys, explicit docs, missing context and nullability;
+the new server regression covers all three parameter hovers.
+
+Archive descriptor/pin, release/prepared/archive binary identity, executable0755
+and retained unused-self schema are verified. SHA-256: `41bd3b0ffd7e4cf1babb22b49d044b6cbed951da67d6a965270b77520695a5a6`.
+ZIP copied to workspace plugins/; distribution originals retained. Only macOS
+arm64 receives the custom analyzer. FDE's development pin changes, while FDE
+0.9.3-dev and LSP4IJ SNAPSHOT-15 ZIPs remain unchanged. No push, new PR or IDE
+installation. Receipt: `upstream/memory/TRAIN_TRACKER_ARRAY_CALLBACKS_2026-10-21.md`.
+
 # Build 191 — unused includes unused-self (2026-10-21)
 
 Version/archive: `0.30.0-191` / `IntelliJ-EmmyLua2-0.30.0-191.zip`.
