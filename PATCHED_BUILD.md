@@ -1,3 +1,33 @@
+# Build 193 — array expression navigation (2026-10-21)
+
+Version/archive: `0.30.0-193` / `IntelliJ-EmmyLua2-0.30.0-193.zip`.
+Analyzer pin: `d4f25314a2759d589bc8f2cdf98504ebe655ff7d`.
+UP-089 amendment `f8bde6ce` excludes implicit array values from declaration-key
+lookup while preserving their inference identity. Calls and field reads inside
+array callbacks now resolve to the actual expression for definition, references
+and hover. Current upstream reproduces the bug; UP-088/107 are not prerequisites.
+
+Packaged replay sends all three `Constants.getStationName` calls to line99,
+returns the same 20 references from calls and declaration, and restores correct
+function/field hovers. All eight UP-088 callback parameter hovers remain correct.
+The frozen callback input retains its three pre-existing argument warnings and
+now exposes one valid preferred-local-alias hint; the user's newer source already
+uses that local alias and required parameters. Original mod files are unchanged.
+
+LTN: **37 files, zero warnings/errors, two preferred-local-alias style hints**
+in dispatcher.lua:78/220, newly visible because table-value references now resolve.
+These suggest the existing stopID/request_index locals; no new warning is added.
+All **2,582 standalone / 3,070 combined workspace tests**, Clippy/rustfmt and
+both native FDE integration tests pass, with no test failures or skips.
+
+Descriptor, pin, release/prepared/archive binary identity, executable0755 and
+retained unused-self schema verified. SHA-256: `0233650b23ad0639892abb93ae5be22160be2a72c78127cb28a1adcef0abf55f`.
+The validated ZIP is in workspace plugins/ and both distribution directories.
+Only macOS arm64 receives the custom analyzer. FDE's development pin is updated;
+FDE 0.9.3-dev and LSP4IJ SNAPSHOT-15 archives remain unchanged. Local signed commits;
+no push, PR or IDE installation. Full receipt:
+`upstream/memory/TRAIN_TRACKER_ARRAY_NAVIGATION_2026-10-21.md`.
+
 # Build 192 — array callback parameters (2026-10-21)
 
 Version/archive: `0.30.0-192` / `IntelliJ-EmmyLua2-0.30.0-192.zip`.
