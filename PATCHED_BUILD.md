@@ -1,3 +1,28 @@
+# Build 189 — precise member navigation (2026-10-21)
+
+Version/archive: `0.30.0-189` / `IntelliJ-EmmyLua2-0.30.0-189.zip`.
+Analyzer pin: `a615f09dd1e49979f29abc55cac38dda8c27d778` on upstream/main `bb7c7d4c`.
+UP-107 (`ae2cc4d0`) limits member implementations to matching receiver identities
+and indexes implicit-self references. The existing stack, including UP-045,
+remains integrated. This is an independent upstream-based fix.
+
+All **2,574 standalone** and **3,052 combined workspace tests**, full-workspace
+Clippy and rustfmt pass. Two native FDE integration tests pass with no skips: root
+ownership/release and generated API with separate workspaces.
+
+The packaged server returns exactly seven calls and the declaration for
+`FrameworkGhostManager:state` in the unchanged train-tracker fixture. Its
+implementation response contains only the real method, down from 192 unrelated
+and related results. Both a declaration and a self-call query give the same
+reference set. The frozen 37-file LTN baseline remains at zero diagnostics.
+
+Validation details and source provenance are in workspace
+`upstream/memory/GHOST_MANAGER_USAGES_2026-10-21.md`.
+Archive SHA-256: `a093fd2343c14b04a22175be8a39f10505a546b9d929f171ff7e114799cd2248`.
+Only macOS arm64 receives the custom analyzer. The archive is copied flat into
+plugins/. FDE 0.9.3-dev and LSP4IJ SNAPSHOT-15 archives remain unchanged;
+FDE's development analyzer pin is updated. No push, PR or regular IDE installation.
+
 # Build 188 — LTN cache, metrics and settings warnings (2026-10-21)
 
 Version/archive: `0.30.0-188` / `IntelliJ-EmmyLua2-0.30.0-188.zip`.
