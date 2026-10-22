@@ -1,3 +1,37 @@
+# Build 199 — eight analyzer/client issues (2026-10-22)
+
+Version/archive: `0.30.0-199` / `IntelliJ-EmmyLua2-0.30.0-199.zip`.
+Analyzer pin: `1c952b9a9aa0fa047afc8d028e044972550a5a39`.
+
+Includes amended UP-017/035/061/088, new analyzer UP-113/114/116, and new
+EmmyLua2 UP-115. The gutter provider now requests markers asynchronously with
+versioned cache/lifetime checks. Analyzer edits preempt running diagnostics;
+constructor checks reuse complete results. The reported inherited-method,
+integer arithmetic, nullable-field, inherited-dictionary and sorting-callback
+cases are corrected. UP-028/#1292 is now supplied by upstream ce61189c.
+UP-045 remains the active workspace scheduler.
+
+All 3,154 combined Rust tests, Clippy/rustfmt and 35 client tests pass. Packaged
+real-file replay verifies all reported semantic cases. Frozen LTN is unchanged:
+37 files, zero warnings/errors, two existing local-alias hints. Constructor-only
+ablation reduces the measured entity-tab pass from 4.8 s to 0.4 s with 79 complete diagnostic
+responses unchanged; an edit during an active check reaches hover in about 41 ms.
+These are raw-LSP measurements, not an IDE-wide latency guarantee.
+
+Descriptor, analyzer lock, release/prepared/archive binary identity, Unix0755
+and the unused-self schema are verified. ZIP SHA-256:
+`e09cb0c37f35714091d78f9780c304bbcd20853585c32997fc496b0e146dafd2`.
+Binary SHA-256:
+`2418e0a0856face9f941e452437936c0bfc6b6c79009a1a325de290aeea51b2f`.
+Archive copies are retained in both distribution directories and workspace plugins/.
+Only macOS arm64 receives the custom analyzer. FDE 0.9.3-dev and LSP4IJ
+0.21.1-SNAPSHOT-15 archives are unchanged. Native integration results, baseline
+controls, remaining limitations and final commits are recorded in workspace
+`upstream/memory/EIGHT_ISSUE_FIXES_2026-10-22.md`.
+
+Outstanding changes were pushed before implementation; these new task commits
+are local. No upstream PR, original-mod edit or IDE installation.
+
 # Build 198 — mutable captured variables (2026-10-21)
 
 Version/archive: `0.30.0-198` / `IntelliJ-EmmyLua2-0.30.0-198.zip`.
