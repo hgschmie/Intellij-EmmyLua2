@@ -1,3 +1,31 @@
+# Build 196 — declared module export fields (2026-10-21)
+
+Version/archive: `0.30.0-196` / `IntelliJ-EmmyLua2-0.30.0-196.zip`.
+Analyzer pin: `6e3ab30f7a6457c687045c7d0ff89b9e31fadc28`.
+UP-110 `f89a2037` adds declared class fields to the module export checker,
+including inherited declarations in another file. Unknown imported fields and
+consumer-injected fields remain diagnostics. The existing runtime export and
+UP-010 metatable rules remain integrated.
+
+The false undefined-field warning on train-tracker lib/init.lua:12 reproduces
+on build195 and upstream/main bb7c7d4c. Hover already resolves the field as
+FrameworkSettings; the export checker had ignored the class declaration.
+All 1,600 standalone analysis tests and 3,104 combined workspace tests pass,
+as do Clippy/rustfmt. No original mod source changes.
+
+Packaged replay clears the reported settings warning and preserves both hovers.
+The separate existing `if script` warning remains. The 37-file LTN replay exactly
+matches build195: zero warnings/errors and two existing local-alias hints.
+Descriptor, pin, binary identity, executable0755 and retained unused-self schema
+are verified. ZIP SHA-256:
+`594a9b48d1da99ee8c5dbb4e5248c5b5d13a38e1dd94a6fd70388e66289476fa`.
+The ZIP is retained in both distribution directories and copied to plugins/.
+The packaged replay and archive receipt are recorded in workspace
+`upstream/memory/TRAIN_TRACKER_MODULE_EXPORT_2026-10-21.md`.
+Only macOS arm64 receives the custom analyzer. FDE's development pin follows
+the validated analyzer; its 0.9.3-dev archive and LSP4IJ SNAPSHOT-15 archive
+remain unchanged. Local commits only; no push, PR or IDE installation.
+
 # Build 195 — constructor hover and member inference (2026-10-21)
 
 Version/archive: `0.30.0-195` / `IntelliJ-EmmyLua2-0.30.0-195.zip`.
