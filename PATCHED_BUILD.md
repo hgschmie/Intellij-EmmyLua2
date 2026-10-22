@@ -1,3 +1,28 @@
+# Build 194 — literal constructor keys (2026-10-21)
+
+Version/archive: `0.30.0-194` / `IntelliJ-EmmyLua2-0.30.0-194.zip`.
+Analyzer pin: `f8e08719b699a6ee92f3a34018a4effc3c919f9b`.
+UP-016 amendment `7ec0b234` preserves literal string/integer constructor keys
+when selecting the value contract. This fixes the local expected-nil regression
+in train-tracker lib/settings.lua without weakening invalid-key/value checks.
+Existing directional-field and enum compatibility integrations are retained.
+
+All **2,587 standalone / 3,075 combined workspace tests**, Clippy/rustfmt and
+both native FDE integration tests pass, without failures, skips or filters.
+Five new regressions fail before and pass after the fix. Packaged replay clears
+the actual settings file and verifies valid/invalid constructors with strict
+dictionary reads enabled and disabled. The 37-file LTN baseline is unchanged:
+zero warnings/errors and the same two preferred-local-alias hints.
+
+Descriptor, pin, release/prepared/archive binary identity, executable0755 and
+retained unused-self schema verified. ZIP SHA-256:
+`73e5a5fba9d206f216ab82d93f1138ad73df952533fc603f0844beca62779d3a`.
+The validated ZIP is in plugins/ and both distribution directories. Only macOS
+arm64 receives the custom analyzer. FDE's development pin is updated; its
+0.9.3-dev archive and LSP4IJ SNAPSHOT-15 archive are unchanged. Local signed
+commits; no push, PR, mod-source edits or IDE installation. Full receipt:
+`upstream/memory/TRAIN_TRACKER_SETTINGS_2026-10-21.md`.
+
 # Build 193 — array expression navigation (2026-10-21)
 
 Version/archive: `0.30.0-193` / `IntelliJ-EmmyLua2-0.30.0-193.zip`.
