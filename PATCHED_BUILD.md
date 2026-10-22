@@ -1,3 +1,30 @@
+# Build 195 — constructor hover and member inference (2026-10-21)
+
+Version/archive: `0.30.0-195` / `IntelliJ-EmmyLua2-0.30.0-195.zip`.
+Analyzer pin: `a762be645e306dc63c6ff10b506fe8bfe02e465c`.
+UP-089 amendment `1febed04` supplies nested constructor contracts and resolves
+computed keys as expressions. New UP-109 `ae0516d0` honors runtime member @type
+annotations throughout ordinary inference, preserving initializer checks and
+optional reads. Both fixes are independent on upstream/main `bb7c7d4c`; existing
+flow/cast, directional field, enum and dictionary patches remain integrated.
+
+All 2,600 distinct UP-089 standalone tests, 2,579 UP-109 standalone tests and
+3,101 combined workspace tests pass, as do Clippy/rustfmt. Packaged replay shows
+FrameworkSettingsGroup/FrameworkSetting at the reported constructor positions,
+correct dictionary/key/field types, and zero settings diagnostics. An arbitrary
+lookup into table<string,string> remains string? under strict indexing.
+LTN remains 37 files, zero warnings/errors and the same two local-alias hints.
+Original mods are unchanged.
+
+Descriptor, pin, release/prepared/archive binary identity, executable0755 and
+retained unused-self schema verified. ZIP SHA-256:
+`144a2d4cfef8d8fd3a96128d4caf76c46712026455faf395fb26b73a234bc4b8`.
+The validated ZIP is in plugins/ and both distribution directories. Only macOS
+arm64 receives the custom analyzer. FDE's development pin is updated; its
+0.9.3-dev archive and LSP4IJ SNAPSHOT-15 archive remain unchanged. No push, PR
+or IDE installation. Native FDE validation and full receipt are recorded in
+`upstream/memory/TRAIN_TRACKER_SETTINGS_HOVER_2026-10-21.md`.
+
 # Build 194 — literal constructor keys (2026-10-21)
 
 Version/archive: `0.30.0-194` / `IntelliJ-EmmyLua2-0.30.0-194.zip`.
