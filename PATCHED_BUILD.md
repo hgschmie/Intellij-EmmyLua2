@@ -1,3 +1,34 @@
+# Build 200 — constructor navigation, enum indices and lifecycle fixes (2026-10-22)
+
+Version/archive: `0.30.0-200` / `IntelliJ-EmmyLua2-0.30.0-200.zip`.
+Analyzer pin: `ca4943a8c95f1964315fbfef16e9c24aae9907d3`.
+
+Amends UP-089 to navigate nested constructor keys to their declared class fields.
+New UP-117 accepts numeric enum collection indices; UP-118 reloads disk contents
+when a tracked document closes; UP-119 stops generic inheritance cycles from
+crashing the server. UP-120 prevents native watcher reception from blocking
+the async runtime. All existing fixes and UP-045 remain integrated.
+
+All 3,162 distinct Rust tests are covered by the full workspace run and the
+final server-only rerun (349 tests). Clippy and rustfmt pass. Packaged real-file replay
+confirms tt.TabInfo field definitions and removes exactly the two reported
+entity-tab enum warnings at lines313/315. Other frozen-file diagnostics are
+unchanged. Close/reload and cyclic-inheritance protocol regressions pass. Frozen
+LTN remains 37 files with zero warnings/errors and two existing hints.
+
+Descriptor, analyzer.lock, release/prepared/archive binary identity, Unix0755
+and unused-self schema are verified. ZIP SHA-256:
+`58d01644eeee25277aafb0fcc180dfa6345f68a604127102eab7d40572f231e3`.
+Binary SHA-256:
+`69cb7412cb59b2309084a4f99cecad3940214cbbadb7ee462ab69871d2160df8`.
+Archive copies are retained in both repository distribution folders and plugins/.
+Only macOS arm64 receives the custom analyzer. FDE's development pin follows200;
+its 0.9.3-dev archive and LSP4IJ SNAPSHOT-15 are unchanged. Native lifecycle test
+results and final commits are recorded in workspace
+`upstream/memory/NAVIGATION_ENUM_FOLLOWUPS_2026-10-22.md`.
+
+Changes are signed and local, not pushed. No new PR, mod edits or IDE installation.
+
 # Build 199 — eight analyzer/client issues (2026-10-22)
 
 Version/archive: `0.30.0-199` / `IntelliJ-EmmyLua2-0.30.0-199.zip`.
