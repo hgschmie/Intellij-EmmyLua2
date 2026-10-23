@@ -1,3 +1,52 @@
+# Build 202 — callable compatibility and copied-function signatures (2026-10-23)
+
+Version/archive: `0.30.0-202` / `IntelliJ-EmmyLua2-0.30.0-202.zip`.
+Analyzer pin: 3219ece399ba8256868457213fe34355be0d652d.
+
+UP-127 accepts broad function values for unknown parameters while retaining typed
+callback and scalar rejection. UP-128 consumes captured callable signatures with
+original file/closure identity, complete overloads, generics and return-overload
+slots. Copied stdlib/custom/captured/chained function calls retain return types;
+copied-value snapshots and real alias reassignment retain their distinct behavior.
+The additive UP-123 correction uses complete union member projection with existing
+guards/casts, preserving missing/optional nil alternatives, unresolved nominal and
+recursive completeness and explicitly broad callable contracts.
+
+The build preserves201 as an ancestor and every prior active patch, including
+UP-020 imported factories/multiple returns/API inference, UP-109 declared member
+contracts, UP-112 captures, UP-121 return uncertainty and UP-080/125 presentation.
+All three exact reviewed inputs applied cleanly as signed additive commits.
+
+All **3,220 all-feature Rust tests**, all-workspace/targets/features Clippy with
+-D warnings and rustfmt pass. Includes13 callable and6 union-projection groups;
+the original cross-file assertion passes unchanged. The35 prior client tests
+are reused with exact client/Gradle source equivalence.
+
+Final packaged acceptance passes **159 cases and142 type observations**:
+new33/42 plus unchanged old126/100. Both original is.lua and string.lua have zero
+diagnostics; cross-file result/arithmetic are integer. Typed argument, snapshot,
+reassignment, optional/absent nil and recursive controls remain enforced. Prior
+full diagnostic sets, all frozen input hashes and supplement chains are unchanged.
+All **18 FDE native tests** pass, zero failures/errors/skips; signed pin/evidence
+commit `a0264508a10bea0b5b7cb87c50a384d3627a8f9e` records exact-source validation.
+Frozen LTN diagnostics/hovers remain identical to201: two accepted generated
+MapPosition model warnings and two unchanged hints; all3,338 inputs unchanged.
+Separate generated style-model warning and pure-self finding remain deferred.
+
+ZIP SHA-256: `e2c9fe2663fe7c946a7e2a3b5ded6150cf64e298ed00b743b753d814fc805a1c`.
+Binary SHA-256: `d033dc4a7b2b0dfd6354bb1d42bb2c60eced6f4e7ade3ce509cac36b89ae7902`.
+Descriptor, pin, release/prepared/archive/extracted identity, Unix0755 and
+unused-self schema verified. Matching repository originals and immutable candidate
+are retained; validated publication is directly in workspace plugins/.
+
+Only macOS arm64 receives the custom analyzer; other bundled platform binaries
+remain unchanged. FDE's development pin follows the validated source; its
+0.9.3-dev ZIP and LSP4IJ SNAPSHOT-15 stay unchanged. Original mods are read-only.
+Exact source/artifact/native acceptance and deferred model limits are recorded in
+workspace `memory/findings/F-20261023-114101-callable-alias-fixes-build/integration-receipt.md`.
+
+Local signed changes only; no push, PR or IDE installation.
+
 # Build 201 — five analyzer findings and precise dictionary hovers (2026-10-23)
 
 Version/archive: `0.30.0-201` / `IntelliJ-EmmyLua2-0.30.0-201.zip`.
