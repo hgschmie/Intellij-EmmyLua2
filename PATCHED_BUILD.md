@@ -1,3 +1,45 @@
+# Build 201 — five analyzer findings and precise dictionary hovers (2026-10-23)
+
+Version/archive: `0.30.0-201` / `IntelliJ-EmmyLua2-0.30.0-201.zip`.
+Analyzer pin: `98696a91ac84e52e63c238f929d76a423a18a276`.
+
+Fixes computed writes into inferred tables, nullable union fields, member and
+computed primitive guards, normalized matcher returns and cast/guard execution
+order. Copied member aliases and dictionary entries without declaration IDs
+retain exact projected/flow hover types. Includes UP-121–126 plus amended
+UP-112/094/033/016/080, preserving all prior active fixes and UP-045. Bounded
+recursive-key and open-table proofs preserve uncertainty for unsupported uses.
+
+Validation covers **3,198 distinct Rust tests**: 354 freshly executed language-
+server tests and 2,844 unchanged non-LS tests from the prior full run. Exact Git
+content proofs show only two LS paths changed. All-target/all-feature workspace
+Clippy and rustfmt pass. All35 unchanged client tests passed. The pin adds only
+a documentation handoff after tested LS commit b32387a9.
+
+Final packaged validation passes **126 frozen cases and all100 explicit type
+observations**, including both original GUI handler hovers and every negative
+control. All **18 FDE native tests** pass (17 PerModServers plus Lua language-level),
+with zero failures/errors/skips. Original mods and private inputs are unchanged.
+FDE's development pin follows this analyzer; its runtime version/archive stays
+0.9.3-dev and LSP4IJ remains SNAPSHOT-15.
+
+ZIP SHA-256: `459bd870ba1c89371acc6b952a6f805577a4ccc1b4b0d1a7091fa1f9166edaa1`.
+Binary SHA-256: `f131ad14742aeb8c5ece0dc1424fe58e53809b65b7c5bd4c707b88a7a7aa0386`.
+Descriptor, lock, release/prepared/archive/extracted identity, Unix0755 and
+unused-self schema are verified; other platform binaries match build200.
+Repository originals are retained; validated publication is directly in plugins/.
+Final evidence and exact commits: workspace
+`memory/findings/F-20261023-000345-five-analyzer-fixes/integration-receipt.md`.
+
+Frozen LTN retains two generated MapPosition read-contract warnings plus two
+existing hints; sorting330 exposes generated LuaStyle|string read modeling.
+Separate directional API-copy controls prove these model deltas without changing
+primary frozen inputs or suppressing accurate nil projection. Management tracks
+model follow-ups separately. Only macOS arm64 receives the custom analyzer;
+FDE and LSP4IJ archives are retained for this analyzer-only update.
+
+Local signed changes only; no push, PR or IDE installation.
+
 # Build 200 — constructor navigation, enum indices and lifecycle fixes (2026-10-22)
 
 Version/archive: `0.30.0-200` / `IntelliJ-EmmyLua2-0.30.0-200.zip`.
