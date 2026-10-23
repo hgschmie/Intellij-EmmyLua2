@@ -1,3 +1,67 @@
+# Build 203 — possible falsy receivers and integer enum contracts (2026-10-23)
+
+Version/archive: `0.30.0-203` / `IntelliJ-EmmyLua2-0.30.0-203.zip`.
+Analyzer pin: 633268c36d7a429a2ac097f5ffacb4ec22fa747b.
+
+UP-130 retains possible falsy receivers for boolean/optional fields, preserving
+unknown, alias, inherited/directional and discriminated-union paths. Existing
+UP-016 guarded checker policy remains; aliases expand at both semantic decisions.
+UP-131 proves integer enum and alias operands through shared bounded/cycle/revision
+checks used by arithmetic and numeric loops. Explicit enum member contracts take
+priority over placeholder initializers, with missing/nullable/noninteger negatives
+retained. Existing runtime enum owners, casts, indices, literal folding and operator
+overloads remain. One work-only correction restores documented multiline unions
+and adds representation/arithmetic/loop regressions.
+
+The matching toolkit UP-129 is integrated as
+`1c1db13d8543714bbf4471ff9db7c63bea2238fc`, preserving all active toolkit patches.
+Only EmmyLua direction/transport_line emit named integer aliases, member types and
+nil placeholders; no runtime ordinal values are fabricated. FDE consumes the exact
+new toolkit privately and regenerates current2.1.23 API automatically through its
+existing CLI-byte cache identity. It owns the coordinated0.9.4-dev distribution.
+The prior202 analyzer and every active patch remain ancestors/retained.
+
+UP-132 preserves compatible raw generic assignment identity under an unambiguous
+lexical binding before existing constraint fallback. It repairs an older defect
+exposed when valid UP-130 receiver flow stopped incorrectly producing Never.
+Nullable, unrelated/shadowed generic and concrete-to-generic negatives remain.
+The rejected first203 candidate is retained with all raw results.
+
+All **3,250 all-feature Rust tests**, workspace Clippy and formatting pass.
+Includes all12 truthiness,8 enum,10 numeric-alias and7 new generic assignment
+groups. Prior35 client tests are reused with exact source/Gradle equivalence.
+
+Final corrected packaged acceptance passes **203 case executions,255 type
+observations and5 navigation checks**, including both original Dollies files with
+zero diagnostics. The generic supplement clears six valid assignments and retains
+four invalid assignments; prior159/142 fixtures and diagnostic sets are unchanged.
+Original seals remain, with only two separately documented equivalent boolean
+union displays. FullLTN37 diagnostics and sampled hovers exactly match202; all
+3,338 inputs intact, with the two accepted model warnings and two hints retained.
+
+All **20 FDE native tests** pass, zero failures/errors/skips, including exact
+numeric contracts/navigation and automatic cache-upgrade/reuse. FDE unit results
+are83 executed passes and one existing opt-in DAP skip. The corrected toolkit/API
+pair is required for numeric stubs; analyzer-only with old API deliberately retains
+four model warnings. Toolkit typecheck,changed-file lint,CLI/emitter checks pass;
+its full105 source suite retains one verified baseline settings failure/two skips
+and four unchanged repository-wide lint errors, documented in the final receipt.
+
+ZIP SHA-256: `ad5978b48ea0c47f2f921e9be45b78950f9eb3df677127b7e18af6793786559c`.
+Binary SHA-256: `6e9bcc1683cbd26910d7f5b1ab9edea1d2bfeaadb8c3c6bf271335bf3e48780f`.
+Descriptor,pin,release/prepared/archive/extracted identity,Unix0755 and schema pass.
+Repository originals and both immutable candidate histories are retained; validated
+Emmy publication is flat in workspace plugins/. FDE owns its coordinated archive.
+
+Custom analyzer changes apply to macOS arm64 only; other bundled platforms remain
+unchanged. Prior202 fixtures remain immutable and separate from the corrected
+current2.1.23 API. Older API model/pure-self findings remain deferred; original mods
+and live generated API caches were not edited. FDE publishes its own validated ZIP.
+Exact source/artifact/API/native/cache evidence is recorded in workspace
+`memory/findings/F-20261023-124808-dollies-flow-enum-build/integration-receipt.md`.
+
+Local signed changes only; no push, PR or IDE installation.
+
 # Build 202 — callable compatibility and copied-function signatures (2026-10-23)
 
 Version/archive: `0.30.0-202` / `IntelliJ-EmmyLua2-0.30.0-202.zip`.
