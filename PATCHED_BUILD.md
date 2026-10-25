@@ -1,3 +1,42 @@
+# Build 204 — reviewed analyzer source refresh (2026-10-25)
+
+Version/archive: `0.30.0-204` / `IntelliJ-EmmyLua2-0.30.0-204.zip`.
+Analyzer pin: `1429a6fd5ba9024e50bb57f3d19277ad9f80d3b3`.
+
+All93 retained analyzer sources were reviewed/validated on unchanged official
+upstream56267. The fresh work branch reconstructs the exact accepted203 aggregate,
+preserving all internal adaptations,241 history entries and strict-dictionary
+iterator/length/numeric/call-policy controls. No new aggregate semantic change or
+retirement is claimed. Old source history and203 artifacts remain rollback inputs.
+
+Fresh combined3,250 all-feature Rust tests pass, zero failed/ignored/filtered,
+including the full stress test and all3,074 retained-source regression mappings.
+All-target/all-feature workspace Clippy with warnings denied and fmt pass. Prior35
+client passes are reused with exact source/Gradle/routing-script object equivalence.
+The final source freeze changes documentation only after validated code.
+
+Exact packaged acceptance passes **203 cases /255 type observations /5 navigation**
+and the unchanged UP-03659+3 controls. Direct comparison of38 probe results and
+the complete59+3 responses shows zero diagnostic/hover/navigation delta from203;
+only the two prior sealed Boolean displays apply. Both independent LTN37 replays
+match203 with all3,338 inputs unchanged, retaining two model warnings/two hints.
+All14,894 sealed paths and218 current original files remain unchanged.
+
+FDE **20 native tests** pass, zero failures/errors/skips, with exact sandbox
+source/binary identity, API/cache upgrade/reuse and unchanged218 original files,
+20 private Emmy files and1,171 API files. FDE0.9.4 version/archive, toolkit1c1db13/
+API2.1.23 and LSP15 remain retained. The11 current mod changes sinceOct23 predate
+this task. FDE release unit suite is not rerun for this analyzer-only pin update.
+
+ZIP SHA-256: `2a4243d33c0ad32fc6e30ac1dbf66d30d1456fd9bdc04091efcf30acb8ec1605`.
+Binary SHA-256: `faffe93db5db4b26b09ef204fdb27d492d1657b42496b1d326b091b839d4c28b`.
+Descriptor, lock,0755, release/prepared/archive/extracted identity, unused-self schema
+and unchanged off-platform203 payloads pass. Producer/shared/immutable copies are
+retained; validated publication belongs flat in workspace plugins/. Only macOS
+arm64 receives the custom analyzer. Integration changes remain local; no IDE
+installation. Exact final receipt is in workspace
+`memory/findings/F-20261025-003435-analyzer-upstream-refresh/integration-receipt.md`.
+
 # Build 203 — possible falsy receivers and integer enum contracts (2026-10-23)
 
 Version/archive: `0.30.0-203` / `IntelliJ-EmmyLua2-0.30.0-203.zip`.
