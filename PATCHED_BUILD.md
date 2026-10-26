@@ -1,3 +1,45 @@
+# Build205 — updated upstream and complete local overloads (2026-10-26)
+
+Version/archive: `0.30.0-205` / `IntelliJ-EmmyLua2-0.30.0-205.zip`.
+Analyzer pin: `a35b72a8ba90bb1d48a119e846140ba5e6721ec1`; tested code `e29c46ca6af030aee9b3af8c007cf7ad719543d6`.
+The pin's final commit changes only documentation/manifests after validated code;
+crates/Cargo objects are identical. Frozen official upstream is a90273fc, six
+commits/19paths after56267. All93 reviewed retained sources and independent UP133
+f8bdea85 compose with the entire accepted204 aggregate/241history/37work-source
+locators. No old-tree restoration, duplicate source replay or new retirement.
+Original204aggregate1429 and originalsourcehistory633 are remotely archived.
+
+Fresh **3,302 all-feature workspace Rust tests**, all-target/all-feature Clippy
+with warnings denied and rustfmt pass. Every accepted3,250 name plus52new names
+executes:22newupstream,17UP133 and13composed groups. All25upstream bodies, five
+existing policy adaptations and48extra strict-iterator lines remain exact.
+Shared TraceSubject/incoming-path memoization retains real-cycle guards and
+provisional/query lifecycle; obsolete separate member cache is removed. Existing
+API/navigation/length/numeric/dictionary/generic/closure contracts remain.
+
+UP133 restores unchanged local function documented alternatives and concrete
+constructor key/value compatibility for complete calls. Cast/type/reassignment,
+transparent parentheses, forwarded calls, aliases, nil deletion, overwritten keys,
+final return slots and user class identity are covered. Retained052/b046 field
+validation stays; no extra internal semantic helper is added. Accepted204's
+custom-class-named-table field warning and supplemental global-RHS limitation are
+explicitly retained. Original upstream/accepted assertions are not relaxed.
+
+Client runtime sources remain71e71f65; the build uses exact released LSP4IJ
+0.21.1-SNAPSHOT-16 (source044671ff, ZIP9bb3199a). That LSP distribution retains its
+reviewed full-suite limit775PASS/41inherited assertions/3originalskips; no green
+full-suite claim. Toolkit1c1db13/CLI419764/API2.1.23 and FDE0.9.4 archive remain.
+
+Publication requires the exact immutable205 ZIP/binary/pin/descriptor/0755/CRC,
+fresh35Emmy client checks, original203cases/255types/5navigation +59length/3closure,
+frozenLTN37/API/cache,064 supplemental pairing and four complete-overload protocol
+cases. FDE owns exact205+16 full48native/fullunit private-pin acceptance. Detailed
+source, artifact, consumer results and remaining limits are maintained in workspace
+`memory/findings/F-20261026-120748-analyzer-lsp-upstream-refresh/integration-receipt.md`.
+Sources are bound by frozen11d1db6b and UP133c16102f1 manifests. Only macOS arm64
+receives the custom analyzer; other bundled platforms remain unchanged. Existing
+archives are preserved, and no running IDE installation is part of this build.
+
 # Build 204 — reviewed analyzer source refresh (2026-10-25)
 
 Version/archive: `0.30.0-204` / `IntelliJ-EmmyLua2-0.30.0-204.zip`.
