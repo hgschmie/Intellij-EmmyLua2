@@ -1,3 +1,46 @@
+# Build 206 — corrected declaration and member flow (2026-10-26)
+
+Version/archive: `0.30.0-206` / `IntelliJ-EmmyLua2-0.30.0-206.zip`.
+Analyzer pin: `00b73eacd55aebd4bb8679e51adbd2ee5365bccb`.
+Signed tested code: `bb60528e07892dd9ada965280c68ccb707940687`; the pin adds only four documentation/manifest files,
+with crates/Cargo byte-identical to the validated code.
+
+All 97 active analyzer sources are published on frozen upstream a90273fc.
+Independent UP-134 49311e95 projects return slots, UP-135 4e5e49e0 resets stale
+narrowing after unknown assignments, and UP-136 fc7fb521 limits runtime overrides
+to visible lexical scopes. The UP-136 predicate is conjoined with the complete
+existing UP-064 assignment-completion guard. All previous modules and source/glue
+remain; only reviewed registration and DeclKind spelling adaptations are added.
+UP-134 requires UP-135 for consumer acceptance; neither has a source ancestry edge.
+
+Fresh **3,345 full workspace/all-feature Rust tests** pass, zero failures,
+ignored or filtered tests. All previous 3,302 names execute, including 3,250
+accepted names, with 43 new slot/assignment/scope controls. All 25 upstream test
+files retain their verified bodies. All-target/all-feature Clippy with warnings
+denied and rustfmt pass. Manifests 11d1db6b/c16102f1/acee407e/2b417137 retain
+source history, dates and reviewed source dependencies.
+
+Private source replay matches all eight original global-member cases and full
+LTN 37 diagnostics/six hovers exactly against 204. Full GUI diagnostics are exact;
+only the twelve named scalar/guard hover results under Management decision
+a91b4f26 are intentionally improved. No general unknown/nil normalization or
+waiver applies. Final packaged bytes must repeat all original and supplemental
+protocol cases, fresh 35-client tests and FDE-owned full 48-native/full-unit/API/
+cache checks with released LSP4IJ 0.21.1-SNAPSHOT-16.
+
+Build 205 is retained as a failed private candidate (ZIP 67779fea, binary 7eb81886),
+including its producer/main copies and raw failures; it was never root-published.
+Counter 206 keeps those artifacts immutable. Accepted 204 and its published source
+rollback archives remain preserved. The current source/archive/consumer receipts
+are maintained in workspace
+`memory/findings/F-20261026-120748-analyzer-lsp-upstream-refresh/integration-receipt.md`.
+
+Client runtime sources remain unchanged from 71e71f65. LSP16 source 044671ff/ZIP
+9bb3199a remains released, with its inherited 41 assertion failures/three skips
+explicitly disclosed. Toolkit 1c1db13/CLI419764/API2.1.23 and FDE0.9.4 version/ZIP
+remain unchanged. Only macOS arm64 receives the custom analyzer; other servers
+are unchanged. No running IDE installation is included in this build.
+
 # Build205 — updated upstream and complete local overloads (2026-10-26)
 
 Version/archive: `0.30.0-205` / `IntelliJ-EmmyLua2-0.30.0-205.zip`.
