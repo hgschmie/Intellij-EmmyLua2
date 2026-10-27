@@ -1,3 +1,34 @@
+# Build 208 — directional callback candidates and complete field prose (2026-10-26)
+
+Version `0.30.0-208`, archive `IntelliJ-EmmyLua2-0.30.0-208.zip`.
+Analyzer pin `82345f4b17be2aa7c2b2bcbe0b47a6b18c1ad671`; signed tested code `544a45f86f28361ca45396881714a14cc3e21af7`.
+The final pin adds four documentation/manifests only; crates/Cargo are identical.
+Fresh **3,399 full workspace/all-feature tests** pass, all3,389207 names plus10new
+UP015 tests, zero failures/ignored/filtered. All-target/all-feature Clippy with
+warnings denied and fmt pass. Both complete oldwork testfiles are byte prefixes.
+
+Accepted207ce116 is the base; exact source7704989b appends to originalUP015
+commits a6e39a06/ea46e7c8 on a902. Only this source changes among97verified heads;
+old97manifestdc764 stays immutable. No source prerequisites/dependents or Toolkit
+change. Per-writer rich dictionary types and existing flow/declaration fallback
+remain; independently reviewed six-file composition preserves oldwork contracts.
+Contextual callbacks retain every setter candidate using ordinary existing policy;
+regular member queries retain first-writer behavior. Parser-attached field hover
+prose preserves paragraphs/no-space comments and correct field boundaries.
+
+Exact208 package must replay originalstrict203/255/5+38complete sets/all supplements
+under only separate12GUI+2supplemental hover approvals, with originalnilwarning
+mandatory. New callback/generic and hoverparagraph/no-space/boundary/Unicode/
+completion controls are additional gates. Fresh35exactpackagedclient and FDE095
+48native/87unit+one existing opt-in skip must bind the immutable archive.
+
+Client runtime source is unchanged from207363f2c8; LSP16/source044/ZIP9bb stays
+accepted with41inherited source assertions/three skips disclosed. Toolkit1c1db13/
+CLI419764/API2.1.23 and FDE095version/ZIP remain. OnlymacOSarm64 server custom;
+otherplatform payloads unchanged. Preserve207/ZIP00762rollback, failed205/206,
+all75rootZIPs and producer/main copies. No IDEinstallation. Final results live
+in workspace memory/findings/F-20261026-211533-up015-analyzer208/.
+
 # Build 207 — primitive guards across visible call writes (2026-10-26)
 
 Version/archive: `0.30.0-207` / `IntelliJ-EmmyLua2-0.30.0-207.zip`.
