@@ -1,3 +1,41 @@
+# Build 207 — primitive guards across visible call writes (2026-10-26)
+
+Version/archive: `0.30.0-207` / `IntelliJ-EmmyLua2-0.30.0-207.zip`.
+Analyzer pin: `ce1164dde2450d2d6ab778da086244e6e859a8d3`; signed tested code `93ec820bee93a71df7920a6e8bb516acbc2eb0f0`.
+The pin adds only four documentation/manifest files; crates/Cargo remain
+byte-identical to tested treebd00748d. Fresh **3,389 full workspace/all-feature
+Rust tests**, all-target/all-feature Clippy with warnings denied and rustfmt pass;
+all3,345 earlier names plus44new call-effect groups execute, no failures/skips.
+All25 protected upstream test bodies, original124 testfile and13UP136 tests stay.
+
+New97 freeze dc764761 replaces UP124 with signed549279eb and its eight validated
+published descendants, retaining all39 replacement authors/dates and nine old
+archives/durable refs. Eight descendant own additions/removals are unchanged;
+four patch IDs differ only due to module context. Original11d/c161/acee/2b417
+freezes remain immutable. Only four combined source files change from held206,
+exactly matching the reviewed v6 composition. UP016 indexed call policy, UP122
+ordered guards/casts, UP082 cycle checks, UP064 completion and published136fc7
+remain. Visible same-receiver/path writes invalidate old primitive guards;
+opaque/read-only/other-receiver calls and later guards remain effective.
+
+Private source strict replay passes original203/255/5 and all38 full response
+sets plus59length/3closure,LTN37/6,eight global cases,UP06413/15,UP133four cases.
+Only separate12GUI and two supplemental exact hover responses are approved by
+a91b4f26/1f26f94e; the exact required called-writer nil warning is mandatory.
+All16,336 frozen inputs remain unchanged. Final packaged207 bytes still require
+fresh original/full protocol replay,35client checks with Java17 release bytecode,
+and FDE-owned current0.9.5 native48/87unit checks plus one existing opt-in skip.
+
+Private205 ZIP67779fea and206 ZIP21c06b92 failed final protocol and are preserved,
+unpublished; no old producer/main archive is overwritten. Accepted204/source1429
+remains rollback pending final207 gates. Client runtime source remains71e71f65;
+LSP16/ZIP9bb3199a is unchanged with41 inherited assertion failures/three source
+skips disclosed. FDE0.9.5 version/ZIP and toolkit1c1db13/CLI419764/API2.1.23 stay.
+Only macOS arm64 receives the custom server; other platforms remain unchanged.
+No IDE installation is included. Exact artifacts and final consumer status live
+in workspace refresh findings. Earlier build sections retain source-stage history;
+205/206 did not receive release acceptance.
+
 # Build 206 — corrected declaration and member flow (2026-10-26)
 
 Version/archive: `0.30.0-206` / `IntelliJ-EmmyLua2-0.30.0-206.zip`.
