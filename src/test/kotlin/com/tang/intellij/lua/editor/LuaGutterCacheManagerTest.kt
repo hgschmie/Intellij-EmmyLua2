@@ -14,15 +14,18 @@ class LuaGutterCacheManagerTest {
         val closed = LuaGutterCacheManager.Key(first, "EmmyLua", "file:///shared.lua")
         val otherProject = LuaGutterCacheManager.Key(second, "EmmyLua", closed.uri)
         val otherFile = LuaGutterCacheManager.Key(first, "EmmyLua", "file:///other.lua")
+        val pendingRequests = listOf(closed, otherProject, otherFile).associateWith {
+            CompletableFuture<List<GutterInfo>>()
+        }
         try {
-            for (key in listOf(closed, otherProject, otherFile)) {
-                LuaGutterCacheManager.getOrRequest(key, 1, {
-                    CompletableFuture.completedFuture(emptyList<GutterInfo>())
-                }) {}
+            for ((key, pending) in pendingRequests) {
+                LuaGutterCacheManager.getOrRequest(key, 1, { pending }) {}
             }
             LuaGutterCacheManager.clearCache(first, closed.uri)
+            assertTrue(pendingRequests.getValue(closed).isCancelled)
             for (key in listOf(otherProject, otherFile)) {
-                assertEquals(emptyList<GutterInfo>(), LuaGutterCacheManager.getOrRequest(key, 1, {
+                assertFalse(pendingRequests.getValue(key).isDone)
+                assertNull(LuaGutterCacheManager.getOrRequest(key, 1, {
                     fail("unrelated cache entry was invalidated")
                     CompletableFuture()
                 }) {})
