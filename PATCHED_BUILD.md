@@ -1,3 +1,17 @@
+# Build 209 — approved gutter lifecycle repairs (2026-10-30)
+
+Version `0.30.0-209`, archive `IntelliJ-EmmyLua2-0.30.0-209.zip`.
+Analyzer pin remains `82345f4b17be2aa7c2b2bcbe0b47a6b18c1ad671` from build 208.
+Approved UP-115 source `1723790ba7f75bb273994f1bb17694c4ef522527` is integrated
+as `447ba78`, preserving the existing per-file server routing adaptations. The
+work-only routing test uses the approved project-scoped cache API (`c2ac0e3`).
+All 48 combined client tests passed with the existing local IntelliJ Platform
+Gradle plugin 2.18.1 test harness. The first combined compile found and prompted
+the routing-test adaptation; a sandboxed native test run then aborted during
+macOS application registration before tests, and the native-service run passed.
+Packaging and archive verification are recorded in the integration finding;
+only the macOS arm64 analyzer is locally patched. No IDE installation is included.
+
 # Build 208 — directional callback candidates and complete field prose (2026-10-26)
 
 Version `0.30.0-208`, archive `IntelliJ-EmmyLua2-0.30.0-208.zip`.
