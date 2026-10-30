@@ -73,7 +73,7 @@ class EmmyLuaServerRoutingTest : BasePlatformTestCase() {
             assertNull(get(b))
             pending.last().complete(emptyList())
             assertNotNull(get(b))
-            LuaGutterCacheManager.clearCache(a.uri)
+            LuaGutterCacheManager.clearCache(project, a.uri)
             assertNull(get(a))
             assertNull(get(b))
             LuaGutterCacheManager.clearProject(project)
