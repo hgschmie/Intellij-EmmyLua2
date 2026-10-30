@@ -141,30 +141,11 @@ class LuaLineMarkerProvider : LineMarkerProvider {
 
     /** Requests gutter data without blocking the highlighting read action. */
     private fun requestGutters(project: Project, serverId: String, uri: String): CompletableFuture<List<GutterInfo>> {
-        val result = CompletableFuture<List<GutterInfo>>()
-        LanguageServerManager.getInstance(project).getLanguageServer(serverId).whenComplete { item, error ->
-            if (result.isDone) return@whenComplete
-            if (error != null) {
-                result.completeExceptionally(error)
-                return@whenComplete
-            }
-            val server = item?.server as? EmmyLuaCustomApi
-            if (server == null) {
-                result.complete(emptyList())
-                return@whenComplete
-            }
-            try {
-                val request = server.getGutter(GutterParams(uri))
-                result.whenComplete { _, _ -> if (result.isCompletedExceptionally) request.cancel(true) }
-                request.whenComplete { infos, failure ->
-                    if (failure != null) result.completeExceptionally(failure)
-                    else result.complete(infos ?: emptyList())
-                }
-            } catch (failure: Exception) {
-                result.completeExceptionally(failure)
-            }
+        return requestGutterData({ LanguageServerManager.getInstance(project).getLanguageServer(serverId) }) { item ->
+            val server = item.server as? EmmyLuaCustomApi
+                ?: throw IllegalStateException("Language server does not support gutter requests")
+            server.getGutter(GutterParams(uri))
         }
-        return result.orTimeout(10, TimeUnit.SECONDS)
     }
 
     /**

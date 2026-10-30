@@ -1,6 +1,9 @@
 package com.tang.intellij.lua.editor
 
 import com.cppcxy.ide.lsp.GutterInfo
+import com.cppcxy.ide.lsp.GutterKind
+import org.eclipse.lsp4j.Position
+import org.eclipse.lsp4j.Range
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.concurrent.CompletableFuture
@@ -65,6 +68,53 @@ class GutterRequestCacheTest {
         assertEquals(emptyList<GutterInfo>(), cache.getOrRequest("file", 1, { fail("fresh reply"); pending }) {})
         now = 6000
         val refreshed = CompletableFuture<List<GutterInfo>>()
-        assertNull(cache.getOrRequest("file", 1, { refreshed }) {})
+        assertEquals(emptyList<GutterInfo>(), cache.getOrRequest("file", 1, { refreshed }) {})
     }
+
+    @Test fun sameRevisionRetainsMarkersDuringOneRefresh() {
+        var now = 0L
+        val cache = GutterRequestCache<String> { now }
+        val old = gutters("old")
+        val fresh = gutters("fresh")
+        var updates = 0
+        cache.getOrRequest("file", 1, { CompletableFuture.completedFuture(old) }) { updates++ }
+        now = 3000
+        val pending = CompletableFuture<List<GutterInfo>>()
+        assertEquals(old, cache.getOrRequest("file", 1, { pending }) { updates++ })
+        assertEquals(old, cache.getOrRequest("file", 1, { fail("duplicate refresh"); pending }) {})
+        pending.complete(fresh)
+        assertEquals(fresh, cache.getOrRequest("file", 1, { fail("fresh cache"); pending }) {})
+        assertEquals(2, updates)
+    }
+
+    @Test fun staleMarkersAreNotReusedAcrossRevisionsOrInvalidation() {
+        var now = 0L
+        val cache = GutterRequestCache<String> { now }
+        cache.getOrRequest("file", 1, { CompletableFuture.completedFuture(gutters("old")) }) {}
+        now = 3000
+        val changed = CompletableFuture<List<GutterInfo>>()
+        assertNull(cache.getOrRequest("file", 2, { changed }) {})
+        changed.complete(gutters("changed"))
+        cache.invalidate { true }
+        assertNull(cache.getOrRequest("file", 2, { CompletableFuture() }) {})
+    }
+
+    @Test fun failedRefreshRetainsMarkersAndAllowsRetry() {
+        var now = 0L
+        val cache = GutterRequestCache<String> { now }
+        val old = gutters("old")
+        cache.getOrRequest("file", 1, { CompletableFuture.completedFuture(old) }) {}
+        now = 3000
+        assertEquals(old, cache.getOrRequest("file", 1, {
+            CompletableFuture.failedFuture(IllegalStateException("disconnected"))
+        }) { fail("failed refresh notification") })
+        val retry = CompletableFuture<List<GutterInfo>>()
+        assertEquals(old, cache.getOrRequest("file", 1, { retry }) {})
+        retry.complete(emptyList())
+        assertEquals(emptyList<GutterInfo>(), cache.getOrRequest("file", 1, { fail("valid empty reply"); retry }) {})
+    }
+
+    private fun gutters(detail: String) = listOf(
+        GutterInfo(Range(Position(0, 0), Position(0, 1)), GutterKind.Method, detail)
+    )
 }
