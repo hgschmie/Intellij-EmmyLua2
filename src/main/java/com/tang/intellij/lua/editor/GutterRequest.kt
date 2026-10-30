@@ -5,7 +5,11 @@ import com.intellij.openapi.progress.ProcessCanceledException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
-/** Resolves one gutter request without treating unavailable servers or missing replies as empty data. */
+/**
+ * Resolves one gutter request without treating unavailable servers or missing replies as empty data.
+ * Cancellation during request creation propagates when the callback runs inline on the calling thread.
+ * After an asynchronous handoff, cancellation completes the returned future exceptionally.
+ */
 internal fun <S> requestGutterData(
     findServer: () -> CompletableFuture<out S?>,
     load: (S) -> CompletableFuture<List<GutterInfo>>
@@ -19,6 +23,10 @@ internal fun <S> requestGutterData(
         result.completeExceptionally(failure)
         return result
     }
+    val callingThread = Thread.currentThread()
+    // The thread check below confines access to these locals to the calling thread.
+    var registeringCompletion = true
+    var inlineCancellation: ProcessCanceledException? = null
     serverFuture.whenComplete { server, error ->
         if (result.isDone) return@whenComplete
         if (error != null) {
@@ -39,9 +47,17 @@ internal fun <S> requestGutterData(
                     else -> result.complete(infos)
                 }
             }
+        } catch (canceled: ProcessCanceledException) {
+            result.completeExceptionally(canceled)
+            // CompletableFuture captures callback exceptions, including callbacks invoked inline.
+            if (Thread.currentThread() === callingThread && registeringCompletion) {
+                inlineCancellation = canceled
+            }
         } catch (failure: Exception) {
             result.completeExceptionally(failure)
         }
     }
+    registeringCompletion = false
+    inlineCancellation?.let { throw it }
     return result.orTimeout(10, TimeUnit.SECONDS)
 }

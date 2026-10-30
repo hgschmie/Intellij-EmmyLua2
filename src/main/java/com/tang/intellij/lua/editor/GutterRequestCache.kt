@@ -3,7 +3,11 @@ package com.tang.intellij.lua.editor
 import com.cppcxy.ide.lsp.GutterInfo
 import java.util.concurrent.CompletableFuture
 
-/** Caches gutter replies for one document revision and rejects invalidated requests. */
+/**
+ * Caches gutter replies for one document revision and rejects invalidated requests.
+ * Freshness expiry starts a refresh and is not an eviction policy.
+ * Owners must invalidate keys on file close and project disposal to release results and cancel pending requests.
+ */
 internal class GutterRequestCache<K>(private val clock: () -> Long = System::currentTimeMillis) {
     private class Entry(val stamp: Long, var completed: Long = 0, var result: List<GutterInfo>? = null) {
         var future: CompletableFuture<List<GutterInfo>>? = null
@@ -12,6 +16,11 @@ internal class GutterRequestCache<K>(private val clock: () -> Long = System::cur
 
     private val entries = mutableMapOf<K, Entry>()
 
+    /**
+     * Returns the cached result while starting at most one refresh for the current revision.
+     * @param updated runs outside the cache lock, synchronously or on the completion thread; it must be short,
+     * thread-safe and non-throwing.
+     */
     fun getOrRequest(
         key: K,
         stamp: Long,

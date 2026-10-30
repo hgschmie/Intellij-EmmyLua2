@@ -4,6 +4,7 @@ import com.cppcxy.ide.lsp.GutterInfo
 import com.intellij.openapi.progress.ProcessCanceledException
 import org.junit.Assert.*
 import org.junit.Test
+import java.util.concurrent.CancellationException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 import java.util.concurrent.TimeoutException
@@ -56,6 +57,24 @@ class GutterRequestTest {
         val failure = IllegalStateException("unsupported request")
         val result = requestGutterData({ CompletableFuture.completedFuture("ready") }) { throw failure }
         assertSame(failure, assertThrows(CompletionException::class.java) { result.join() }.cause)
+    }
+
+    @Test fun synchronousRequestCancellationStillPropagates() {
+        val canceled = ProcessCanceledException()
+        val actual = assertThrows(ProcessCanceledException::class.java) {
+            requestGutterData({ CompletableFuture.completedFuture("ready") }) { throw canceled }
+        }
+        assertSame(canceled, actual)
+    }
+
+    @Test fun cancellationAfterAnAsynchronousLookupCancelsTheResult() {
+        val lookup = CompletableFuture<String>()
+        val canceled = ProcessCanceledException()
+        val result = requestGutterData({ lookup }) { throw canceled }
+        lookup.complete("ready")
+        assertTrue(result.isCancelled)
+        val actual = assertThrows(CancellationException::class.java) { result.join() }
+        assertTrue(actual === canceled || actual.cause === canceled)
     }
 
     @Test fun cancellationBeforeLookupCompletesSuppressesTheRequest() {
