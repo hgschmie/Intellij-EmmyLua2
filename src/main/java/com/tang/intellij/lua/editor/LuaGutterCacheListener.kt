@@ -34,7 +34,7 @@ object LuaGutterCacheManager {
     data class Key(val project: Project, val serverId: String, val uri: String)
     private val requests = GutterRequestCache<Key>()
 
-    fun clearCache(uri: String) = requests.invalidate { it.uri == uri }
+    fun clearCache(project: Project, uri: String) = requests.invalidate { it.project === project && it.uri == uri }
 
     fun clearProject(project: Project) = requests.invalidate { it.project === project }
 
@@ -64,7 +64,7 @@ class LuaDocumentListener(private val project: Project) : DocumentListener {
         if (!virtualFile.isValid || virtualFile.fileType !== LuaFileType.INSTANCE) return
 
         // Clear the cache immediately for instant refresh
-        LuaGutterCacheManager.clearCache(virtualFile.url)
+        LuaGutterCacheManager.clearCache(project, virtualFile.url)
 
         // Cancel any pending update
         pendingUpdates[document]?.let {
@@ -115,13 +115,13 @@ class LuaDocumentListener(private val project: Project) : DocumentListener {
  */
 class LuaFileEditorListener(private val project: Project) : FileEditorManagerListener {
     override fun fileClosed(source: FileEditorManager, file: VirtualFile) {
-        LuaGutterCacheManager.clearCache(file.url)
+        LuaGutterCacheManager.clearCache(project, file.url)
     }
 
     override fun fileOpened(source: FileEditorManager, file: VirtualFile) {
         if (file.fileType === LuaFileType.INSTANCE) {
             // Clear cache for the newly opened file to ensure fresh data
-            LuaGutterCacheManager.clearCache(file.url)
+            LuaGutterCacheManager.clearCache(project, file.url)
 
             // Trigger code analysis
             ApplicationManager.getApplication().invokeLater {
@@ -169,7 +169,7 @@ class LuaGutterCacheStartupActivity : ProjectActivity {
                         val file = event.file
                         if (file != null && file.isValid && file.fileType === LuaFileType.INSTANCE) {
                             // Clear cache when the file changes externally
-                            LuaGutterCacheManager.clearCache(file.url)
+                            LuaGutterCacheManager.clearCache(project, file.url)
 
                             // Skip delete events - no need to restart analysis on deleted files
                             if (event is VFileDeleteEvent) {

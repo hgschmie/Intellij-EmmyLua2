@@ -3,15 +3,24 @@ package com.tang.intellij.lua.editor
 import com.cppcxy.ide.lsp.GutterInfo
 import java.util.concurrent.CompletableFuture
 
-/** Caches gutter replies for one document revision and rejects invalidated requests. */
+/**
+ * Caches gutter replies for one document revision and rejects invalidated requests.
+ * Freshness expiry starts a refresh and is not an eviction policy.
+ * Owners must invalidate keys on file close and project disposal to release results and cancel pending requests.
+ */
 internal class GutterRequestCache<K>(private val clock: () -> Long = System::currentTimeMillis) {
-    private class Entry(val stamp: Long, var completed: Long = 0) {
+    private class Entry(val stamp: Long, var completed: Long = 0, var result: List<GutterInfo>? = null) {
         var future: CompletableFuture<List<GutterInfo>>? = null
-        var result: List<GutterInfo>? = null
+        var pending = true
     }
 
     private val entries = mutableMapOf<K, Entry>()
 
+    /**
+     * Returns the cached result while starting at most one refresh for the current revision.
+     * @param updated runs outside the cache lock, synchronously or on the completion thread; it must be short,
+     * thread-safe and non-throwing.
+     */
     fun getOrRequest(
         key: K,
         stamp: Long,
@@ -20,13 +29,16 @@ internal class GutterRequestCache<K>(private val clock: () -> Long = System::cur
     ): List<GutterInfo>? {
         val entry: Entry
         val previous: Entry?
+        val staleResult: List<GutterInfo>?
         synchronized(entries) {
             val existing = entries[key]
             if (existing != null && existing.stamp == stamp &&
-                (existing.result == null || clock() - existing.completed <= 2000)) {
+                (existing.pending || clock() - existing.completed <= 2000)) {
                 return existing.result
             }
-            entry = Entry(stamp)
+            val sameRevision = existing?.takeIf { it.stamp == stamp }
+            entry = Entry(stamp, sameRevision?.completed ?: 0, sameRevision?.result)
+            staleResult = entry.result
             previous = entries.put(key, entry)
         }
         previous?.future?.cancel(true)
@@ -47,17 +59,19 @@ internal class GutterRequestCache<K>(private val clock: () -> Long = System::cur
             val accepted = synchronized(entries) {
                 if (entries[key] !== entry) false
                 else if (error != null || infos == null) {
-                    entries.remove(key)
+                    entry.pending = false
+                    if (entry.result == null) entries.remove(key)
                     false
                 } else {
                     entry.result = infos.toList()
                     entry.completed = clock()
+                    entry.pending = false
                     true
                 }
             }
             if (accepted) updated()
         }
-        return null
+        return staleResult
     }
 
     fun invalidate(predicate: (K) -> Boolean) {
