@@ -1,3 +1,26 @@
+# Build 213 — approved analyzer refresh and member hover correction (2026-11-02)
+
+Version `0.30.0-213`, archive `IntelliJ-EmmyLua2-0.30.0-213.zip`.
+Analyzer pin `06b0960b4a3c63036a975f849ffa0e9f26f734b1` includes all79 maintained heads
+covering97 active analyzer fixes, refreshed on upstream/main `1b6df859`.
+All internal reviews through54 are USER-approved and closed. Independent UP-144
+restores the return suffix for anonymous function members, including generated
+Factorio API methods; it does not change inferred return types.
+
+The approved integration tree equals the validated private composition exactly:
+420 language-server tests and formatting/Clippy pass. Prior full-workspace
+coverage of3,848 tests (30 existing ignored) remains valid for unchanged analysis
+code. The rebuilt approved binary is byte-identical to the private binary that
+passes the52-payload protocol replay and targeted generated-API native test.
+Final packaged-client and FDE consumer validation are recorded in
+`memory/findings/F-20261102-generated-api-hover/` at the workspace root;
+consult its final publication receipt for release acceptance.
+
+LSP4IJ `0.30.0-SNAPSHOT-18` is the coordinated dependency. Only macOS arm64
+receives the custom analyzer. Held build212 remains preserved with its native
+hover failure evidence; earlier accepted artifacts remain available. No IDE
+installation is part of this release. Historical build sections follow.
+
 # Build 212 — refreshed approved analyzer fixes (2026-11-02)
 
 Version `0.30.0-212`, archive `IntelliJ-EmmyLua2-0.30.0-212.zip`.
