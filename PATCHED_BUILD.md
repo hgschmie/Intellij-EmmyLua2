@@ -1,3 +1,24 @@
+# Build 212 — refreshed approved analyzer fixes (2026-11-02)
+
+Version `0.30.0-212`, archive `IntelliJ-EmmyLua2-0.30.0-212.zip`.
+Analyzer pin `482210211346b75bb82d040a0444d1b2f49df510` includes the refreshed maintained fixes on
+upstream/main `1b6df859` and all approved internal follow-ups through PR53.
+The final optional-key write correction belongs to existing UP-017/C02;
+it preserves declared value checks without false nil-only write constraints.
+
+The behavior-equivalent combined source passed 3,848 all-feature tests, with
+30 existing ignored tests, formatting and Clippy. The exact approved integration
+passes 35 focused tests, including the added recursive-alias case, and static
+checks. The exact source delta and evidence reuse are recorded separately.
+The 52-response protocol gate and final client/consumer results are bound to
+this binary/archive in `memory/findings/F-20261102-nullable-dictionary-writes/`
+at the workspace root; consult the final release receipt for acceptance status.
+
+LSP4IJ `0.30.0-SNAPSHOT-18` is the coordinated dependency. The client source is
+unchanged from accepted build209; only macOS arm64 receives the custom analyzer.
+Earlier accepted and private archives remain preserved. No IDE installation is
+part of this release. Historical release sections follow.
+
 # Build 209 — approved gutter lifecycle repairs (2026-10-30)
 
 Version `0.30.0-209`, archive `IntelliJ-EmmyLua2-0.30.0-209.zip`.
