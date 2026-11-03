@@ -25,7 +25,7 @@ server, and detail requests retain the ID that produced the gutter data. Stale
 markers are ignored if routing has changed. Integrations changing ownership
 must disconnect existing LSP document associations, refresh their mappings and
 restart editor analysis; this extension point does not migrate live connections.
-Invalidate gutter caches with `LuaGutterCacheManager.clearCache(file.url)` when
+Invalidate gutter caches with `LuaGutterCacheManager.clearCache(project, file.url)` when
 replacing a server under the same ID. Register stable server IDs unique to the
 owning project and environment, and remove them on disposal.
 
