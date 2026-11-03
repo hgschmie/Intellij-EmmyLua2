@@ -1,3 +1,23 @@
+# Build 214 — upstream gutter merge and routing refresh (2026-11-03)
+
+Version `0.30.0-214`, archive `IntelliJ-EmmyLua2-0.30.0-214.zip`.
+The client now includes upstream/main `cfb9a0b33372920b0aad29e1d2db6f7bc466e80e`, which merged
+UP-115 (PR64). The original source/branch and all earlier archives are retained.
+UP-006 (PR60) is rebased as a single signed contribution on this exact base.
+Routing uses the upstream asynchronous gutter cache and its project-scoped
+invalidation API; its separate contribution no longer carries a cache rewrite.
+
+The integration preserves all existing local routing, workspace-ownership,
+configuration and packaging changes. Its src/ tree is byte-identical to build213:
+these upstream changes were already present locally. Analyzer pin remains
+`06b0960b4a3c63036a975f849ffa0e9f26f734b1`; the validated213 binary is reused exactly.
+LSP4IJ remains `0.30.0-SNAPSHOT-18`. Only macOS arm64 has the locally patched analyzer.
+
+Fresh isolated routing/gutter checks, exact packaged-client tests, archive hashes,
+source provenance and final publication are recorded in
+`memory/findings/F-20261103-emmy-upstream214/` at the workspace root.
+No IDE installation is performed. Historical releases follow.
+
 # Build 213 — approved analyzer refresh and member hover correction (2026-11-02)
 
 Version `0.30.0-213`, archive `IntelliJ-EmmyLua2-0.30.0-213.zip`.
