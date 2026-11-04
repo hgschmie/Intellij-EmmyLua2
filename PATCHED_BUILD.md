@@ -1,3 +1,26 @@
+# Build 215 — compaktcircuit diagnostics performance (2026-11-03)
+
+Version `0.30.0-215`, archive `IntelliJ-EmmyLua2-0.30.0-215.zip`.
+Analyzer pin `5b465dde700adbf5933d9c4476efe1b0d23113a1` integrates USER-approved internal
+reviews55/56 into existing UP-124 and UP-033/UP-078 sources. It replaces recursive
+invocation-history permutations with canonical receiver contexts and caches
+receiver-independent captured-member and builtin-mutator queries.
+
+The full27-file frozen compaktcircuit mod completes in5.626 seconds including
+startup/indexing, preserving every diagnostic payload; all52 saved LSP observations
+match the accepted analyzer. The approved integration tree and rebuilt server are
+byte-identical to the validated private composition:3,867 workspace tests/30
+existing ignores plus the final convergence case in54 focused tests;fmt/ClippyPASS.
+Repeated workspace runs exclude the unchanged no-call linear stress case, with its
+prior full-run PASS retained. The historical LTN203 harness assertion is unchanged.
+
+Client source and LSP4IJ0.30.0-SNAPSHOT-18 are unchanged. Only macOS arm64 receives
+the custom analyzer. FDE keeps its0.9.7-dev version/archive; its development pin and
+relevant native checks follow separately. Final package, packaged-server/client and
+consumer acceptance receipts are under
+`memory/findings/F-20261103-compaktcircuit-release215/` at the workspace root.
+No regular IDE installation is included. Earlier release records follow.
+
 # Build 214 — upstream gutter merge and routing refresh (2026-11-03)
 
 Version `0.30.0-214`, archive `IntelliJ-EmmyLua2-0.30.0-214.zip`.
