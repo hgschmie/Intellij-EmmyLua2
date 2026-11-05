@@ -1,3 +1,24 @@
+# Build 216 — train-tracker diagnostics and analyzer refresh (2026-11-05)
+
+Version `0.30.0-216`, archive `IntelliJ-EmmyLua2-0.30.0-216.zip`.
+Analyzer pin `7fda1835e6b0a1446affae363fbb27abe5b89852` contains the approved UP-145 runtime-assignment
+contract fix and UP-146 caller-generic bound fix. The native replay removes the
+false warning at train-tracker/framework/prototypes/data-util.lua:68 and two
+false parameter warnings in stdlib/area/area.lua. Build215 predates these fixes.
+
+All81 maintained heads/99 behaviors are refreshed on upstream de893763 and
+integrated, including approved UP-092/UP-094/UP-121 compatibility corrections.
+The exact combined tree passes425 language-server tests, workspace Clippy and
+formatting. The approved native server completes compaktcircuit27/27 in5.862s
+with no new warnings; all52 frozen LSP payloads match the accepted analyzer.
+Historical comparator exceptions and earlier full-suite scopes remain explicit.
+
+Only the macOS arm64 analyzer changes; client source and LSP4IJ18 stay unchanged.
+Final ZIP/server/client and FDE consumer acceptance are recorded in
+`memory/findings/F-20261105-train-tracker-release216/` at the workspace root.
+FDE retains its0.9.7-dev version and ZIP. No IDE installation is performed.
+Earlier releases follow.
+
 # Build 215 — compaktcircuit diagnostics performance (2026-11-03)
 
 Version `0.30.0-215`, archive `IntelliJ-EmmyLua2-0.30.0-215.zip`.
