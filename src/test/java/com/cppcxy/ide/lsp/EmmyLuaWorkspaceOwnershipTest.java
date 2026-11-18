@@ -2,14 +2,20 @@ package com.cppcxy.ide.lsp;
 
 import com.google.gson.JsonParser;
 import org.eclipse.lsp4j.*;
+import org.junit.Assume;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class EmmyLuaWorkspaceOwnershipTest {
+    @Rule public final TemporaryFolder temporary = new TemporaryFolder();
     private final Path root = Path.of(System.getProperty("java.io.tmpdir"), "ownership-project").toAbsolutePath();
     private final Path mod = root.resolve("mod");
 
@@ -56,6 +62,41 @@ public class EmmyLuaWorkspaceOwnershipTest {
         EmmyLuaClientFeatures.excludeOwnedRoots(params, List.of(mod));
         assertEquals("untitled:/scratch", params.getRootUri());
         assertNull(params.getRootPath());
+    }
+
+    @Test public void excludesMissingFolderUnderSymlinkedOwnedRoot() throws IOException {
+        var real = temporary.newFolder("real").toPath().toRealPath();
+        var alias = linkTo(real);
+        var params = params(alias.resolve("pending").resolve("child"), real.resolveSibling("unowned"));
+        EmmyLuaClientFeatures.excludeOwnedRoots(params, List.of(real));
+        assertEquals(1, params.getWorkspaceFolders().size());
+        assertEquals(real.resolveSibling("unowned").toUri().toString(), params.getRootUri());
+    }
+
+    @Test public void excludesFolderWhenOwnedRootIsMissingUnderSymlink() throws IOException {
+        var real = temporary.newFolder("real").toPath().toRealPath();
+        var alias = linkTo(real);
+        var pending = real.resolve("pending");
+        var params = params(pending);
+        EmmyLuaClientFeatures.excludeOwnedRoots(params, List.of(alias.resolve("pending")));
+        assertTrue(params.getWorkspaceFolders().isEmpty());
+        assertNull(params.getRootUri());
+        assertNull(params.getRootPath());
+    }
+
+    private Path linkTo(Path target) throws IOException {
+        Path alias = target.resolveSibling("alias");
+        try {
+            return Files.createSymbolicLink(alias, target);
+        } catch (UnsupportedOperationException e) {
+            Assume.assumeNoException("Symbolic links are unavailable", e);
+            throw e;
+        } catch (IOException e) {
+            if (System.getProperty("os.name").startsWith("Windows")) {
+                Assume.assumeNoException("Symbolic link creation may require Windows privileges", e);
+            }
+            throw e;
+        }
     }
 
     @Test public void leavesInitializationUntouchedWithoutOwnership() {

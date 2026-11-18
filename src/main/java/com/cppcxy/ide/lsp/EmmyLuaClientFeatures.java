@@ -7,7 +7,9 @@ import org.eclipse.lsp4j.WorkspaceClientCapabilities;
 import org.eclipse.lsp4j.WorkspaceFolder;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.net.URI;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
     private volatile List<Path> ownedRoots = List.of();
 
     @Override public void initializeParams(@NotNull InitializeParams params) {
+        super.initializeParams(params);
         ownedRoots = EmmyLuaServerRouting.getOwnedRoots(getProject());
         excludeOwnedRoots(params, ownedRoots);
     }
@@ -71,7 +74,18 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
     }
 
     private static Path canonical(Path path) {
-        try { return path.toRealPath(); }
-        catch (java.io.IOException e) { return path.toAbsolutePath().normalize(); }
+        Path absolute = path.toAbsolutePath();
+        // A workspace folder may not exist yet. Resolve symlinks in its existing
+        // parent path before comparing it to an owned root.
+        for (Path ancestor = absolute; ancestor != null; ancestor = ancestor.getParent()) {
+            try {
+                return ancestor.toRealPath().resolve(ancestor.relativize(absolute));
+            } catch (NoSuchFileException ignored) {
+                // Try the next parent until the existing prefix can be resolved.
+            } catch (IOException ignored) {
+                return absolute.normalize();
+            }
+        }
+        return absolute.normalize();
     }
 }
