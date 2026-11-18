@@ -41,7 +41,13 @@ public final class EmmyLuaLanguageClient extends LanguageClientImpl {
         // ignoreDir accepts an array. Supply the required owned roots even if the
         // existing value has an invalid shape.
         var ignored = existing != null && existing.isJsonArray() ? existing.getAsJsonArray() : new JsonArray();
-        owned.forEach(path -> ignored.add(path.toString()));
+        // The analyzer compares path prefixes. Keep both spellings when an
+        // integration owns a root through a symlink.
+        for (Path root : owned) {
+            ignored.add(root.toString());
+            Path resolved = EmmyLuaClientFeatures.canonical(root);
+            if (!resolved.equals(root)) ignored.add(resolved.toString());
+        }
         workspace.add("ignoreDir", ignored);
         result.add("workspace", workspace);
         // The analyzer appends this to native configuration. Explicit libraries and

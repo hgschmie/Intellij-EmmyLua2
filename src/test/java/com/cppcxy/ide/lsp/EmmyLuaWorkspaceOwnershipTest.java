@@ -3,6 +3,7 @@ package com.cppcxy.ide.lsp;
 import com.google.gson.JsonParser;
 import org.eclipse.lsp4j.*;
 import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -16,8 +17,13 @@ import static org.junit.Assert.*;
 
 public class EmmyLuaWorkspaceOwnershipTest {
     @Rule public final TemporaryFolder temporary = new TemporaryFolder();
-    private final Path root = Path.of(System.getProperty("java.io.tmpdir"), "ownership-project").toAbsolutePath();
-    private final Path mod = root.resolve("mod");
+    private Path root;
+    private Path mod;
+
+    @Before public void setUpRoots() throws IOException {
+        root = temporary.getRoot().toPath().toRealPath();
+        mod = root.resolve("mod");
+    }
 
     private InitializeParams params(Path... roots) {
         var params = new InitializeParams();
@@ -82,6 +88,16 @@ public class EmmyLuaWorkspaceOwnershipTest {
         assertTrue(params.getWorkspaceFolders().isEmpty());
         assertNull(params.getRootUri());
         assertNull(params.getRootPath());
+    }
+
+    @Test public void sendsBothSpellingsOfSymlinkedOwnedRootToAnalyzer() throws IOException {
+        var real = temporary.newFolder("real").toPath().toRealPath();
+        var alias = linkTo(real);
+        var result = EmmyLuaLanguageClient.withOwnedRoots(null, List.of(alias));
+        var ignored = result.getAsJsonObject("workspace").getAsJsonArray("ignoreDir");
+        assertEquals(2, ignored.size());
+        assertEquals(alias.toString(), ignored.get(0).getAsString());
+        assertEquals(real.toString(), ignored.get(1).getAsString());
     }
 
     private Path linkTo(Path target) throws IOException {

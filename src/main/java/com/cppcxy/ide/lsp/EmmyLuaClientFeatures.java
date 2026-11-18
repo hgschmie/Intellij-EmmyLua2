@@ -18,7 +18,8 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
     // One immutable snapshot per initialization, also read by workspace/configuration.
     private volatile List<Path> ownedRoots = List.of();
 
-    @Override public void initializeParams(@NotNull InitializeParams params) {
+    @Override
+    public void initializeParams(@NotNull InitializeParams params) {
         super.initializeParams(params);
         ownedRoots = EmmyLuaServerRouting.getOwnedRoots(getProject());
         excludeOwnedRoots(params, ownedRoots);
@@ -73,13 +74,16 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
         }
     }
 
-    private static Path canonical(Path path) {
+    static Path canonical(Path path) {
         Path absolute = path.toAbsolutePath();
         // A workspace folder may not exist yet. Resolve symlinks in its existing
         // parent path before comparing it to an owned root.
         for (Path ancestor = absolute; ancestor != null; ancestor = ancestor.getParent()) {
             try {
-                return ancestor.toRealPath().resolve(ancestor.relativize(absolute));
+                Path resolved = ancestor.toRealPath();
+                if (ancestor.equals(absolute)) return resolved;
+                var suffix = absolute.subpath(ancestor.getNameCount(), absolute.getNameCount());
+                return resolved.resolve(suffix).normalize();
             } catch (NoSuchFileException ignored) {
                 // Try the next parent until the existing prefix can be resolved.
             } catch (IOException ignored) {
