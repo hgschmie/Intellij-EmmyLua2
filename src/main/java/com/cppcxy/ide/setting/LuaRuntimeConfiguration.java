@@ -158,7 +158,8 @@ public final class LuaRuntimeConfiguration implements Disposable {
                 var manager = LanguageServerManager.getInstance(project);
                 var status = manager.getServerStatus(EmmyLuaServerRouting.DEFAULT_SERVER_ID);
                 if (status == ServerStatus.starting || status == ServerStatus.started) {
-                    manager.start(EmmyLuaServerRouting.DEFAULT_SERVER_ID);
+                    manager.start(EmmyLuaServerRouting.DEFAULT_SERVER_ID,
+                            new LanguageServerManager.StartOptions().setForceRestart(true));
                 }
             }, 100);
         }, project.getDisposed());
