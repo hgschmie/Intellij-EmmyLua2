@@ -1,3 +1,14 @@
+# Build 217 — upstream file routing and workspace ownership (2026-11-17)
+
+Upstream main 24d104db includes merged file-specific routing (UP-006) and
+extends plugin metadata compatibility through IDE build family 263.
+UP-047 is the remaining local client fix. Its three commits rebase without
+patch changes on upstream main, with tip b3ce40d.
+
+The package retains the approved macOS arm64 analyzer at 7fda1835 and the
+0.25.1 fallback binaries. Validation and publication receipts are recorded
+in memory/findings/F-20261117-emmy-refresh at the workspace root.
+
 # Build 216 — train-tracker diagnostics and analyzer refresh (2026-11-05)
 
 Version `0.30.0-216`, archive `IntelliJ-EmmyLua2-0.30.0-216.zip`.
