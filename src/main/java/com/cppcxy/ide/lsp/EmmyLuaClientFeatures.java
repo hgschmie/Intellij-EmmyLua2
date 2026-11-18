@@ -1,7 +1,9 @@
 package com.cppcxy.ide.lsp;
 
 import com.redhat.devtools.lsp4ij.client.features.LSPClientFeatures;
+import org.eclipse.lsp4j.ClientCapabilities;
 import org.eclipse.lsp4j.InitializeParams;
+import org.eclipse.lsp4j.WorkspaceClientCapabilities;
 import org.eclipse.lsp4j.WorkspaceFolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,26 +27,37 @@ public final class EmmyLuaClientFeatures extends LSPClientFeatures {
 
     static void excludeOwnedRoots(InitializeParams params, List<Path> owned) {
         if (owned.isEmpty()) return;
+        var canonicalRoots = owned.stream().map(EmmyLuaClientFeatures::canonical).toList();
         List<WorkspaceFolder> folders = params.getWorkspaceFolders();
         if (folders != null) {
-            folders = folders.stream().filter(folder -> !isOwned(folder.getUri(), owned)).toList();
+            folders = folders.stream().filter(folder -> !isOwned(folder.getUri(), canonicalRoots)).toList();
             params.setWorkspaceFolders(folders);
         }
         // An empty workspaceFolders list otherwise falls back to rootUri in the analyzer.
-        if (isOwned(params.getRootUri(), owned)) {
+        if (isOwned(params.getRootUri(), canonicalRoots)) {
             String uri = folders == null || folders.isEmpty() ? null : folders.get(0).getUri();
             params.setRootUri(uri);
             Path path = localPath(uri);
             params.setRootPath(path == null ? null : path.toString());
         }
-        params.getCapabilities().getWorkspace().setConfiguration(true);
+        var capabilities = params.getCapabilities();
+        if (capabilities == null) {
+            capabilities = new ClientCapabilities();
+            params.setCapabilities(capabilities);
+        }
+        var workspace = capabilities.getWorkspace();
+        if (workspace == null) {
+            workspace = new WorkspaceClientCapabilities();
+            capabilities.setWorkspace(workspace);
+        }
+        workspace.setConfiguration(true);
     }
 
-    private static boolean isOwned(String uri, List<Path> owned) {
+    private static boolean isOwned(String uri, List<Path> canonicalRoots) {
         Path file = localPath(uri);
         if (file == null) return false;
         Path path = canonical(file);
-        return owned.stream().anyMatch(root -> path.startsWith(canonical(root)));
+        return canonicalRoots.stream().anyMatch(path::startsWith);
     }
 
     private static Path localPath(String value) {
