@@ -1,3 +1,10 @@
+# Build 218 — faster diagnostics for tagged table arguments
+
+The macOS arm64 analyzer is pinned to `eb5016119a43a7c8aab95ef92b71a01afe99bd8c`. This build includes the
+November 18 analyzer refresh and UP-151. On the 27-file Compaktcircuit project,
+UP-151 reduced median diagnostics after indexing from 5.02 s to 3.06 s.
+The checker retains full argument validation and the previous diagnostic order.
+
 # Build 217 — upstream file routing and workspace ownership (2026-11-17)
 
 Upstream main 24d104db includes merged file-specific routing (UP-006) and
