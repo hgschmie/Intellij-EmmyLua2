@@ -1,10 +1,10 @@
 package com.cppcxy.ide.lsp;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.application.ApplicationManager;
-import com.redhat.devtools.lsp4ij.LanguageServerManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.redhat.devtools.lsp4ij.LanguageServerManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
