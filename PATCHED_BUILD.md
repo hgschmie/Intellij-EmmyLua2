@@ -1,3 +1,9 @@
+# Build 220 — analyzer fixes for LogisticTrainNetwork
+
+The macOS arm64 analyzer is pinned to `7512c454f0eefc868a7fbb8a9e83e1e9fdc1646c`.
+It preserves stable tag fields in table arguments, checks record fields against
+dictionary constraints, and retains generic key domains in mapped types.
+
 # Build 219 — workspace ownership and analyzer configuration
 
 The macOS arm64 analyzer is pinned to `73e44d2ddb4b2b9d88b6f825318bdd0bae456c90`. It preserves dotted child
