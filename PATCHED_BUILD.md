@@ -1,3 +1,11 @@
+# Build 219 — workspace ownership and analyzer configuration
+
+The macOS arm64 analyzer is pinned to `73e44d2ddb4b2b9d88b6f825318bdd0bae456c90`. It preserves dotted child
+settings when a configuration layer contains an invalid parent. The client
+filters owned workspace folders, excludes owned directories during parent
+scans, and uses the public LSP4IJ manager to restart a running default server
+after a runtime change.
+
 # Build 218 — faster diagnostics for tagged table arguments
 
 The macOS arm64 analyzer is pinned to `eb5016119a43a7c8aab95ef92b71a01afe99bd8c`. This build includes the
